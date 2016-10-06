@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/vitkuzmenko/Swiftex.git", :tag => s.version.to_s }
 
-  s.source_files  = "Extensions/*/*.swift"
+  s.source_files  = "Source/*.swift"
   
   s.requires_arc = 'true'
 
