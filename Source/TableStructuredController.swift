@@ -107,7 +107,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let object = tableStructure[indexPath.section][indexPath.row]
+        let object = tableStructureObjectAt(indexPath: indexPath)
         guard let identifier = self.tableView(tableView, reuseIdentifierFor: object) else {
             assert(false, "No reuse identifier")
             return UITableViewCell()
@@ -130,7 +130,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let object = tableStructure[indexPath.section][indexPath.row]
+        let object = tableStructureObjectAt(indexPath: indexPath)
         self.tableView(tableView, willDisplay: cell, for: object)
     }
     
@@ -139,7 +139,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let object = tableStructure[indexPath.section][indexPath.row]
+        let object = tableStructureObjectAt(indexPath: indexPath)
         return rowHeight(forObject: object)
     }
     
@@ -158,7 +158,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         tableView.deselectRow(at: indexPath, animated: false)
         let cell = tableView.cellForRow(at: indexPath)
         let identifier = cell!.reuseIdentifier!
-        let object = tableStructure[indexPath.section][indexPath.row]
+        let object = tableStructureObjectAt(indexPath: indexPath)
         
         self.tableView(tableView, didSelectCellWith: identifier, object: object, at: indexPath)
     }
@@ -168,7 +168,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        let object = tableStructure[indexPath.section][indexPath.row]
+        let object = tableStructureObjectAt(indexPath: indexPath)
         return self.tableView(tableView, canEditRowWith: object, at: indexPath)
     }
     
@@ -177,7 +177,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        let object = tableStructure[indexPath.section][indexPath.row]
+        let object = tableStructureObjectAt(indexPath: indexPath)
         self.tableView(tableView, commit: editingStyle, for: object, forRowAt: indexPath)
     }
     
