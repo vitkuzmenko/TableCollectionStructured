@@ -139,6 +139,14 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return identifier
     }
     
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return tableStructure[section].headerTitle
+    }
+    
+    public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return tableStructure[section].footerTitle
+    }
+    
     open func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for object: Any, at indexPath: IndexPath) {
         
     }
