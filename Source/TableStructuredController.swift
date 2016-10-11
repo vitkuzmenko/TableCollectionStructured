@@ -43,7 +43,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     @IBOutlet open weak var tableView: UITableView!
     
-    var vc: ViewController!
+    open var vc: ViewController!
     
     open var tableStructure: [TableStructuredSection] = []
     

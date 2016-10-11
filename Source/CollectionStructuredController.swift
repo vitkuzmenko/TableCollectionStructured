@@ -16,7 +16,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     
     open weak var collectionView: UICollectionView!
     
-    var vc: ViewController!
+    open var vc: ViewController!
     
     open var collectionStructure: [[Any]] = []
     
