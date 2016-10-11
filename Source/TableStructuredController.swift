@@ -24,7 +24,7 @@ open class TableStructuredSection {
     
     open var isEmpty: Bool { return rows.isEmpty }
     
-    open func append(object: AnyObject) {
+    open func append(object: Any) {
         rows.append(object)
     }
     
