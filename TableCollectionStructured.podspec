@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.version      = "0.0.2"
   s.summary      = "Table and Collection View Structured objects"
 
-  s.homepage     = "https://github.com/vitkuzmenko/Swiftex"
+  s.homepage     = "https://github.com/vitkuzmenko/TableCollectionStructured"
 
   s.license      = { :type => "Apache 2.0", :file => "LICENSE" }
 
