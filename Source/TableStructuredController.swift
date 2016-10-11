@@ -8,6 +8,10 @@
 
 import UIKit
 
+public protocol TableStructuredViewController {
+    var tableView: UITableView { get set }
+}
+
 open class TableStructuredSection {
     
     open var headerTitle: String?
