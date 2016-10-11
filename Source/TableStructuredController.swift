@@ -39,16 +39,17 @@ open class TableStructuredSection {
     
 }
 
-open class TableStructuredController<V: UIViewController>: NSObject, UITableViewDataSource, UITableViewDelegate {
+open class TableStructuredController<ViewController: TableStructuredViewController>: NSObject, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet open weak var tableView: UITableView!
     
-    var vc: V!
+    var vc: ViewController!
     
     open var tableStructure: [TableStructuredSection] = []
     
-    public convenience init(tableView: UITableView, vc: V) {
+    public convenience init(vc: ViewController) {
         self.init()
+        tableView = vc.tableView
         tableView.dataSource = self
         tableView.delegate = self
     }
