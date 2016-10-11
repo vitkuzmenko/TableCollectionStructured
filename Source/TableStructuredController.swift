@@ -39,11 +39,19 @@ open class TableStructuredSection {
     
 }
 
-open class TableStructuredController: NSObject, UITableViewDataSource, UITableViewDelegate {
+open class TableStructuredController<V: UIViewController>: NSObject, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet open weak var tableView: UITableView!
     
+    var vc: V!
+    
     open var tableStructure: [TableStructuredSection] = []
+    
+    public convenience init(tableView: UITableView, vc: V) {
+        self.init()
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
     
     open func indexPath(object: Any) -> IndexPath? {
         var _section = 0
