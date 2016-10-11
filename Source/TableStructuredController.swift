@@ -9,7 +9,7 @@
 import UIKit
 
 public protocol TableStructuredViewController {
-    var tableView: UITableView { get set }
+    var tableView: UITableView! { get set }
 }
 
 open class TableStructuredSection {
@@ -52,6 +52,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         tableView = vc.tableView
         tableView.dataSource = self
         tableView.delegate = self
+        self.vc = vc
     }
     
     open func indexPath(object: Any) -> IndexPath? {

@@ -8,11 +8,25 @@
 
 import UIKit
 
-open class CollectionStructuredController: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+public protocol CollectionStructuredViewController {
+    var collectionView: UICollectionView! { get set }
+}
+
+open class CollectionStructuredController<ViewController: CollectionStructuredViewController>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    @IBOutlet open weak var collectionView: UICollectionView!
+    open weak var collectionView: UICollectionView!
+    
+    var vc: ViewController!
     
     open var collectionStructure: [[Any]] = []
+    
+    public convenience init(vc: ViewController) {
+        self.init()
+        collectionView = vc.collectionView
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        self.vc = vc
+    }
     
     open func indexPathForObject(object: Any) -> IndexPath? {
         var _section = 0
