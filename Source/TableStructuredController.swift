@@ -195,6 +195,21 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
     }
     
+    public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if automaticallyDeselect {
+            tableView.deselectRow(at: indexPath, animated: false)
+        }
+        let cell = tableView.cellForRow(at: indexPath)
+        let identifier = cell!.reuseIdentifier!
+        let object = tableStructureObjectAt(indexPath: indexPath)
+        
+        self.tableView(tableView, didDeselectCellWith: identifier, object: object, at: indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, didDeselectCellWith identifier: String, object: Any, at indexPath: IndexPath) {
+        
+    }
+    
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         let object = tableStructureObjectAt(indexPath: indexPath)
         return self.tableView(tableView, canEditRowWith: object, at: indexPath)
