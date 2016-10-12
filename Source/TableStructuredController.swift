@@ -176,8 +176,14 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return tableView.rowHeight
     }
     
+    open var automaticallyDeselect: Bool {
+        return true
+    }
+    
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
+        if automaticallyDeselect {
+            tableView.deselectRow(at: indexPath, animated: false)
+        }
         let cell = tableView.cellForRow(at: indexPath)
         let identifier = cell!.reuseIdentifier!
         let object = tableStructureObjectAt(indexPath: indexPath)
