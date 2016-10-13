@@ -57,6 +57,8 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         tableView.dataSource = self
         tableView.delegate = self
         self.vc = vc
+        
+        configureTableView()
     }
     
     open func indexPath(object: Any) -> IndexPath? {
