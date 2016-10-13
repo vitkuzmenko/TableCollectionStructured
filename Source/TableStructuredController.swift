@@ -28,8 +28,12 @@ open class TableStructuredSection {
     
     open var isEmpty: Bool { return rows.isEmpty }
     
-    open func append(object: Any) {
+    open func append(_ object: Any) {
         rows.append(object)
+    }
+    
+    open func append(_ objects: [Any]) {
+        rows.append(contentsOf: objects)
     }
     
     open subscript(index: Int) -> Any {
