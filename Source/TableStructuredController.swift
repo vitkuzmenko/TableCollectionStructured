@@ -32,7 +32,7 @@ open class TableStructuredSection {
         rows.append(object)
     }
     
-    open func append(_ objects: [Any]) {
+    open func append(contentsOf objects: [Any]) {
         rows.append(contentsOf: objects)
     }
     
