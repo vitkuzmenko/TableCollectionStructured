@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol TableStructuredViewController {
+public protocol TableStructuredViewController: class {
     var tableView: UITableView! { get set }
 }
 
@@ -47,7 +47,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     @IBOutlet open weak var tableView: UITableView!
     
-    open var vc: ViewController!
+    open weak var vc: ViewController!
     
     open var tableStructure: [TableStructuredSection] = []
     

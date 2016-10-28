@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol CollectionStructuredViewController {
+public protocol CollectionStructuredViewController: class {
     var collectionView: UICollectionView! { get set }
 }
 
@@ -16,7 +16,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     
     open weak var collectionView: UICollectionView!
     
-    open var vc: ViewController!
+    open weak var vc: ViewController!
     
     open var collectionStructure: [[Any]] = []
     
