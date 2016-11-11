@@ -234,6 +234,18 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
     }
     
+    open func reloadRows(objects: [Any]) {
+        
+        var indexPaths: [IndexPath] = []
+        for object in objects {
+            if let indexPath = self.indexPath(object: object) {
+                indexPaths.append(indexPath)
+            }
+        }
+        
+        tableView.reloadRows(at: indexPaths, with: .fade)
+    }
+    
 }
 
 
