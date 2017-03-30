@@ -98,7 +98,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let object = self.object(at: indexPath)
         guard let identifier = self.tableView(tableView, reuseIdentifierFor: object) else {
-            assert(false, "No reuse identifier")
+            assert(false, "Reuse identifier for this object is not configured in tableView(_:reuseIdentifierFor:)")
             return UITableViewCell()
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier)!

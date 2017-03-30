@@ -83,7 +83,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let object = self.object(at: indexPath)
         guard let identifier = self.collectionView(collectionView, reuseIdentifierFor: object) else {
-            assert(false, "No reuse identifier")
+            assert(false, "Reuse identifier for this object is not configured in collectionView(_:reuseIdentifierFor:)")
             return UICollectionViewCell()
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
