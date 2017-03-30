@@ -1,1 +1,31 @@
-/TableCollectionStructured.xcodeproj/project.xcworkspace/xcuserdata/vitkuzmenko.xcuserdatad/UserInterfaceState.xcuserstate
+### https://raw.github.com/github/gitignore/d9cc01e935a8f0f961a3b2eed38c16d27cc07f64/Swift.gitignore
+
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+
+
+*.tmproj
+*.tmproject
+tmtags
+
+*.DS_Store
+.DS_Store
+Example/.DS_Store
+Example/Swiftex/.DS_Store
+/Example/Swiftex/Swiftex.xcodeproj/project.xcworkspace/xcuserdata/vitkuzmenko.xcuserdatad/UserInterfaceState.xcuserstate
