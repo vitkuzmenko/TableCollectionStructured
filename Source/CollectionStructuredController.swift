@@ -18,7 +18,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     
     open weak var vc: ViewController!
     
-    open var collectionStructure: [[Any]] = []
+    open var collectionStructure: [StructuredSection] = []
     
     public convenience init(vc: ViewController) {
         self.init()
@@ -28,11 +28,11 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
         self.vc = vc
     }
     
-    open func indexPathForObject(object: Any) -> IndexPath? {
+    open func indexPath(for object: Any) -> IndexPath? {
         var _section = 0
         for section in collectionStructure {
             var row = 0
-            for _object in section {
+            for _object in section.rows {
                 if let _s = _object as? String, let s = object as? String, _s == s {
                     return IndexPath(row: row, section: _section)
                 } else if object as AnyObject === _object as AnyObject {
@@ -45,22 +45,21 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
         return nil
     }
     
-    open func collectionStructureObjectAt(indexPath: IndexPath) -> Any {
+    open func object(at indexPath: IndexPath) -> Any {
         return collectionStructure[indexPath.section][indexPath.row]
     }
-    
     
     open func beginBuilding() {
         collectionStructure = []
     }
     
-    open func newSection() -> [Any] {
-        return []
+    open func newSection() -> StructuredSection {
+        return StructuredSection()
     }
     
-    open func append(section: inout [Any]) {
+    open func append(section: inout StructuredSection) {
         collectionStructure.append(section)
-        section = []
+        section = StructuredSection()
     }
     
     open func configureCollectionView() {
@@ -82,7 +81,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let object = collectionStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         guard let identifier = self.collectionView(collectionView, reuseIdentifierFor: object) else {
             assert(false, "No reuse identifier")
             return UICollectionViewCell()
@@ -105,7 +104,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let object = collectionStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         self.collectionView(collectionView, willDisplay: cell, for: object, forItemAt: indexPath)
     }
     
@@ -116,7 +115,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath)
         let identifier = cell!.reuseIdentifier!
-        let object = collectionStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         self.collectionView(collectionView, didSelectCell: identifier, object: object, at: indexPath)
     }
     

@@ -12,44 +12,13 @@ public protocol TableStructuredViewController: class {
     var tableView: UITableView! { get set }
 }
 
-open class TableStructuredSection {
-    
-    open var headerTitle: String?
-    
-    open var footerTitle: String?
-    
-    open var rows: [Any] = [] {
-        didSet {
-            count = rows.count
-        }
-    }
-    
-    open var count: Int = 0
-    
-    open var isEmpty: Bool { return rows.isEmpty }
-    
-    open func append(_ object: Any) {
-        rows.append(object)
-    }
-    
-    open func append(contentsOf objects: [Any]) {
-        rows.append(contentsOf: objects)
-    }
-    
-    open subscript(index: Int) -> Any {
-        get { return rows[index] }
-        set(newValue) { rows[index] = newValue }
-    }
-    
-}
-
 open class TableStructuredController<ViewController: TableStructuredViewController>: NSObject, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet open weak var tableView: UITableView!
     
     open weak var vc: ViewController!
     
-    open var tableStructure: [TableStructuredSection] = []
+    open var tableStructure: [StructuredSection] = []
     
     public convenience init(vc: ViewController) {
         self.init()
@@ -61,7 +30,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         configureTableView()
     }
     
-    open func indexPath(object: Any) -> IndexPath? {
+    open func indexPath(for object: Any) -> IndexPath? {
         var _section = 0
         for section in tableStructure {
             var row = 0
@@ -78,7 +47,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return nil
     }
     
-    open func safeIndexPath(indexPath: IndexPath) -> Bool {
+    open func isSafe(indexPath: IndexPath) -> Bool {
         if tableStructure.isEmpty {
             return false
         } else if tableStructure.count - 1 >= indexPath.section {
@@ -91,7 +60,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return false
     }
     
-    open func tableStructureObjectAt(indexPath: IndexPath) -> Any {
+    open func object(at indexPath: IndexPath) -> Any {
         return tableStructure[indexPath.section][indexPath.row]
     }
     
@@ -99,13 +68,13 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         tableStructure = []
     }
     
-    open func newSection() -> TableStructuredSection {
-        return TableStructuredSection()
+    open func newSection() -> StructuredSection {
+        return StructuredSection()
     }
     
-    open func append(section: inout TableStructuredSection) {
+    open func append(section: inout StructuredSection) {
         tableStructure.append(section)
-        section = TableStructuredSection()
+        section = StructuredSection()
     }
     
     open func configureTableView() {
@@ -127,7 +96,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let object = tableStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         guard let identifier = self.tableView(tableView, reuseIdentifierFor: object) else {
             assert(false, "No reuse identifier")
             return UITableViewCell()
@@ -158,7 +127,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let object = tableStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         self.tableView(tableView, willDisplay: cell, for: object)
     }
     
@@ -167,7 +136,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let object = tableStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         return rowHeight(forObject: object)
     }
     
@@ -192,7 +161,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         }
         let cell = tableView.cellForRow(at: indexPath)
         let identifier = cell!.reuseIdentifier!
-        let object = tableStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         
         self.tableView(tableView, didSelectCellWith: identifier, object: object, at: indexPath)
     }
@@ -207,8 +176,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         }
         let cell = tableView.cellForRow(at: indexPath)
         let identifier = cell!.reuseIdentifier!
-        let object = tableStructureObjectAt(indexPath: indexPath)
-        
+        let object = self.object(at: indexPath)
         self.tableView(tableView, didDeselectCellWith: identifier, object: object, at: indexPath)
     }
     
@@ -217,16 +185,16 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        let object = tableStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         return self.tableView(tableView, canEditRowWith: object, at: indexPath)
     }
     
-    func tableView(_ tableView: UITableView, canEditRowWith object: Any, at indexPath: IndexPath) -> Bool {
+    open func tableView(_ tableView: UITableView, canEditRowWith object: Any, at indexPath: IndexPath) -> Bool {
         return false
     }
     
     public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        let object = tableStructureObjectAt(indexPath: indexPath)
+        let object = self.object(at: indexPath)
         self.tableView(tableView, commit: editingStyle, for: object, forRowAt: indexPath)
     }
     
@@ -238,7 +206,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
         var indexPaths: [IndexPath] = []
         for object in objects {
-            if let indexPath = self.indexPath(object: object) {
+            if let indexPath = self.indexPath(for: object) {
                 indexPaths.append(indexPath)
             }
         }

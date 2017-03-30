@@ -13,6 +13,7 @@
 		794C150C1DA650C80076DEC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 794C150B1DA650C80076DEC0 /* Assets.xcassets */; };
 		794C150F1DA650C80076DEC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 794C150D1DA650C80076DEC0 /* LaunchScreen.storyboard */; };
 		794C15181DA6511C0076DEC0 /* TableStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794C15171DA6511C0076DEC0 /* TableStructuredController.swift */; };
+		798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */; };
 		79AB0D071DA655ED0021330E /* CollectionStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,7 @@
 		794C150E1DA650C80076DEC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		794C15101DA650C80076DEC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		794C15171DA6511C0076DEC0 /* TableStructuredController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableStructuredController.swift; sourceTree = "<group>"; };
+		798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructuredSection.swift; sourceTree = "<group>"; };
 		79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionStructuredController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,6 +76,7 @@
 		794C15161DA650D70076DEC0 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */,
 				794C15171DA6511C0076DEC0 /* TableStructuredController.swift */,
 				79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */,
 			);
@@ -153,6 +156,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */,
 				79AB0D071DA655ED0021330E /* CollectionStructuredController.swift in Sources */,
 				794C15181DA6511C0076DEC0 /* TableStructuredController.swift in Sources */,
 				794C15071DA650C80076DEC0 /* ViewController.swift in Sources */,
