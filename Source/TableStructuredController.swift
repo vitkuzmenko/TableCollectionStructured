@@ -37,6 +37,8 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             for _object in section.rows {
                 if let _s = _object as? String, let s = object as? String, _s == s {
                     return IndexPath(row: row, section: _section)
+                } else if let isEqual = self.object(object, isEqualTo: _object), isEqual {
+                    return IndexPath(row: row, section: _section)
                 } else if object as AnyObject === _object as AnyObject {
                     return IndexPath(row: row, section: _section)
                 }
@@ -44,6 +46,10 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             }
             _section += 1
         }
+        return nil
+    }
+    
+    open func object(_ object: Any, isEqualTo _object: Any) -> Bool? {
         return nil
     }
     
@@ -199,6 +205,24 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, for object: Any, forRowAt indexPath: IndexPath) {
+        
+    }
+    
+    public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        let object = self.object(at: indexPath)
+        return self.tableView(tableView, canMove: object, at: indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, canMove object: Any, at indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    public func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let object = self.object(at: sourceIndexPath)
+        self.tableView(tableView, move: object, from: sourceIndexPath, to: destinationIndexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, move object: Any, from sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
     }
     
