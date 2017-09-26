@@ -99,6 +99,10 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
         return identifier
     }
     
+    open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        return UICollectionReusableView()
+    }
+    
     open func collectionView(_ collectionView: UICollectionView, configure cell: UICollectionViewCell, for object: Any, at indexPath: IndexPath) {
         
     }
@@ -110,6 +114,15 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, for object: Any, forItemAt indexPath: IndexPath) {
         
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let object = self.object(at: indexPath)
+        return self.collectionView(collectionView, layout: collectionViewLayout, sizeFor: object, at: indexPath)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeFor obect: Any, at: IndexPath) -> CGSize {
+        return (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize ?? .zero
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
