@@ -121,7 +121,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
         return self.collectionView(collectionView, layout: collectionViewLayout, sizeFor: object, at: indexPath)
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeFor obect: Any, at: IndexPath) -> CGSize {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeFor obect: Any, at: IndexPath) -> CGSize {
         return (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize ?? .zero
     }
     
