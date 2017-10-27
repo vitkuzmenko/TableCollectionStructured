@@ -30,16 +30,13 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         configureTableView()
     }
     
-    open func indexPath(for object: Any) -> IndexPath? {
+    open func indexPath<T: Equatable>(for object: T) -> IndexPath? {
         var _section = 0
         for section in tableStructure {
             var row = 0
             for _object in section.rows {
-                if let _s = _object as? String, let s = object as? String, _s == s {
-                    return IndexPath(row: row, section: _section)
-                } else if let isEqual = self.object(object, isEqualTo: _object), isEqual {
-                    return IndexPath(row: row, section: _section)
-                } else if object as AnyObject === _object as AnyObject {
+                let obj = StructuredObject(value: object)
+                if _object == obj {
                     return IndexPath(row: row, section: _section)
                 }
                 row += 1
@@ -226,7 +223,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
     }
     
-    open func reloadRows(objects: [Any]) {
+    open func reloadRows<T: Equatable>(objects: [T]) {
         
         var indexPaths: [IndexPath] = []
         for object in objects {
