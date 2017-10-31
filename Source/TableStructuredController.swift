@@ -114,15 +114,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             } else {
                 sectionsToDelete.insert(previousSectionIndex)
             }
-        }
-        
-        for (newSectionIndex, section) in tableStructure.enumerated() {
-            if !previousTableStructure.contains(section) {
-                sectionsToInsert.insert(newSectionIndex)
-            }
-        }
-        
-        for (previousSectionIndex, section) in previousTableStructure.enumerated() {
+            
             for (previousRowIndex, row) in section.rows.enumerated() {
                 let previousIndexPath = IndexPath(row: previousRowIndex, section: previousSectionIndex)
                 if let newRowIndexPath = tableStructure.indexPath(of: row) {
@@ -145,13 +137,15 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         }
         
         for (newSectionIndex, section) in tableStructure.enumerated() {
+            if !previousTableStructure.contains(section) {
+                sectionsToInsert.insert(newSectionIndex)
+            }
             
             for (newRowIndex, row) in section.rows.enumerated() {
                 if !previousTableStructure.contains(structured: row) {
                     rowsToInsert.append(IndexPath(row: newRowIndex, section: newSectionIndex))
                 }
             }
-            
         }
         
         tableView.beginUpdates()
