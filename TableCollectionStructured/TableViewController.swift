@@ -92,17 +92,17 @@ class TableViewController: UIViewController, TableStructuredViewController {
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(nextStep), userInfo: nil, repeats: false)
     }
     
+    func randRange (lower: Int , upper: Int) -> Int {
+        return lower + Int(arc4random_uniform(UInt32(upper - lower + 1)))
+    }
+    
     @objc func nextStep() {
         
         tableController.buildTableStructure(with: .fade)
         
         print(step)
         
-        step += 1
-        
-        if step == 2 {
-            step = 0
-        }
+        step = randRange(lower: 0, upper: 7)
         
         startTimer()
     }
@@ -116,114 +116,162 @@ class TableController: TableStructuredController<TableViewController> {
         beginBuilding()
         
         switch vc.step {
-//        case 0:
-//
-//            var section = newSection(identifier: "World")
-//            section.useIdentifierAsHeaderTitle()
-//
-//            section.append(contentsOf: vc.cities)
-//
-//            append(section: &section)
-//
-//        case 1: // Split to regions
-//
-//            var section = newSection(identifier: "Europe")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.paris)
-//            section.append(City.rome)
-//            section.append(City.moscow)
-//            section.append(City.prague)
-//            section.append(City.milan)
-//
-//            append(section: &section, newIdentifier: "Asia")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.tokyo)
-//            section.append(City.bangkok)
-//            section.append(City.hongKong)
-//            section.append(City.singapore)
-//
-//            append(section: &section, newIdentifier: "America")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.newYork)
-//            section.append(City.sanFrancisco)
-//            section.append(City.miami)
-//            section.append(City.lasVegas)
-//
-//            append(section: &section)
-//
-//        case 2: // Reorder inside one section
-//
-//            var section = newSection(identifier: "Europe")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.paris)
-//            section.append(City.milan)
-//            section.append(City.prague)
-//            section.append(City.moscow)
-//            section.append(City.rome)
-//
-//            append(section: &section, newIdentifier: "Asia")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.hongKong)
-//            section.append(City.tokyo)
-//            section.append(City.singapore)
-//            section.append(City.bangkok)
-//
-//            append(section: &section, newIdentifier: "America")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.newYork)
-//            section.append(City.lasVegas)
-//            section.append(City.miami)
-//            section.append(City.sanFrancisco)
-//
-//            append(section: &section)
-//
-//        case 3: // Delete Section
-//
-//            var section = newSection(identifier: "Europe")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.paris)
-//            section.append(City.milan)
-//            section.append(City.prague)
-//            section.append(City.moscow)
-//            section.append(City.rome)
-//
-//            append(section: &section, newIdentifier: "America")
-//            section.useIdentifierAsHeaderTitle()
-//            section.append(City.newYork)
-//            section.append(City.lasVegas)
-//            section.append(City.miami)
-//            section.append(City.sanFrancisco)
-//
-//            append(section: &section)
+        case 0:
+
+            var section = newSection(identifier: "World")
+            section.useIdentifierAsHeaderTitle()
+
+            section.append(contentsOf: vc.cities)
+
+            append(section: &section)
+
+        case 1: // Split to regions
+
+            var section = newSection(identifier: "Europe")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.paris)
+            section.append(City.rome)
+            section.append(City.moscow)
+            section.append(City.prague)
+            section.append(City.milan)
+
+            append(section: &section, newIdentifier: "Asia")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.tokyo)
+            section.append(City.bangkok)
+            section.append(City.hongKong)
+            section.append(City.singapore)
+
+            append(section: &section, newIdentifier: "America")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.newYork)
+            section.append(City.sanFrancisco)
+            section.append(City.miami)
+            section.append(City.lasVegas)
+
+            append(section: &section)
+
+        case 2: // Reorder inside one section
+
+            var section = newSection(identifier: "Europe")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.paris)
+            section.append(City.milan)
+            section.append(City.prague)
+            section.append(City.moscow)
+            section.append(City.rome)
+
+            append(section: &section, newIdentifier: "Asia")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.hongKong)
+            section.append(City.tokyo)
+            section.append(City.singapore)
+            section.append(City.bangkok)
+
+            append(section: &section, newIdentifier: "America")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.newYork)
+            section.append(City.lasVegas)
+            section.append(City.miami)
+            section.append(City.sanFrancisco)
+
+            append(section: &section)
+
+        case 3: // Delete Section
+
+            var section = newSection(identifier: "Europe")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.paris)
+            section.append(City.milan)
+            section.append(City.prague)
+            section.append(City.moscow)
+            section.append(City.rome)
+
+            append(section: &section, newIdentifier: "America")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.newYork)
+            section.append(City.lasVegas)
+            section.append(City.miami)
+            section.append(City.sanFrancisco)
+
+            append(section: &section)
             
-        case 0: // Reorder Section
+        case 4: // Move section
             
             var section = newSection(identifier: "America")
             section.useIdentifierAsHeaderTitle()
             section.append(City.newYork)
             section.append(City.lasVegas)
+            section.append(City.miami)
+            section.append(City.sanFrancisco)
             
             append(section: &section, newIdentifier: "Europe")
             section.useIdentifierAsHeaderTitle()
-            
             section.append(City.paris)
             section.append(City.milan)
+            section.append(City.prague)
+            section.append(City.moscow)
+            section.append(City.rome)
             
             append(section: &section)
             
-        case 1: // Reorder Section
+        case 5: // Move section
             
             var section = newSection(identifier: "Europe")
             section.useIdentifierAsHeaderTitle()
-            
             section.append(City.paris)
-//            section.append(City.milan)
+            section.append(City.milan)
+            section.append(City.prague)
+            section.append(City.moscow)
+            section.append(City.rome)
+            
+            append(section: &section, newIdentifier: "Asia")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.hongKong)
+            section.append(City.tokyo)
+            section.append(City.singapore)
+            section.append(City.bangkok)
             
             append(section: &section, newIdentifier: "America")
             section.useIdentifierAsHeaderTitle()
-            
             section.append(City.newYork)
             section.append(City.lasVegas)
+            section.append(City.miami)
+            section.append(City.sanFrancisco)
+            
+            append(section: &section)
+        
+        case 6: // Grouping
+            
+            var section = newSection(identifier: "Near Sea")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.hongKong)
+            section.append(City.tokyo)
+            section.append(City.singapore)
+            section.append(City.bangkok)
+            section.append(City.miami)
+            section.append(City.sanFrancisco)
+            
+            append(section: &section, newIdentifier: "Not Near Sea")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.paris)
+            section.append(City.milan)
+            section.append(City.prague)
+            section.append(City.moscow)
+            section.append(City.rome)
+            section.append(City.lasVegas)
+            
+            append(section: &section)
+        
+        case 7: // Grouping
+            
+            var section = newSection(identifier: "Everyday Summer Cities")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.hongKong)
+            section.append(City.singapore)
+            section.append(City.bangkok)
+            section.append(City.miami)
+            section.append(City.sanFrancisco)
             
             append(section: &section)
             

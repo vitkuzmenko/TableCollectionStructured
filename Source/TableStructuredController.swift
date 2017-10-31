@@ -158,37 +158,19 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             }
         }
         
-        var shouldSecond = false
+        let canNotReloadAnimated = rowsToDelete.contains(where: { (deletion) -> Bool in
+            return sectionsToMove.contains(where: { (movement) -> Bool in
+                return movement.from == deletion.section
+            })
+        }) || rowsToInsert.contains(where: { (insertion) -> Bool in
+            return sectionsToMove.contains(where: { (movement) -> Bool in
+                return movement.to == insertion.section
+            })
+        })
         
-        var middleTableStructure = tableStructure
-        
-        var finalRowsToDelete: [IndexPath] = []
-        
-        for deletion in rowsToDelete {
-            
-            var skip = true
-            
-            for movement in sectionsToMove {
-                
-                if movement.from == deletion.section {
-                    middleTableStructure[movement.to].rows.insert(previousTableStructure[deletion.section].rows[deletion.row], at: deletion.row)
-                    shouldSecond = true
-                } else {
-                    skip = false
-                }
-                
-            }
-            
-            if !skip {
-                finalRowsToDelete.append(deletion)
-            }
-            
-        }
-        
-        let final = tableStructure
-        
-        if shouldSecond {
-            tableStructure = middleTableStructure
+        if canNotReloadAnimated {
+            print("canNotReloadAnimated")
+            return tableView.reloadData()
         }
         
         tableView.beginUpdates()
@@ -205,16 +187,11 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             tableView.moveRow(at: movement.from, to: movement.to)
         }
         
-        tableView.deleteRows(at: finalRowsToDelete, with: animation)
+        tableView.deleteRows(at: rowsToDelete, with: animation)
         
         tableView.insertRows(at: rowsToInsert, with: animation)
         
         tableView.endUpdates()
-        
-        if shouldSecond {
-            tableStructure = final
-            performReload(with: animation)
-        }
     }
     
     public func numberOfSections(in tableView: UITableView) -> Int {
