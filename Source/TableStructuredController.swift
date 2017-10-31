@@ -32,14 +32,10 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     open func indexPath<T: Equatable>(for object: T) -> IndexPath? {
         var _section = 0
+        let obj = StructuredObject(value: object)
         for section in tableStructure {
-            var row = 0
-            for _object in section.rows {
-                let obj = StructuredObject(value: object)
-                if _object == obj {
-                    return IndexPath(row: row, section: _section)
-                }
-                row += 1
+            if let index = section.rows.index(of: obj) {
+                return IndexPath(row: index, section: _section)
             }
             _section += 1
         }
@@ -101,8 +97,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let object = self.object(at: indexPath)
         guard let identifier = self.tableView(tableView, reuseIdentifierFor: object) else {
-            assert(false, "Reuse identifier for this object is not configured in tableView(_:reuseIdentifierFor:)")
-            return UITableViewCell()
+            fatalError("Reuse identifier for this object is not configured in tableView(_:reuseIdentifierFor:)")
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier)!
         self.tableView(tableView, configure: cell, for: object, at: indexPath)
@@ -162,14 +157,14 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         if automaticallyDeselect {
             tableView.deselectRow(at: indexPath, animated: false)
         }
-        let cell = tableView.cellForRow(at: indexPath)
-        let identifier = cell!.reuseIdentifier!
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        guard let identifier = cell.reuseIdentifier else { return }
         let object = self.object(at: indexPath)
         
-        self.tableView(tableView, didSelectCellWith: identifier, object: object, at: indexPath)
+        self.tableView(tableView, didSelect: cell, with: identifier, object: object, at: indexPath)
     }
     
-    open func tableView(_ tableView: UITableView, didSelectCellWith identifier: String, object: Any, at indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelect cell: UITableViewCell, with identifier: String, object: Any, at indexPath: IndexPath) {
         
     }
     
@@ -177,13 +172,14 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         if automaticallyDeselect {
             tableView.deselectRow(at: indexPath, animated: false)
         }
-        let cell = tableView.cellForRow(at: indexPath)
-        let identifier = cell!.reuseIdentifier!
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        guard let identifier = cell.reuseIdentifier else { return }
         let object = self.object(at: indexPath)
-        self.tableView(tableView, didDeselectCellWith: identifier, object: object, at: indexPath)
+        
+        self.tableView(tableView, didDeselect: cell, with: identifier, object: object, at: indexPath)
     }
     
-    open func tableView(_ tableView: UITableView, didDeselectCellWith identifier: String, object: Any, at indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didDeselect cell: UITableViewCell, with identifier: String, object: Any, at indexPath: IndexPath) {
         
     }
     
