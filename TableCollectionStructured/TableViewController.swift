@@ -22,6 +22,42 @@ class City: Equatable {
     
 }
 
+extension City {
+    
+    // Europe
+    
+    static let paris = City(title: "Paris")
+    
+    static let rome = City(title: "Rome")
+    
+    static let moscow = City(title: "Moscow")
+    
+    static let prague = City(title: "Prague")
+    
+    static let milan = City(title: "Milan")
+    
+    // Asia
+    
+    static let tokyo = City(title: "Tokyo")
+    
+    static let bangkok = City(title: "Bangkok")
+    
+    static let hongKong = City(title: "Hong Kong")
+    
+    static let singapore = City(title: "Singapore")
+    
+    // America
+
+    static let newYork = City(title: "New York")
+    
+    static let sanFrancisco = City(title: "San Francisco")
+    
+    static let miami = City(title: "Miami")
+    
+    static let lasVegas = City(title: "Las Vegas")
+    
+}
+
 class TableViewController: UIViewController, TableStructuredViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -35,29 +71,165 @@ class TableViewController: UIViewController, TableStructuredViewController {
         
         loadData()
         
-        tableController.buildTableStructure(reloadData: false)
+        tableController.configureTableView()
+        
+        
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        nextStep()
+    }
+    
     func loadData() {
-        let cities = ["New York", "Tokyo", "Moscow", "Paris", "Singapore", "London", "Hong Kong", "Male", "Dubai", "Milan"]
-        self.cities = cities.map({ City(title: $0) })
+        cities = [.paris, .rome, .moscow, .prague, .milan, .tokyo, .bangkok, .hongKong, .singapore, .newYork, .sanFrancisco, .miami, .lasVegas]
+    }
+    
+    var step = 0
+    
+    func startTimer() {
+        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(nextStep), userInfo: nil, repeats: false)
+    }
+    
+    @objc func nextStep() {
+        
+        tableController.buildTableStructure(with: .fade)
+        
+        print(step)
+        
+        step += 1
+        
+        if step == 2 {
+            step = 0
+        }
+        
+        startTimer()
     }
 
 }
 
 class TableController: TableStructuredController<TableViewController> {
     
-    override func buildTableStructure(reloadData: Bool) {
-    
+    override func buildTableStructure(with animation: UITableViewRowAnimation) {
+        
         beginBuilding()
         
-        var section = newSection()
+        switch vc.step {
+//        case 0:
+//
+//            var section = newSection(identifier: "World")
+//            section.useIdentifierAsHeaderTitle()
+//
+//            section.append(contentsOf: vc.cities)
+//
+//            append(section: &section)
+//
+//        case 1: // Split to regions
+//
+//            var section = newSection(identifier: "Europe")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.paris)
+//            section.append(City.rome)
+//            section.append(City.moscow)
+//            section.append(City.prague)
+//            section.append(City.milan)
+//
+//            append(section: &section, newIdentifier: "Asia")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.tokyo)
+//            section.append(City.bangkok)
+//            section.append(City.hongKong)
+//            section.append(City.singapore)
+//
+//            append(section: &section, newIdentifier: "America")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.newYork)
+//            section.append(City.sanFrancisco)
+//            section.append(City.miami)
+//            section.append(City.lasVegas)
+//
+//            append(section: &section)
+//
+//        case 2: // Reorder inside one section
+//
+//            var section = newSection(identifier: "Europe")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.paris)
+//            section.append(City.milan)
+//            section.append(City.prague)
+//            section.append(City.moscow)
+//            section.append(City.rome)
+//
+//            append(section: &section, newIdentifier: "Asia")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.hongKong)
+//            section.append(City.tokyo)
+//            section.append(City.singapore)
+//            section.append(City.bangkok)
+//
+//            append(section: &section, newIdentifier: "America")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.newYork)
+//            section.append(City.lasVegas)
+//            section.append(City.miami)
+//            section.append(City.sanFrancisco)
+//
+//            append(section: &section)
+//
+//        case 3: // Delete Section
+//
+//            var section = newSection(identifier: "Europe")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.paris)
+//            section.append(City.milan)
+//            section.append(City.prague)
+//            section.append(City.moscow)
+//            section.append(City.rome)
+//
+//            append(section: &section, newIdentifier: "America")
+//            section.useIdentifierAsHeaderTitle()
+//            section.append(City.newYork)
+//            section.append(City.lasVegas)
+//            section.append(City.miami)
+//            section.append(City.sanFrancisco)
+//
+//            append(section: &section)
+            
+        case 0: // Reorder Section
+            
+            var section = newSection(identifier: "America")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.newYork)
+            section.append(City.lasVegas)
+            
+            append(section: &section, newIdentifier: "Europe")
+            section.useIdentifierAsHeaderTitle()
+            
+            section.append(City.paris)
+            section.append(City.milan)
+            
+            append(section: &section)
+            
+        case 1: // Reorder Section
+            
+            var section = newSection(identifier: "Europe")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.paris)
+            section.append(City.lasVegas)
+            
+            append(section: &section, newIdentifier: "America")
+            section.useIdentifierAsHeaderTitle()
+            section.append(City.newYork)
+            section.append(City.milan)
+            
+            append(section: &section)
+            
+        default:
+            break
+        }
         
-        section.append(contentsOf: vc.cities)
-        
-        append(section: &section)
-        
-        super.buildTableStructure(reloadData: reloadData)
+        super.buildTableStructure(with: animation)
     }
     
     override func tableView(_ tableView: UITableView, reuseIdentifierFor object: Any) -> String? {

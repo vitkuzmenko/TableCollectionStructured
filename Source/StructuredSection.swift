@@ -34,7 +34,32 @@ open class StructuredObject: Equatable {
     
 }
 
-open class StructuredSection {
+extension Array where Element: StructuredSection {
+ 
+    func indexPath(of element: StructuredObject) -> IndexPath? {
+        for (index, section) in self.enumerated() {
+            if let row = section.index(of: element) {
+                return IndexPath(row: row, section: index)
+            }
+        }
+        return nil
+    }
+    
+    func contains(structured object: StructuredObject) -> Bool {
+        return self.contains(where: { (section) -> Bool in
+            return section.rows.contains(object)
+        })
+    }
+    
+}
+
+open class StructuredSection: Equatable {
+    
+    public static func ==(lhs: StructuredSection, rhs: StructuredSection) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    open var identifier: String
     
     open var headerTitle: String?
     
@@ -50,6 +75,10 @@ open class StructuredSection {
     
     open var isEmpty: Bool { return rows.isEmpty }
     
+    public init(identifier: String) {
+        self.identifier = identifier
+    }
+    
     open func append<T: Equatable>(_ object: T) {
         let obj = StructuredObject(value: object)
         rows.append(obj)
@@ -62,6 +91,18 @@ open class StructuredSection {
     
     open subscript(index: Int) -> Any {
         return rows[index].value
+    }
+    
+    func contains(element: StructuredObject) -> Bool {
+        return rows.contains(element)
+    }
+    
+    func index(of element: StructuredObject) -> Int? {
+        return rows.index(of: element)
+    }
+    
+    open func useIdentifierAsHeaderTitle() {
+        headerTitle = identifier
     }
     
 }

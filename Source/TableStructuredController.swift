@@ -20,6 +20,8 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     open var tableStructure: [StructuredSection] = []
     
+    private var previousTableStructure: [StructuredSection] = []
+    
     public convenience init(vc: ViewController) {
         self.init()
         tableView = vc.tableView
@@ -31,13 +33,11 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     open func indexPath<T: Equatable>(for object: T) -> IndexPath? {
-        var _section = 0
         let obj = StructuredObject(value: object)
-        for section in tableStructure {
-            if let index = section.rows.index(of: obj) {
-                return IndexPath(row: index, section: _section)
+        for (sectionIndex, section) in tableStructure.enumerated() {
+            if let rowIndex = section.rows.index(of: obj) {
+                return IndexPath(row: rowIndex, section: sectionIndex)
             }
-            _section += 1
         }
         return nil
     }
@@ -64,26 +64,115 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     open func beginBuilding() {
+        canAppendNew = true
+        previousTableStructure = tableStructure
         tableStructure = []
     }
     
-    open func newSection() -> StructuredSection {
-        return StructuredSection()
+    open func newSection(identifier: String) -> StructuredSection {
+        return StructuredSection(identifier: identifier)
     }
     
-    open func append(section: inout StructuredSection) {
+    private var canAppendNew = true
+    
+    open func append(section: inout StructuredSection, newIdentifier: String? = nil) {
+        if !canAppendNew { fatalError("Can not append new section, because when appended last section, is not set identifier for new section") }
         tableStructure.append(section)
-        section = StructuredSection()
+        if let newIdentifier = newIdentifier {
+            section = StructuredSection(identifier: newIdentifier)
+            canAppendNew = true
+        } else {
+            canAppendNew = false
+        }
     }
     
     open func configureTableView() {
         tableView.tableFooterView = UIView()
     }
     
-    open func buildTableStructure(reloadData: Bool) {
-        if reloadData {
-            tableView?.reloadData()
+    open func buildTableStructure(with animation: UITableViewRowAnimation) {
+        
+        if animation == .none { return tableView!.reloadData() }
+        
+        var sectionsToMove: [(from: Int, to: Int)] = []
+        
+        var sectionsToDelete = IndexSet()
+        
+        var sectionsToInsert = IndexSet()
+        
+        var rowsToMove: [(from: IndexPath, to: IndexPath)] = []
+        
+        var rowsToDelete: [IndexPath] = []
+        
+        var rowsToInsert: [IndexPath] = []
+        
+        for (previousSectionIndex, section) in previousTableStructure.enumerated() {
+            if let newSectionIndex = tableStructure.index(of: section) {
+                if previousSectionIndex != newSectionIndex {
+                    sectionsToMove.append((from: previousSectionIndex, to: newSectionIndex))
+                }
+            } else {
+                sectionsToDelete.insert(previousSectionIndex)
+            }
         }
+        
+        for (newSectionIndex, section) in tableStructure.enumerated() {
+            if !previousTableStructure.contains(section) {
+                sectionsToInsert.insert(newSectionIndex)
+            }
+        }
+        
+        for (previousSectionIndex, section) in previousTableStructure.enumerated() {
+            for (previousRowIndex, row) in section.rows.enumerated() {
+                let previousIndexPath = IndexPath(row: previousRowIndex, section: previousSectionIndex)
+                if let newRowIndexPath = tableStructure.indexPath(of: row) {
+                    if previousIndexPath != newRowIndexPath {
+                        if tableStructure.contains(section) {
+                            let newSection = tableStructure[newRowIndexPath.section]
+                            if previousTableStructure.contains(newSection) {
+                                rowsToMove.append((from: previousIndexPath, to: newRowIndexPath))
+                            } else {
+                                rowsToDelete.append(previousIndexPath)
+                            }
+                        } else {
+                            rowsToInsert.append(newRowIndexPath)
+                        }
+                    }
+                } else {
+                    rowsToDelete.append(previousIndexPath)
+                }
+            }
+        }
+        
+        for (newSectionIndex, section) in tableStructure.enumerated() {
+            
+            for (newRowIndex, row) in section.rows.enumerated() {
+                if !previousTableStructure.contains(structured: row) {
+                    rowsToInsert.append(IndexPath(row: newRowIndex, section: newSectionIndex))
+                }
+            }
+            
+        }
+        
+        tableView.beginUpdates()
+        
+        for movement in sectionsToMove {
+            tableView.moveSection(movement.from, toSection: movement.to)
+        }
+        
+        tableView.deleteSections(sectionsToDelete, with: animation)
+        
+        tableView.insertSections(sectionsToInsert, with: animation)
+        
+        for movement in rowsToMove {
+            tableView.moveRow(at: movement.from, to: movement.to)
+        }
+        
+        tableView.deleteRows(at: rowsToDelete, with: animation)
+        
+        tableView.insertRows(at: rowsToInsert, with: animation)
+        
+        tableView.endUpdates()
     }
     
     public func numberOfSections(in tableView: UITableView) -> Int {
