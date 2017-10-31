@@ -148,25 +148,40 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             }
         }
         
-        tableView.beginUpdates()
+        var canAnimated = true
         
-        for movement in sectionsToMove {
-            tableView.moveSection(movement.from, toSection: movement.to)
+        for deletion in rowsToDelete {
+            if sectionsToMove.contains(where: { (movement) -> Bool in
+                return movement.from == deletion.section
+            }) {
+                canAnimated = false
+                break
+            }
         }
         
-        tableView.deleteSections(sectionsToDelete, with: animation)
-        
-        tableView.insertSections(sectionsToInsert, with: animation)
-        
-        for movement in rowsToMove {
-            tableView.moveRow(at: movement.from, to: movement.to)
+        if canAnimated {
+            tableView.beginUpdates()
+            
+            for movement in sectionsToMove {
+                tableView.moveSection(movement.from, toSection: movement.to)
+            }
+            
+            tableView.deleteSections(sectionsToDelete, with: animation)
+            
+            tableView.insertSections(sectionsToInsert, with: animation)
+            
+            for movement in rowsToMove {
+                tableView.moveRow(at: movement.from, to: movement.to)
+            }
+            
+            tableView.deleteRows(at: rowsToDelete, with: animation)
+            
+            tableView.insertRows(at: rowsToInsert, with: animation)
+            
+            tableView.endUpdates()
+        } else {
+            tableView.reloadData()
         }
-        
-        tableView.deleteRows(at: rowsToDelete, with: animation)
-        
-        tableView.insertRows(at: rowsToInsert, with: animation)
-        
-        tableView.endUpdates()
     }
     
     public func numberOfSections(in tableView: UITableView) -> Int {
