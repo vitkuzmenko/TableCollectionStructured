@@ -92,6 +92,16 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     open func buildTableStructure(with animation: UITableViewRowAnimation) {
         
+        self.performReload(with: animation)
+        
+//        if canAnimated {
+//
+//        } else {
+//            tableView.reloadData()
+//        }
+    }
+    
+    func performReload(with animation: UITableViewRowAnimation) {
         if animation == .none { return tableView!.reloadData() }
         
         var sectionsToMove: [(from: Int, to: Int)] = []
@@ -148,39 +158,62 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             }
         }
         
-        var canAnimated = true
+        var shouldSecond = false
+        
+        var middleTableStructure = tableStructure
+        
+        var finalRowsToDelete: [IndexPath] = []
         
         for deletion in rowsToDelete {
-            if sectionsToMove.contains(where: { (movement) -> Bool in
-                return movement.from == deletion.section
-            }) {
-                canAnimated = false
-                break
-            }
-        }
-        
-        if canAnimated {
-            tableView.beginUpdates()
+            
+            var skip = true
             
             for movement in sectionsToMove {
-                tableView.moveSection(movement.from, toSection: movement.to)
+                
+                if movement.from == deletion.section {
+                    middleTableStructure[movement.to].rows.insert(previousTableStructure[deletion.section].rows[deletion.row], at: deletion.row)
+                    shouldSecond = true
+                } else {
+                    skip = false
+                }
+                
             }
             
-            tableView.deleteSections(sectionsToDelete, with: animation)
-            
-            tableView.insertSections(sectionsToInsert, with: animation)
-            
-            for movement in rowsToMove {
-                tableView.moveRow(at: movement.from, to: movement.to)
+            if !skip {
+                finalRowsToDelete.append(deletion)
             }
             
-            tableView.deleteRows(at: rowsToDelete, with: animation)
-            
-            tableView.insertRows(at: rowsToInsert, with: animation)
-            
-            tableView.endUpdates()
-        } else {
-            tableView.reloadData()
+        }
+        
+        let final = tableStructure
+        
+        if shouldSecond {
+            tableStructure = middleTableStructure
+        }
+        
+        tableView.beginUpdates()
+        
+        for movement in sectionsToMove {
+            tableView.moveSection(movement.from, toSection: movement.to)
+        }
+        
+        tableView.deleteSections(sectionsToDelete, with: animation)
+        
+        tableView.insertSections(sectionsToInsert, with: animation)
+        
+        for movement in rowsToMove {
+            tableView.moveRow(at: movement.from, to: movement.to)
+        }
+        
+        tableView.deleteRows(at: finalRowsToDelete, with: animation)
+        
+        tableView.insertRows(at: rowsToInsert, with: animation)
+        
+        tableView.endUpdates()
+        
+        if shouldSecond {
+            tableStructure = final
+            performReload(with: animation)
         }
     }
     
