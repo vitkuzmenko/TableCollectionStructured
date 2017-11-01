@@ -8,32 +8,6 @@
 
 import Foundation
 
-open class StructuredObject: Equatable {
-    
-    let value: Any
-    
-    private let equals: (Any) -> Bool
-    
-    init<T: Equatable>(value: T) {
-        
-        func isEquals(_ other: Any) -> Bool {
-            if let r = other as? T {
-                return value == r
-            } else {
-                return false
-            }
-        }
-        
-        self.value = value
-        self.equals = isEquals
-    }
-    
-    public static func ==(lhs: StructuredObject, rhs: StructuredObject) -> Bool {
-        return lhs.equals(rhs.value)
-    }
-    
-}
-
 extension Array where Element: StructuredSection {
  
     func indexPath(of element: StructuredObject) -> IndexPath? {
@@ -56,10 +30,10 @@ extension Array where Element: StructuredSection {
 open class StructuredSection: Equatable {
     
     public static func ==(lhs: StructuredSection, rhs: StructuredSection) -> Bool {
-        return lhs.identifier == rhs.identifier
+        return lhs.identifier == rhs.identifier && lhs.identifier != nil
     }
     
-    open var identifier: String
+    open var identifier: String?
     
     open var headerTitle: String?
     
@@ -75,16 +49,24 @@ open class StructuredSection: Equatable {
     
     open var isEmpty: Bool { return rows.isEmpty }
     
-    public init(identifier: String) {
+    var isClosed = false
+    
+    public init(identifier: String?) {
         self.identifier = identifier
     }
     
     open func append<T: Equatable>(_ object: T) {
+        if isClosed {
+            fatalError("TableCollectionStructured: Section is appended to structue. You can not add rows more.")
+        }
         let obj = StructuredObject(value: object)
         rows.append(obj)
     }
     
     open func append<T: Equatable>(contentsOf objects: [T]) {
+        if isClosed {
+            fatalError("TableCollectionStructured: Section is appended to structue alredy. You can not add rows more.")
+        }
         let objs = objects.map({ StructuredObject(value: $0) })
         rows.append(contentsOf: objs)
     }

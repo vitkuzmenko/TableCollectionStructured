@@ -15,6 +15,10 @@
 		794C15181DA6511C0076DEC0 /* TableStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794C15171DA6511C0076DEC0 /* TableStructuredController.swift */; };
 		798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */; };
 		79AB0D071DA655ED0021330E /* CollectionStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */; };
+		79D733241FA9A3720056FEBD /* StructuredObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733231FA9A3720056FEBD /* StructuredObject.swift */; };
+		79D733281FA9A5A50056FEBD /* StructuredDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733271FA9A5A50056FEBD /* StructuredDifference.swift */; };
+		79D7332A1FA9BB250056FEBD /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733291FA9BB240056FEBD /* CollectionViewController.swift */; };
+		79D7332C1FA9BB940056FEBD /* CityCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D7332B1FA9BB940056FEBD /* CityCollectionViewCell.swift */; };
 		79DB79911FA858DA00F489D4 /* CityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79DB79901FA858DA00F489D4 /* CityTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +34,10 @@
 		794C15171DA6511C0076DEC0 /* TableStructuredController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableStructuredController.swift; sourceTree = "<group>"; };
 		798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructuredSection.swift; sourceTree = "<group>"; };
 		79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionStructuredController.swift; sourceTree = "<group>"; };
+		79D733231FA9A3720056FEBD /* StructuredObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredObject.swift; sourceTree = "<group>"; };
+		79D733271FA9A5A50056FEBD /* StructuredDifference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredDifference.swift; sourceTree = "<group>"; };
+		79D733291FA9BB240056FEBD /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		79D7332B1FA9BB940056FEBD /* CityCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityCollectionViewCell.swift; sourceTree = "<group>"; };
 		79DB79901FA858DA00F489D4 /* CityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,7 +74,9 @@
 			children = (
 				794C15041DA650C80076DEC0 /* AppDelegate.swift */,
 				794C15061DA650C80076DEC0 /* TableViewController.swift */,
+				79D733291FA9BB240056FEBD /* CollectionViewController.swift */,
 				79DB79901FA858DA00F489D4 /* CityTableViewCell.swift */,
+				79D7332B1FA9BB940056FEBD /* CityCollectionViewCell.swift */,
 				794C15081DA650C80076DEC0 /* Main.storyboard */,
 				794C150B1DA650C80076DEC0 /* Assets.xcassets */,
 				794C150D1DA650C80076DEC0 /* LaunchScreen.storyboard */,
@@ -80,6 +90,8 @@
 			isa = PBXGroup;
 			children = (
 				798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */,
+				79D733271FA9A5A50056FEBD /* StructuredDifference.swift */,
+				79D733231FA9A3720056FEBD /* StructuredObject.swift */,
 				794C15171DA6511C0076DEC0 /* TableStructuredController.swift */,
 				79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */,
 			);
@@ -160,11 +172,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79D7332A1FA9BB250056FEBD /* CollectionViewController.swift in Sources */,
 				79DB79911FA858DA00F489D4 /* CityTableViewCell.swift in Sources */,
 				798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */,
+				79D7332C1FA9BB940056FEBD /* CityCollectionViewCell.swift in Sources */,
 				79AB0D071DA655ED0021330E /* CollectionStructuredController.swift in Sources */,
 				794C15181DA6511C0076DEC0 /* TableStructuredController.swift in Sources */,
 				794C15071DA650C80076DEC0 /* TableViewController.swift in Sources */,
+				79D733241FA9A3720056FEBD /* StructuredObject.swift in Sources */,
+				79D733281FA9A5A50056FEBD /* StructuredDifference.swift in Sources */,
 				794C15051DA650C80076DEC0 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

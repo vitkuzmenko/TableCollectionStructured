@@ -8,61 +8,13 @@
 
 import UIKit
 
-class City: Equatable {
-    
-    static func ==(lhs: City, rhs: City) -> Bool {
-        return lhs.title == rhs.title
-    }
-    
-    var title: String
-    
-    init(title: String) {
-        self.title = title
-    }
-    
-}
 
-extension City {
-    
-    // Europe
-    
-    static let paris = City(title: "Paris")
-    
-    static let rome = City(title: "Rome")
-    
-    static let moscow = City(title: "Moscow")
-    
-    static let prague = City(title: "Prague")
-    
-    static let milan = City(title: "Milan")
-    
-    // Asia
-    
-    static let tokyo = City(title: "Tokyo")
-    
-    static let bangkok = City(title: "Bangkok")
-    
-    static let hongKong = City(title: "Hong Kong")
-    
-    static let singapore = City(title: "Singapore")
-    
-    // America
 
-    static let newYork = City(title: "New York")
+class CollectionViewController: UIViewController, CollectionStructuredViewController {
     
-    static let sanFrancisco = City(title: "San Francisco")
+    @IBOutlet weak var collectionView: UICollectionView!
     
-    static let miami = City(title: "Miami")
-    
-    static let lasVegas = City(title: "Las Vegas")
-    
-}
-
-class TableViewController: UIViewController, TableStructuredViewController {
-
-    @IBOutlet weak var tableView: UITableView!
-    
-    lazy var tableController: TableController = { return .init(vc: self) }()
+    lazy var collectionController: CollectionController = { return .init(vc: self) }()
     
     var cities: [City] = []
     
@@ -71,10 +23,9 @@ class TableViewController: UIViewController, TableStructuredViewController {
         
         loadData()
         
-        tableController.configureTableView()
-        
+        collectionController.configureCollectionView()
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -97,24 +48,24 @@ class TableViewController: UIViewController, TableStructuredViewController {
     
     @objc func nextStep() {
         
-        tableController.buildStructure(with: .fade)
+        collectionController.buildStructure()
         
         print(step)
         
         step += 1
         
         if step == 10 {
-           step = 0
+            step = 0
         }
         
         startTimer()
     }
-
+    
 }
 
-class TableController: TableStructuredController<TableViewController> {
+class CollectionController: CollectionStructuredController<CollectionViewController> {
     
-    override func buildStructure(with animation: UITableViewRowAnimation? = nil) {
+    override func buildStructure(reloadData: Bool = true) {
         
         beginBuilding()
         
@@ -338,21 +289,22 @@ class TableController: TableStructuredController<TableViewController> {
             break
         }
         
-        super.buildStructure(with: animation)
+        super.buildStructure(reloadData: reloadData)
     }
     
-    override func tableView(_ tableView: UITableView, reuseIdentifierFor object: Any) -> String? {
+    override func collectionView(_ collectionView: UICollectionView, reuseIdentifierFor object: Any) -> String? {
         if object is City {
-            return "CityTableViewCell"
+            return "CityCollectionViewCell"
         } else {
-            return super.tableView(tableView, reuseIdentifierFor: object)
+            return super.collectionView(collectionView, reuseIdentifierFor: object)
         }
     }
-    
-    override func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for object: Any, at indexPath: IndexPath) {
-        if let cell = cell as? CityTableViewCell, let city = object as? City {
+
+    override func collectionView(_ collectionView: UICollectionView, configure cell: UICollectionViewCell, for object: Any, at indexPath: IndexPath) {
+        if let cell = cell as? CityCollectionViewCell, let city = object as? City {
             cell.city = city
         }
     }
     
 }
+

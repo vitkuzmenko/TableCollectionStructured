@@ -18,9 +18,9 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     open weak var vc: ViewController!
     
-    open var tableStructure: [StructuredSection] = []
+    open var structure: [StructuredSection] = []
     
-    private var previousTableStructure: [StructuredSection] = []
+    private var previousStructure: [StructuredSection] = []
     
     public convenience init(vc: ViewController) {
         self.init()
@@ -34,25 +34,16 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     open func indexPath<T: Equatable>(for object: T) -> IndexPath? {
         let obj = StructuredObject(value: object)
-        for (sectionIndex, section) in tableStructure.enumerated() {
-            if let rowIndex = section.rows.index(of: obj) {
-                return IndexPath(row: rowIndex, section: sectionIndex)
-            }
-        }
-        return nil
-    }
-    
-    open func object(_ object: Any, isEqualTo _object: Any) -> Bool? {
-        return nil
+        return structure.indexPath(of: obj)
     }
     
     open func isSafe(indexPath: IndexPath) -> Bool {
-        if tableStructure.isEmpty {
+        if structure.isEmpty {
             return false
-        } else if tableStructure.count - 1 >= indexPath.section {
-            if tableStructure[indexPath.section].isEmpty {
+        } else if structure.count - 1 >= indexPath.section {
+            if structure[indexPath.section].isEmpty {
                 return false
-            } else if tableStructure[indexPath.section].count - 1 >= indexPath.row {
+            } else if structure[indexPath.section].count - 1 >= indexPath.row {
                 return true
             }
         }
@@ -60,152 +51,107 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     open func object(at indexPath: IndexPath) -> Any {
-        return tableStructure[indexPath.section][indexPath.row]
+        return structure[indexPath.section][indexPath.row]
     }
     
     open func beginBuilding() {
-        canAppendNew = true
-        previousTableStructure = tableStructure
-        tableStructure = []
+        previousStructure = structure
+        structure = []
     }
     
-    open func newSection(identifier: String) -> StructuredSection {
+    open func newSection(identifier: String? = nil) -> StructuredSection {
         return StructuredSection(identifier: identifier)
     }
     
-    private var canAppendNew = true
-    
-    open func append(section: inout StructuredSection, newIdentifier: String? = nil) {
-        if !canAppendNew { fatalError("Can not append new section, because when appended last section, is not set identifier for new section") }
-        tableStructure.append(section)
-        if let newIdentifier = newIdentifier {
-            section = StructuredSection(identifier: newIdentifier)
-            canAppendNew = true
-        } else {
-            canAppendNew = false
+    open func append(section: StructuredSection) {
+        section.isClosed = true
+        if structure.contains(section) {
+            fatalError("TableCollectionStructured: Table structure is contains section with \"\(section.identifier!)\" identifier")
         }
+        if section.identifier == nil {
+            section.identifier = String(format: "#Section%d", structure.count)
+        }
+        structure.append(section)
+    }
+    
+    open func append(section: inout StructuredSection, new identifier: String? = nil) {
+        append(section: section)
+        section = StructuredSection(identifier: identifier)
     }
     
     open func configureTableView() {
         tableView.tableFooterView = UIView()
     }
     
-    open func buildTableStructure(with animation: UITableViewRowAnimation) {
-        
-        self.performReload(with: animation)
-        
-//        if canAnimated {
-//
-//        } else {
-//            tableView.reloadData()
-//        }
+    open func buildStructure(with animation: UITableViewRowAnimation? = nil) {
+        if let animation = animation {
+            self.performReload(with: animation)
+        }
     }
     
-    func performReload(with animation: UITableViewRowAnimation) {
-        if animation == .none { return tableView!.reloadData() }
+    open func reloadData() {
+        tableView.reloadData()
+    }
+    
+    open func performReload(with animation: UITableViewRowAnimation = .fade) {
         
-        var sectionsToMove: [(from: Int, to: Int)] = []
+        if animation == .none { return }
         
-        var sectionsToDelete = IndexSet()
-        
-        var sectionsToInsert = IndexSet()
-        
-        var rowsToMove: [(from: IndexPath, to: IndexPath)] = []
-        
-        var rowsToDelete: [IndexPath] = []
-        
-        var rowsToInsert: [IndexPath] = []
-        
-        for (previousSectionIndex, section) in previousTableStructure.enumerated() {
-            if let newSectionIndex = tableStructure.index(of: section) {
-                if previousSectionIndex != newSectionIndex {
-                    sectionsToMove.append((from: previousSectionIndex, to: newSectionIndex))
-                }
-            } else {
-                sectionsToDelete.insert(previousSectionIndex)
-            }
-            
-            for (previousRowIndex, row) in section.rows.enumerated() {
-                let previousIndexPath = IndexPath(row: previousRowIndex, section: previousSectionIndex)
-                if let newRowIndexPath = tableStructure.indexPath(of: row) {
-                    if previousIndexPath != newRowIndexPath {
-                        if tableStructure.contains(section) {
-                            let newSection = tableStructure[newRowIndexPath.section]
-                            if previousTableStructure.contains(newSection) {
-                                rowsToMove.append((from: previousIndexPath, to: newRowIndexPath))
-                            } else {
-                                rowsToDelete.append(previousIndexPath)
-                            }
-                        } else {
-                            rowsToInsert.append(newRowIndexPath)
-                        }
-                    }
-                } else {
-                    rowsToDelete.append(previousIndexPath)
-                }
-            }
+        if structure.contains(where: { (section) -> Bool in
+            return section.identifier == nil
+        }) {
+            NSLog("TableCollectionStructured: Can not reload animated. One or more section is not contains identifier.")
+            return reloadData()
         }
         
-        for (newSectionIndex, section) in tableStructure.enumerated() {
-            if !previousTableStructure.contains(section) {
-                sectionsToInsert.insert(newSectionIndex)
-            }
-            
-            for (newRowIndex, row) in section.rows.enumerated() {
-                if !previousTableStructure.contains(structured: row) {
-                    rowsToInsert.append(IndexPath(row: newRowIndex, section: newSectionIndex))
-                }
-            }
+        let diff = StructuredDifference(from: previousStructure, to: structure)
+        
+        if diff.canNotReloadAnimated {
+            NSLog("TableCollectionStructured: Can not reload animated. Attempts to delete or insert row in movable section.")
+            return reloadData()
         }
         
-        let canNotReloadAnimated = rowsToDelete.contains(where: { (deletion) -> Bool in
-            return sectionsToMove.contains(where: { (movement) -> Bool in
-                return movement.from == deletion.section
-            })
-        }) || rowsToInsert.contains(where: { (insertion) -> Bool in
-            return sectionsToMove.contains(where: { (movement) -> Bool in
-                return movement.to == insertion.section
-            })
-        })
-        
-        if canNotReloadAnimated {
-            print("canNotReloadAnimated")
-            return tableView.reloadData()
-        }
+        CATransaction.begin()
         
         tableView.beginUpdates()
         
-        for movement in sectionsToMove {
+        CATransaction.setCompletionBlock {
+            self.tableView.reloadData()
+        }
+        
+        for movement in diff.sectionsToMove {
             tableView.moveSection(movement.from, toSection: movement.to)
         }
         
-        tableView.deleteSections(sectionsToDelete, with: animation)
+        tableView.deleteSections(diff.sectionsToDelete, with: animation)
         
-        tableView.insertSections(sectionsToInsert, with: animation)
+        tableView.insertSections(diff.sectionsToInsert, with: animation)
         
-        for movement in rowsToMove {
+        for movement in diff.rowsToMove {
             tableView.moveRow(at: movement.from, to: movement.to)
         }
         
-        tableView.deleteRows(at: rowsToDelete, with: animation)
+        tableView.deleteRows(at: diff.rowsToDelete, with: animation)
         
-        tableView.insertRows(at: rowsToInsert, with: animation)
+        tableView.insertRows(at: diff.rowsToInsert, with: animation)
         
         tableView.endUpdates()
+        
+        CATransaction.commit()
     }
     
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return tableStructure.count
+        return structure.count
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableStructure[section].count
+        return structure[section].count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let object = self.object(at: indexPath)
         guard let identifier = self.tableView(tableView, reuseIdentifierFor: object) else {
-            fatalError("Reuse identifier for this object is not configured in tableView(_:reuseIdentifierFor:)")
+            fatalError("TableCollectionStructured: Reuse identifier for this object is not configured in tableView(_:reuseIdentifierFor:)")
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier)!
         self.tableView(tableView, configure: cell, for: object, at: indexPath)
@@ -221,11 +167,11 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return tableStructure[section].headerTitle
+        return structure[section].headerTitle
     }
     
     public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return tableStructure[section].footerTitle
+        return structure[section].footerTitle
     }
     
     open func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for object: Any, at indexPath: IndexPath) {
@@ -327,7 +273,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
     }
     
-    open func reloadRows<T: Equatable>(objects: [T]) {
+    open func reloadRows<T: Equatable>(objects: [T], with animation: UITableViewRowAnimation = .fade) {
         
         var indexPaths: [IndexPath] = []
         for object in objects {
@@ -336,7 +282,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             }
         }
         
-        tableView.reloadRows(at: indexPaths, with: .fade)
+        tableView.reloadRows(at: indexPaths, with: animation)
     }
     
     // MARK: - UIScrollViewDelegate
