@@ -33,3 +33,4 @@ open class StructuredObject: Equatable {
     }
     
 }
+

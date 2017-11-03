@@ -71,6 +71,17 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         if section.identifier == nil {
             section.identifier = String(format: "#Section%d", structure.count)
         }
+        
+        for _section in structure {
+            for row in section.rows {
+                if _section.rows.contains(where: { (obj) -> Bool in
+                    return obj == row
+                }) {
+                    
+                }
+            }
+        }
+        
         structure.append(section)
     }
     
@@ -93,21 +104,15 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         tableView.reloadData()
     }
     
+    var queue: Int = 0
+    
     open func performReload(with animation: UITableViewRowAnimation = .fade) {
         
         if animation == .none { return }
         
-        if structure.contains(where: { (section) -> Bool in
-            return section.identifier == nil
-        }) {
-            NSLog("TableCollectionStructured: Can not reload animated. One or more section is not contains identifier.")
-            return reloadData()
-        }
-        
         let diff = StructuredDifference(from: previousStructure, to: structure)
         
-        if diff.canNotReloadAnimated {
-            NSLog("TableCollectionStructured: Can not reload animated. Attempts to delete or insert row in movable section.")
+        if !diff.reloadConstraint.isEmpty || tableView.window == nil {
             return reloadData()
         }
         
@@ -123,17 +128,25 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
             tableView.moveSection(movement.from, toSection: movement.to)
         }
         
-        tableView.deleteSections(diff.sectionsToDelete, with: animation)
+        if !diff.sectionsToDelete.isEmpty {
+            tableView.deleteSections(diff.sectionsToDelete, with: animation)
+        }
         
-        tableView.insertSections(diff.sectionsToInsert, with: animation)
+        if !diff.sectionsToInsert.isEmpty {
+            tableView.insertSections(diff.sectionsToInsert, with: animation)
+        }
         
         for movement in diff.rowsToMove {
             tableView.moveRow(at: movement.from, to: movement.to)
         }
         
-        tableView.deleteRows(at: diff.rowsToDelete, with: animation)
+        if !diff.rowsToDelete.isEmpty {
+            tableView.deleteRows(at: diff.rowsToDelete, with: animation)
+        }
         
-        tableView.insertRows(at: diff.rowsToInsert, with: animation)
+        if !diff.rowsToInsert.isEmpty {
+            tableView.insertRows(at: diff.rowsToInsert, with: animation)
+        }
         
         tableView.endUpdates()
         
@@ -345,3 +358,4 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
 }
+

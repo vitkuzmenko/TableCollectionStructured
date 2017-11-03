@@ -10,6 +10,10 @@ import Foundation
 
 class StructuredDifference {
     
+    enum Constraint {
+        case insertion, deletion, similarObjects, similarSections
+    }
+    
     var sectionsToMove: [(from: Int, to: Int)] = []
     
     var sectionsToDelete = IndexSet()
@@ -22,7 +26,7 @@ class StructuredDifference {
     
     var rowsToInsert: [IndexPath] = []
     
-    var canNotReloadAnimated = false
+    var reloadConstraint: [Constraint] = []
     
     init(from previousStructure: [StructuredSection], to newStructure: [StructuredSection]) {
         
@@ -69,15 +73,63 @@ class StructuredDifference {
             }
         }
         
-        canNotReloadAnimated = rowsToDelete.contains(where: { (deletion) -> Bool in
+        if rowsToDelete.contains(where: { (deletion) -> Bool in
             return sectionsToMove.contains(where: { (movement) -> Bool in
                 return movement.from == deletion.section
             })
-        }) || rowsToInsert.contains(where: { (insertion) -> Bool in
+        }) {
+            reloadConstraint.append(.deletion)
+        }
+        
+        if rowsToInsert.contains(where: { (insertion) -> Bool in
             return sectionsToMove.contains(where: { (movement) -> Bool in
                 return movement.to == insertion.section
             })
-        })
+        }) {
+            reloadConstraint.append(.insertion)
+        }
+        
+        var uniqueSections: [StructuredSection] = []
+        
+        for section in newStructure {
+            if uniqueSections.contains(section) {
+                reloadConstraint.append(.similarSections)
+                break
+            } else {
+                uniqueSections.append(section)
+            }
+        }
+        
+        var unique: [StructuredObject] = []
+        
+        root : for section in newStructure {
+            for row in section.rows {
+                if unique.contains(row) {
+                    reloadConstraint.append(.similarObjects)
+                    break root
+                } else {
+                    unique.append(row)
+                }
+            }
+        }
+        
+        if reloadConstraint.contains(.insertion) {
+            NSLog("TableCollectionStructured: Can not reload animated. Attempts to insert row in movable section.")
+        }
+        
+        if reloadConstraint.contains(.deletion) {
+            NSLog("TableCollectionStructured: Can not reload animated. Attempts to delete row in movable section.")
+        }
+        
+        if reloadConstraint.contains(.similarSections) {
+            NSLog("TableCollectionStructured: Can not reload animated. Structure contains two or more equal section identifiers.")
+        }
+        
+        if reloadConstraint.contains(.similarObjects) {
+            NSLog("TableCollectionStructured: Can not reload animated. Structure contains two or more equal objects.")
+        }
+        
     }
     
 }
+

@@ -9,7 +9,7 @@
 import Foundation
 
 extension Array where Element: StructuredSection {
- 
+    
     func indexPath(of element: StructuredObject) -> IndexPath? {
         for (index, section) in self.enumerated() {
             if let row = section.index(of: element) {
@@ -88,3 +88,4 @@ open class StructuredSection: Equatable {
     }
     
 }
+
