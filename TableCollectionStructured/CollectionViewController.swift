@@ -48,7 +48,7 @@ class CollectionViewController: UIViewController, CollectionStructuredViewContro
     
     @objc func nextStep() {
         
-        collectionController.buildStructure()
+        collectionController.buildStructure(rule: .animated)
         
         print(step)
         
@@ -65,7 +65,7 @@ class CollectionViewController: UIViewController, CollectionStructuredViewContro
 
 class CollectionController: CollectionStructuredController<CollectionViewController> {
     
-    override func buildStructure(reloadData: Bool = true) {
+    override func buildStructure(rule: CollectionViewReloadRule) {
         
         beginBuilding()
         
@@ -289,7 +289,7 @@ class CollectionController: CollectionStructuredController<CollectionViewControl
             break
         }
         
-        super.buildStructure(reloadData: reloadData)
+        super.buildStructure(rule: rule)
     }
     
     override func collectionView(_ collectionView: UICollectionView, reuseIdentifierFor object: Any) -> String? {
