@@ -115,8 +115,8 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
             
             self.collectionView.insertItems(at: diff.rowsToInsert)
             
-        }, completion: { f in
-            self.collectionView.reloadData()
+        }, completion: { [weak self] f in
+            self?.collectionView?.reloadData()
             completion?(f)
         })
     }

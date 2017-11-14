@@ -120,8 +120,8 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
         tableView.beginUpdates()
         
-        CATransaction.setCompletionBlock {
-            self.tableView.reloadData()
+        CATransaction.setCompletionBlock { [weak self] in
+            self?.tableView?.reloadData()
         }
         
         for movement in diff.sectionsToMove {
