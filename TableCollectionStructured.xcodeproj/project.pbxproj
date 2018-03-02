@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		793E1382204963ED00AAA5CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E1381204963ED00AAA5CA /* AppDelegate.swift */; };
+		793E1384204963ED00AAA5CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E1383204963ED00AAA5CA /* ViewController.swift */; };
+		793E1387204963ED00AAA5CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 793E1385204963ED00AAA5CA /* Main.storyboard */; };
+		793E1389204963ED00AAA5CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 793E1388204963ED00AAA5CA /* Assets.xcassets */; };
+		793E138E2049640200AAA5CA /* StructuredSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */; };
+		793E138F2049640200AAA5CA /* StructuredDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733271FA9A5A50056FEBD /* StructuredDifference.swift */; };
+		793E13902049640200AAA5CA /* StructuredObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733231FA9A3720056FEBD /* StructuredObject.swift */; };
+		793E13912049640200AAA5CA /* TableStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794C15171DA6511C0076DEC0 /* TableStructuredController.swift */; };
+		793E13922049640200AAA5CA /* CollectionStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */; };
 		794C15051DA650C80076DEC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794C15041DA650C80076DEC0 /* AppDelegate.swift */; };
 		794C15071DA650C80076DEC0 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794C15061DA650C80076DEC0 /* TableViewController.swift */; };
 		794C150A1DA650C80076DEC0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 794C15081DA650C80076DEC0 /* Main.storyboard */; };
@@ -24,6 +33,12 @@
 
 /* Begin PBXFileReference section */
 		791A86A41DACFE6D002C771C /* TableCollectionStructured.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = TableCollectionStructured.podspec; sourceTree = "<group>"; };
+		793E137F204963ED00AAA5CA /* TableCollectionStructuredAppleTv.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TableCollectionStructuredAppleTv.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		793E1381204963ED00AAA5CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		793E1383204963ED00AAA5CA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		793E1386204963ED00AAA5CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		793E1388204963ED00AAA5CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		793E138A204963ED00AAA5CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		794C15011DA650C80076DEC0 /* TableCollectionStructured.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TableCollectionStructured.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		794C15041DA650C80076DEC0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		794C15061DA650C80076DEC0 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
@@ -42,6 +57,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		793E137C204963ED00AAA5CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		794C14FE1DA650C80076DEC0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -52,11 +74,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		793E1380204963ED00AAA5CA /* TableCollectionStructuredAppleTv */ = {
+			isa = PBXGroup;
+			children = (
+				793E1381204963ED00AAA5CA /* AppDelegate.swift */,
+				793E1383204963ED00AAA5CA /* ViewController.swift */,
+				793E1385204963ED00AAA5CA /* Main.storyboard */,
+				793E1388204963ED00AAA5CA /* Assets.xcassets */,
+				793E138A204963ED00AAA5CA /* Info.plist */,
+			);
+			path = TableCollectionStructuredAppleTv;
+			sourceTree = "<group>";
+		};
 		794C14F81DA650C80076DEC0 = {
 			isa = PBXGroup;
 			children = (
 				791A86A41DACFE6D002C771C /* TableCollectionStructured.podspec */,
 				794C15031DA650C80076DEC0 /* TableCollectionStructured */,
+				793E1380204963ED00AAA5CA /* TableCollectionStructuredAppleTv */,
 				794C15021DA650C80076DEC0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				794C15011DA650C80076DEC0 /* TableCollectionStructured.app */,
+				793E137F204963ED00AAA5CA /* TableCollectionStructuredAppleTv.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +137,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		793E137E204963ED00AAA5CA /* TableCollectionStructuredAppleTv */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 793E138D204963ED00AAA5CA /* Build configuration list for PBXNativeTarget "TableCollectionStructuredAppleTv" */;
+			buildPhases = (
+				793E137B204963ED00AAA5CA /* Sources */,
+				793E137C204963ED00AAA5CA /* Frameworks */,
+				793E137D204963ED00AAA5CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TableCollectionStructuredAppleTv;
+			productName = TableCollectionStructuredAppleTv;
+			productReference = 793E137F204963ED00AAA5CA /* TableCollectionStructuredAppleTv.app */;
+			productType = "com.apple.product-type.application";
+		};
 		794C15001DA650C80076DEC0 /* TableCollectionStructured */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 794C15131DA650C80076DEC0 /* Build configuration list for PBXNativeTarget "TableCollectionStructured" */;
@@ -124,10 +177,14 @@
 		794C14F91DA650C80076DEC0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0800;
+				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Vitaliy Kuzmenko";
 				TargetAttributes = {
+					793E137E204963ED00AAA5CA = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
 					794C15001DA650C80076DEC0 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 34YX679QH2;
@@ -150,11 +207,21 @@
 			projectRoot = "";
 			targets = (
 				794C15001DA650C80076DEC0 /* TableCollectionStructured */,
+				793E137E204963ED00AAA5CA /* TableCollectionStructuredAppleTv */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		793E137D204963ED00AAA5CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				793E1389204963ED00AAA5CA /* Assets.xcassets in Resources */,
+				793E1387204963ED00AAA5CA /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		794C14FF1DA650C80076DEC0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -168,6 +235,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		793E137B204963ED00AAA5CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				793E13922049640200AAA5CA /* CollectionStructuredController.swift in Sources */,
+				793E138E2049640200AAA5CA /* StructuredSection.swift in Sources */,
+				793E138F2049640200AAA5CA /* StructuredDifference.swift in Sources */,
+				793E1384204963ED00AAA5CA /* ViewController.swift in Sources */,
+				793E13912049640200AAA5CA /* TableStructuredController.swift in Sources */,
+				793E1382204963ED00AAA5CA /* AppDelegate.swift in Sources */,
+				793E13902049640200AAA5CA /* StructuredObject.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		794C14FD1DA650C80076DEC0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -188,6 +269,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		793E1385204963ED00AAA5CA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				793E1386204963ED00AAA5CA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		794C15081DA650C80076DEC0 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -207,6 +296,48 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		793E138B204963ED00AAA5CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = TableCollectionStructuredAppleTv/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = info.kuzmenko.TableCollectionStructuredAppleTv;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		793E138C204963ED00AAA5CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = TableCollectionStructuredAppleTv/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = info.kuzmenko.TableCollectionStructuredAppleTv;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
 		794C15111DA650C80076DEC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -345,6 +476,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		793E138D204963ED00AAA5CA /* Build configuration list for PBXNativeTarget "TableCollectionStructuredAppleTv" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				793E138B204963ED00AAA5CA /* Debug */,
+				793E138C204963ED00AAA5CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		794C14FC1DA650C80076DEC0 /* Build configuration list for PBXProject "TableCollectionStructured" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
