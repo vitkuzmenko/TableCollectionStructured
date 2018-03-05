@@ -298,6 +298,15 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         tableView.reloadRows(at: indexPaths, with: animation)
     }
     
+    public func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
+        guard let reuseIdentifier = tableView.cellForRow(at: indexPath)?.reuseIdentifier else { return true }
+        return self.tableView(tableView, canFocus: object(at: indexPath), with: reuseIdentifier, at: indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, canFocus object: Any, with identifier: String, at indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
     // MARK: - UIScrollViewDelegate
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
