@@ -20,6 +20,8 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     open var structure: [StructuredSection] = []
     
+    open var shouldReloadData: Bool { return true }
+    
     private var previousStructure: [StructuredSection] = []
     
     public convenience init(vc: ViewController) {
@@ -108,7 +110,12 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     open func performReload(with animation: UITableViewRowAnimation = .fade) {
         
-        if animation == .none { return }
+        if animation == .none {
+            if shouldReloadData {
+                reloadData()
+            }
+            return
+        }
         
         let diff = StructuredDifference(from: previousStructure, to: structure)
         
@@ -120,8 +127,10 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
         tableView.beginUpdates()
         
-        CATransaction.setCompletionBlock { [weak self] in
-            self?.tableView?.reloadData()
+        if shouldReloadData {
+            CATransaction.setCompletionBlock { [weak self] in
+                self?.tableView?.reloadData()
+            }
         }
         
         for movement in diff.sectionsToMove {
