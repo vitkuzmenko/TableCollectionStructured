@@ -338,6 +338,8 @@ class TableController: TableStructuredController<TableViewController> {
             break
         }
         
+        
+        
         super.buildStructure(with: animation)
     }
     
