@@ -36,7 +36,7 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
         configureCollectionView()
     }
     
-    open func indexPath<T: Equatable>(for object: T) -> IndexPath? {
+    open func indexPath<T: StructuredCell>(for object: T) -> IndexPath? {
         let obj = StructuredObject(value: object)
         return structure.indexPath(of: obj)
     }

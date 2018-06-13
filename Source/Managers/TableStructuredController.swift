@@ -34,7 +34,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         configureTableView()
     }
     
-    open func indexPath<T: Equatable>(for object: T) -> IndexPath? {
+    open func indexPath<T: StructuredCell>(for object: T) -> IndexPath? {
         let obj = StructuredObject(value: object)
         return structure.indexPath(of: obj)
     }
@@ -171,33 +171,16 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let object = self.object(at: indexPath)
-        guard let identifier = self.tableView(tableView, reuseIdentifierFor: object) else {
-            fatalError("TableCollectionStructured: Reuse identifier for this object is not configured in tableView(_:reuseIdentifierFor:)")
-        }
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifier)!
-        self.tableView(tableView, configure: cell, for: object, at: indexPath)
-        return cell
+        guard let model = object(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCellModelProtocol") }
+        return tableView.dequeueReusableCell(withModel: model, for: indexPath)
     }
-    
-    open func tableView(_ tableView: UITableView, reuseIdentifierFor object: Any) -> String? {
-        var identifier: String?
-        if let object = object as? String {
-            identifier = object
-        }
-        return identifier
-    }
-    
+
     public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return structure[section].headerTitle
     }
     
     public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return structure[section].footerTitle
-    }
-    
-    open func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for object: Any, at indexPath: IndexPath) {
-        
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -295,7 +278,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
     }
     
-    open func reloadRows<T: Equatable>(objects: [T], with animation: UITableViewRowAnimation = .fade) {
+    open func reloadRows<T: StructuredCell>(objects: [T], with animation: UITableViewRowAnimation = .fade) {
         
         var indexPaths: [IndexPath] = []
         for object in objects {

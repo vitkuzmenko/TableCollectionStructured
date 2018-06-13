@@ -55,7 +55,7 @@ open class StructuredSection: Equatable {
         self.identifier = identifier
     }
     
-    open func append<T: Equatable>(_ object: T) {
+    open func append<T: StructuredCell>(_ object: T) {
         if isClosed {
             fatalError("TableCollectionStructured: Section is appended to structue. You can not add rows more.")
         }
@@ -63,7 +63,7 @@ open class StructuredSection: Equatable {
         rows.append(obj)
     }
     
-    open func append<T: Equatable>(contentsOf objects: [T]) {
+    open func append<T: StructuredCell>(contentsOf objects: [T]) {
         if isClosed {
             fatalError("TableCollectionStructured: Section is appended to structue alredy. You can not add rows more.")
         }

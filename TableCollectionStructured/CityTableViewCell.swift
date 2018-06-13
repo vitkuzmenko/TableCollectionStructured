@@ -10,10 +10,6 @@ import UIKit
 
 class CityTableViewCell: UITableViewCell {
 
-    weak var city: City! {
-        didSet {
-            textLabel?.text = city.title
-        }
-    }
+
 
 }
