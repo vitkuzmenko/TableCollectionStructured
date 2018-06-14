@@ -17,7 +17,7 @@ public protocol StructuredCell {
     func isEqual(_ to: Any) -> Bool
 }
 
-protocol StructuredCellConfigurable: StructuredCell {
+public protocol StructuredCellConfigurable: StructuredCell {
     
     associatedtype CellType: UIView
     
