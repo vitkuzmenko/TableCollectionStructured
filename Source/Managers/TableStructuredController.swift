@@ -174,6 +174,11 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         guard let model = object(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCellModelProtocol") }
         return tableView.dequeueReusableCell(withModel: model, for: indexPath)
     }
+    
+    @available(*, deprecated, message: "deprecated")
+    open func tableView(_ tableView: UITableView, reuseIdentifierFor object: Any) -> String? {
+        fatalError("Depreacted")
+    }
 
     public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return structure[section].headerTitle
@@ -181,6 +186,11 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return structure[section].footerTitle
+    }
+    
+    @available(*, deprecated, message: "deprecated")
+    open func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for object: Any, at indexPath: IndexPath) {
+        
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -193,14 +203,19 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let object = self.object(at: indexPath)
-        return rowHeight(forObject: object)
+        if let object = self.object(at: indexPath) as? StructuredCellDynamicHeight {
+            return object.height(for: tableView)
+        } else {
+            return tableView.rowHeight
+        }
     }
     
+    @available(*, deprecated, message: "deprecated")
     open func rowHeight(forIdentifier identifier: String) -> CGFloat {
         return tableView.rowHeight
     }
     
+    @available(*, deprecated, message: "deprecated")
     open func rowHeight(forObject object: Any) -> CGFloat {
         if let object = object as? String {
             return rowHeight(forIdentifier: object)

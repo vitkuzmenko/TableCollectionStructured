@@ -41,7 +41,7 @@ extension StructuredCellConfigurable {
     
 }
 
-public protocol StructuredCellDynamicHeight: Equatable {
+public protocol StructuredCellDynamicHeight {
     
     func height(for parentView: UIView) -> CGFloat
     
