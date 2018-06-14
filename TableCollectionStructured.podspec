@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "TableCollectionStructured"
-  s.version      = "2.1"
+  s.version      = "3.1"
   s.summary      = "Table and Collection View Structured objects"
 
   s.homepage     = "https://github.com/vitkuzmenko/TableCollectionStructured.git"
