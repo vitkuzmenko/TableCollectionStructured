@@ -80,7 +80,7 @@ class StructuredDifference {
         }) {
             reloadConstraint.append(.deletion)
         }
-        
+
         if rowsToInsert.contains(where: { (insertion) -> Bool in
             return sectionsToMove.contains(where: { (movement) -> Bool in
                 return movement.to == insertion.section

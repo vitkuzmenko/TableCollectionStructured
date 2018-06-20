@@ -10,6 +10,10 @@ import UIKit
 
 class City: StructuredCellConfigurable {
     
+    func reuseIdentifier() -> String {
+        return "CityTableViewCell"
+    }
+    
     static func ==(lhs: City, rhs: City) -> Bool {
         return lhs.title == rhs.title
     }
@@ -24,7 +28,7 @@ class City: StructuredCellConfigurable {
         cell.textLabel?.text = title
     }
     
-    func isEqual(_ to: Any) -> Bool {
+    func isEqual(_ to: Any?) -> Bool {
         guard let to = to as? City else { return false }
         return title == to.title
     }

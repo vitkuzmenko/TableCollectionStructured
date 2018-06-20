@@ -45,6 +45,12 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
         return structure[indexPath.section][indexPath.row]
     }
     
+    open func set(structure: [StructuredSection], rule: CollectionViewReloadRule = .noAnimation) {
+        beginBuilding()
+        self.structure = structure
+        buildStructure(rule: rule)
+    }
+    
     open func beginBuilding() {
         previousStructure = structure
         structure = []
@@ -130,14 +136,8 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let object = self.object(at: indexPath)
-        guard let identifier = self.collectionView(collectionView, reuseIdentifierFor: object) else {
-            assert(false, "TableCollectionStructured: Reuse identifier for this object is not configured in collectionView(_:reuseIdentifierFor:)")
-            return UICollectionViewCell()
-        }
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
-        self.collectionView(collectionView, configure: cell, for: object, at: indexPath)
-        return cell
+        guard let model = object(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCellModelProtocol") }
+        return collectionView.dequeueReusableCell(withModel: model, for: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, reuseIdentifierFor object: Any) -> String? {
@@ -166,8 +166,11 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let object = self.object(at: indexPath)
-        return self.collectionView(collectionView, layout: collectionViewLayout, sizeFor: object, at: indexPath)
+        if let object = self.object(at: indexPath) as? StructuredCellDynamicSize {
+            return object.size(for: collectionView)
+        } else {
+            return (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize ?? .zero
+        }
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeFor object: Any, at: IndexPath) -> CGSize {
@@ -175,10 +178,9 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath)
-        let identifier = cell!.reuseIdentifier!
-        let object = self.object(at: indexPath)
-        self.collectionView(collectionView, didSelectCell: identifier, object: object, at: indexPath)
+        if let object = self.object(at: indexPath) as? StructuredCellSelectable {
+            _ = object.didSelect?()
+        }
     }
     
     open func collectionView(_ collectionView: UICollectionView, didSelectCell identifier: String, object: Any, at indexPath: IndexPath) {

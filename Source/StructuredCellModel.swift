@@ -8,13 +8,17 @@
 
 import UIKit
 
+public enum StructuredView {
+    case tableView, collectionView
+}
+
 public protocol StructuredCell {
     
-    static var cellAnyType: UIView.Type { get }
+    func reuseIdentifier(for parentView: StructuredView) -> String
     
     func configureAny(cell: UIView)
     
-    func isEqual(_ to: Any) -> Bool
+    func isEqual(_ object: Any?) -> Bool
 }
 
 public protocol StructuredCellConfigurable: StructuredCell {
@@ -25,17 +29,17 @@ public protocol StructuredCellConfigurable: StructuredCell {
     
 }
 
-extension StructuredCellConfigurable {
+public extension StructuredCellConfigurable {
     
-    static var cellAnyType: UIView.Type {
-        return CellType.self
-    }
+    //    public var reuseIdentifier: String {
+    //        return String(describing: CellType.self).components(separatedBy: ".").last!
+    //    }
     
-    func configureAny(cell: UIView) {
+    public func configureAny(cell: UIView) {
         if let cell = cell as? CellType {
             configure(cell: cell)
         } else {
-            assertionFailure("StructuredCellConfigurableModelProtocol and be implemet UIView and subclass only")
+            assertionFailure("StructuredCellConfigurable and be implemet UIView and subclass only")
         }
     }
     
@@ -44,6 +48,28 @@ extension StructuredCellConfigurable {
 public protocol StructuredCellDynamicHeight {
     
     func height(for parentView: UIView) -> CGFloat
+    
+}
+
+public protocol StructuredCellDynamicSize {
+    
+    func size(for parentView: UIView) -> CGSize
+    
+}
+
+public protocol StructuredCellSelectable {
+    
+    typealias DidSelect = () -> Bool
+    
+    var didSelect: DidSelect? { get }
+    
+}
+
+public protocol StructuredCellDeselectable {
+    
+    typealias DidDeselect = () -> Void
+    
+    var didDeselect: DidDeselect? { get }
     
 }
 

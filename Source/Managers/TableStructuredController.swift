@@ -56,6 +56,12 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return structure[indexPath.section][indexPath.row]
     }
     
+    open func set(structure: [StructuredSection], animation: UITableViewRowAnimation = .fade) {
+        beginBuilding()
+        self.structure = structure
+        buildStructure(with: animation)
+    }
+    
     open func beginBuilding() {
         previousStructure = structure
         structure = []
@@ -179,7 +185,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     open func tableView(_ tableView: UITableView, reuseIdentifierFor object: Any) -> String? {
         fatalError("Depreacted")
     }
-
+    
     public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return structure[section].headerTitle
     }
@@ -227,32 +233,26 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return true
     }
     
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if automaticallyDeselect {
-            tableView.deselectRow(at: indexPath, animated: false)
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let object = self.object(at: indexPath) as? StructuredCellSelectable {
+            if let deselect = object.didSelect?(), deselect {
+                self.tableView.deselectRow(at: indexPath, animated: false)
+            }
         }
-        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-        guard let identifier = cell.reuseIdentifier else { return }
-        let object = self.object(at: indexPath)
-        
-        self.tableView(tableView, didSelect: cell, with: identifier, object: object, at: indexPath)
     }
     
+    @available(*, deprecated, message: "deprecated")
     open func tableView(_ tableView: UITableView, didSelect cell: UITableViewCell, with identifier: String, object: Any, at indexPath: IndexPath) {
         
     }
     
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if automaticallyDeselect {
-            tableView.deselectRow(at: indexPath, animated: false)
+        if let object = self.object(at: indexPath) as? StructuredCellDeselectable {
+            object.didDeselect?()
         }
-        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-        guard let identifier = cell.reuseIdentifier else { return }
-        let object = self.object(at: indexPath)
-        
-        self.tableView(tableView, didDeselect: cell, with: identifier, object: object, at: indexPath)
     }
     
+    @available(*, deprecated, message: "deprecated")
     open func tableView(_ tableView: UITableView, didDeselect cell: UITableViewCell, with identifier: String, object: Any, at indexPath: IndexPath) {
         
     }

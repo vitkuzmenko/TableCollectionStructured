@@ -11,17 +11,15 @@ import UIKit
 extension UITableView {
     
     func dequeueReusableCell(withModel model: StructuredCell, for indexPath: IndexPath) -> UITableViewCell {
-        let indetifier = String(describing: type(of: model).cellAnyType).components(separatedBy: ".").last!
+        let indetifier = model.reuseIdentifier(for: .tableView)
         let cell = self.dequeueReusableCell(withIdentifier: indetifier, for: indexPath)
         model.configureAny(cell: cell)
         return cell
     }
     
-    func register(nibModels: [StructuredCell.Type]) {
-        for model in nibModels {
-            let identifier = String(describing: model.cellAnyType).components(separatedBy: ".").last!
-            let bundle = Bundle.main
-            let nib = UINib(nibName: identifier, bundle: bundle)
+    public func registerNibs(with identifiers: [String]) {
+        for identifier in identifiers {
+            let nib = UINib(nibName: identifier, bundle: nil)
             self.register(nib, forCellReuseIdentifier: identifier)
         }
     }

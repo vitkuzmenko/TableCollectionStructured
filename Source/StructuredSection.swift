@@ -55,6 +55,12 @@ open class StructuredSection: Equatable {
         self.identifier = identifier
     }
     
+    public init<T: StructuredCell>(identifier: String? = nil, rows: [T]) {
+        self.identifier = identifier
+        self.rows = rows.map({ StructuredObject(value: $0) })
+        self.count = self.rows.count
+    }
+    
     open func append<T: StructuredCell>(_ object: T) {
         if isClosed {
             fatalError("TableCollectionStructured: Section is appended to structue. You can not add rows more.")
