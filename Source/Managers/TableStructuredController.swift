@@ -178,7 +178,8 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let model = object(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCellModelProtocol") }
-        return tableView.dequeueReusableCell(withModel: model, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withModel: model, for: indexPath)
+        return cell
     }
     
     @available(*, deprecated, message: "deprecated")
@@ -198,15 +199,17 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     open func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for object: Any, at indexPath: IndexPath) {
         
     }
-    
+
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let object = self.object(at: indexPath)
-        self.tableView(tableView, willDisplay: cell, for: object)
+        if let object = self.object(at: indexPath) as? StructuredCellWillDisplay {
+            object.willDisplay?()
+        }
     }
     
-    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, for object: Any) {
-        
-    }
+//    @available(*, deprecated, message: "")
+//    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, for object: Any) {
+//
+//    }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let object = self.object(at: indexPath) as? StructuredCellDynamicHeight {
@@ -234,8 +237,8 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     }
     
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let object = self.object(at: indexPath) as? StructuredCellSelectable {
-            if let deselect = object.didSelect?(), deselect {
+        if let object = self.object(at: indexPath) as? StructuredCellSelectable, let cell = tableView.cellForRow(at: indexPath) {
+            if let deselect = object.didSelect?(cell), deselect {
                 self.tableView.deselectRow(at: indexPath, animated: false)
             }
         }

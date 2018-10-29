@@ -59,7 +59,7 @@ public protocol StructuredCellDynamicSize {
 
 public protocol StructuredCellSelectable {
     
-    typealias DidSelect = () -> Bool
+    typealias DidSelect = (UIView) -> Bool
     
     var didSelect: DidSelect? { get }
     
@@ -73,9 +73,25 @@ public protocol StructuredCellDeselectable {
     
 }
 
+public protocol StructuredCellWillDisplay {
+    
+    typealias WillDisplay = () -> Void
+    
+    var willDisplay: WillDisplay? { get }
+    
+}
+
+public protocol StructuredCellDidEndDisplay {
+    
+    typealias DidEndDisplay = () -> Void
+    
+    var didEndDisplay: DidEndDisplay? { get }
+    
+}
+
 open class StructuredObject: Equatable {
     
-    let value: Any
+    open let value: Any
     
     private let equals: (Any) -> Bool
     

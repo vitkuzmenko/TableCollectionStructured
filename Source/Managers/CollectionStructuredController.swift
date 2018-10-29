@@ -156,13 +156,21 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
         
     }
     
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let object = self.object(at: indexPath)
-        self.collectionView(collectionView, willDisplay: cell, for: object, forItemAt: indexPath)
+    open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let object = self.object(at: indexPath) as? StructuredCellWillDisplay {
+            object.willDisplay?()
+        }
     }
     
+    @available(*, deprecated, message: "")
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, for object: Any, forItemAt indexPath: IndexPath) {
         
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let cell = cell as? StructuredCellDidEndDisplay {
+            cell.didEndDisplay?()
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -178,13 +186,25 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let object = self.object(at: indexPath) as? StructuredCellSelectable {
-            _ = object.didSelect?()
+        if let object = self.object(at: indexPath) as? StructuredCellSelectable, let cell = collectionView.cellForItem(at: indexPath) {
+            _ = object.didSelect?(cell)
         }
     }
     
     open func collectionView(_ collectionView: UICollectionView, didSelectCell identifier: String, object: Any, at indexPath: IndexPath) {
         
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        return proposedIndexPath
     }
     
     // MARK: - UIScrollViewDelegate
