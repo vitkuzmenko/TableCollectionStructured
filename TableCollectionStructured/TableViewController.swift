@@ -10,7 +10,7 @@ import UIKit
 
 class City: StructuredCellConfigurable {
     
-    func reuseIdentifier() -> String {
+    func reuseIdentifier(for parentView: StructuredView) -> String {
         return "CityTableViewCell"
     }
     
@@ -127,7 +127,7 @@ class TableViewController: UIViewController, TableStructuredViewController {
 
 class TableController: TableStructuredController<TableViewController> {
     
-    override func buildStructure(with animation: UITableViewRowAnimation? = nil) {
+    override func buildStructure(with animation: UITableView.RowAnimation? = nil) {
         
         beginBuilding()
 

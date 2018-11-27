@@ -91,7 +91,7 @@ public protocol StructuredCellDidEndDisplay {
 
 open class StructuredObject: Equatable {
     
-    open let value: Any
+    public let value: Any
     
     private let equals: (Any) -> Bool
     

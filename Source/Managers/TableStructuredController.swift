@@ -56,7 +56,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return structure[indexPath.section][indexPath.row]
     }
     
-    open func set(structure: [StructuredSection], animation: UITableViewRowAnimation = .fade) {
+    open func set(structure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
         beginBuilding()
         self.structure = structure
         buildStructure(with: animation)
@@ -102,7 +102,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         tableView.tableFooterView = UIView()
     }
     
-    open func buildStructure(with animation: UITableViewRowAnimation? = nil) {
+    open func buildStructure(with animation: UITableView.RowAnimation? = nil) {
         if let animation = animation {
             self.performReload(with: animation)
         }
@@ -114,7 +114,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
     
     var queue: Int = 0
     
-    open func performReload(with animation: UITableViewRowAnimation = .fade) {
+    open func performReload(with animation: UITableView.RowAnimation = .fade) {
         
         if animation == .none {
             if shouldReloadData {
@@ -269,12 +269,12 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         return false
     }
     
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let object = self.object(at: indexPath)
         self.tableView(tableView, commit: editingStyle, for: object, forRowAt: indexPath)
     }
     
-    open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, for object: Any, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, for object: Any, forRowAt indexPath: IndexPath) {
         
     }
     
@@ -296,7 +296,7 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
         
     }
     
-    open func reloadRows<T: StructuredCell>(objects: [T], with animation: UITableViewRowAnimation = .fade) {
+    open func reloadRows<T: StructuredCell>(objects: [T], with animation: UITableView.RowAnimation = .fade) {
         
         var indexPaths: [IndexPath] = []
         for object in objects {
