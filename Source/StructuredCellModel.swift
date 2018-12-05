@@ -19,6 +19,7 @@ public protocol StructuredCell {
     func configureAny(cell: UIView)
     
     func isEqual(_ object: Any?) -> Bool
+    
 }
 
 public protocol StructuredCellConfigurable: StructuredCell {
@@ -89,6 +90,10 @@ public protocol StructuredCellDidEndDisplay {
     
 }
 
+public protocol StructuredCellInvalidatable {
+    func invalidated()
+}
+
 open class StructuredObject: Equatable {
     
     public let value: Any
@@ -114,3 +119,5 @@ open class StructuredObject: Equatable {
     }
     
 }
+
+

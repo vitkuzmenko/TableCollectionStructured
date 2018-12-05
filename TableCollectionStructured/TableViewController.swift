@@ -8,10 +8,15 @@
 
 import UIKit
 
-class City: StructuredCellConfigurable {
+class City: StructuredCell {
     
     func reuseIdentifier(for parentView: StructuredView) -> String {
-        return "CityTableViewCell"
+        switch parentView {
+        case .tableView:
+            return "CityTableViewCell"
+        case .collectionView:
+            return "CityCollectionViewCell"
+        }        
     }
     
     static func ==(lhs: City, rhs: City) -> Bool {
@@ -24,8 +29,12 @@ class City: StructuredCellConfigurable {
         self.title = title
     }
     
-    func configure(cell: CityTableViewCell) {
-        cell.textLabel?.text = title
+    func configureAny(cell: UIView) {
+        if let cell = cell as? UITableViewCell {
+            cell.textLabel?.text = title
+        } else if let cell = cell as? CityCollectionViewCell {
+            cell.textLabel?.text = title
+        }
     }
     
     func isEqual(_ to: Any?) -> Bool {

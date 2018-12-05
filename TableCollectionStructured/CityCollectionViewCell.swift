@@ -12,10 +12,5 @@ class CityCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var textLabel: UILabel!
     
-    weak var city: City! {
-        didSet {
-            textLabel?.text = city.title
-        }
-    }
     
 }

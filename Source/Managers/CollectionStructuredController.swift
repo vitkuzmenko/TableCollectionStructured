@@ -24,7 +24,17 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
     
     open var structure: [StructuredSection] = []
     
-    private var previousStructure: [StructuredSection] = []
+    private var previousStructure: [StructuredSection] = [] {
+        didSet {
+            structure.forEach { section in
+                section.rows.forEach { object in
+                    if let invalidatableCell = object.value as? StructuredCellInvalidatable {
+                        invalidatableCell.invalidated()
+                    }
+                }
+            }
+        }
+    }
     
     public convenience init(vc: ViewController) {
         self.init()
