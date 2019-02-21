@@ -8,19 +8,19 @@
 
 import UIKit
 
-public protocol CollectionStructuredViewController: class {
-    var collectionView: UICollectionView! { get set }
-}
-
 public enum CollectionViewReloadRule {
     case none, animated, noAnimation
 }
 
-open class CollectionStructuredController<ViewController: CollectionStructuredViewController>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+open class CollectionStructuredController: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    open weak var collectionView: UICollectionView!
-    
-    open weak var vc: ViewController!
+    open weak var collectionView: UICollectionView! {
+        didSet {
+            collectionView.dataSource = self
+            collectionView.delegate = self
+            configureCollectionView()
+        }
+    }
     
     open var structure: [StructuredSection] = []
     
@@ -34,16 +34,6 @@ open class CollectionStructuredController<ViewController: CollectionStructuredVi
                 }
             }
         }
-    }
-    
-    public convenience init(vc: ViewController) {
-        self.init()
-        collectionView = vc.collectionView
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        self.vc = vc
-        
-        configureCollectionView()
     }
     
     open func indexPath<T: StructuredCell>(for object: T) -> IndexPath? {

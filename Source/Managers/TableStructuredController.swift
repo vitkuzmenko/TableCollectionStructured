@@ -8,15 +8,15 @@
 
 import UIKit
 
-public protocol TableStructuredViewController: class {
-    var tableView: UITableView! { get set }
-}
-
-open class TableStructuredController<ViewController: TableStructuredViewController>: NSObject, UITableViewDataSource, UITableViewDelegate {
+open class TableStructuredController: NSObject, UITableViewDataSource, UITableViewDelegate {
     
-    @IBOutlet open weak var tableView: UITableView!
-    
-    open weak var vc: ViewController!
+    @IBOutlet open weak var tableView: UITableView! {
+        didSet {
+            tableView.dataSource = self
+            tableView.delegate = self
+            configureTableView()
+        }
+    }
     
     open var structure: [StructuredSection] = []
     
@@ -32,16 +32,6 @@ open class TableStructuredController<ViewController: TableStructuredViewControll
                 }
             }
         }
-    }
-    
-    public convenience init(vc: ViewController) {
-        self.init()
-        tableView = vc.tableView
-        tableView.dataSource = self
-        tableView.delegate = self
-        self.vc = vc
-        
-        configureTableView()
     }
     
     open func indexPath<T: StructuredCell>(for object: T) -> IndexPath? {
