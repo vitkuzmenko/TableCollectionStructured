@@ -10,12 +10,7 @@ import UIKit
 
 open class TableStructuredController: NSObject, UITableViewDataSource, UITableViewDelegate {
     
-    @IBOutlet open weak var tableView: UITableView! {
-        didSet {
-            tableView.dataSource = self
-            tableView.delegate = self
-        }
-    }
+    private var tableView: UITableView!
     
     open var structure: [StructuredSection] = []
     
@@ -39,6 +34,17 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         
     open func cellModel(at indexPath: IndexPath) -> Any {
         return structure[indexPath.section].rows[indexPath.row]
+    }
+    
+    // MARK: - Registration
+    
+    open func register(_ tableView: UITableView, with cellModels: [StructuredCell.Type]) {
+        self.tableView = tableView
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        let identifiers = cellModels.map({ $0.reuseIdentifier(for: .tableView) })
+        tableView.registerNibs(with: identifiers)
     }
     
     // MARK: - Sctructure Updating
@@ -121,7 +127,6 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         return structure[section].footerTitle
     }
     
-
     // MARK: - Displaying
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -205,23 +210,23 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     // MARK: - Section Header
     
-    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0
-    }
-    
-    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return nil
-    }
+//    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 0
+//    }
+//
+//    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        return nil
+//    }
     
     // MARK: - Section Footer
     
-    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return nil
-    }
-    
-    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0
-    }
+//    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        return nil
+//    }
+//
+//    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+//        return 0
+//    }
     
     // MARK: - UIScrollViewDelegate
     

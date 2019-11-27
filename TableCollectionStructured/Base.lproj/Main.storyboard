@@ -1,11 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QBb-MB-hq0">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <scenes/>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="WUr-2h-Yal">
+            <objects>
+                <viewController id="xRs-oN-O9K" customClass="ViewController" customModule="TableCollectionStructured" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="OzX-OA-eUq"/>
+                        <viewControllerLayoutGuide type="bottom" id="8MR-Wb-gKi"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="KAb-Cp-GHy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="y10-6z-l3f">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="y10-6z-l3f" secondAttribute="trailing" id="1fT-bK-w5V"/>
+                            <constraint firstItem="y10-6z-l3f" firstAttribute="leading" secondItem="KAb-Cp-GHy" secondAttribute="leading" id="dZH-yl-ZPN"/>
+                            <constraint firstItem="y10-6z-l3f" firstAttribute="top" secondItem="KAb-Cp-GHy" secondAttribute="top" id="fuu-gK-ymt"/>
+                            <constraint firstAttribute="bottom" secondItem="y10-6z-l3f" secondAttribute="bottom" id="m9C-B1-t2q"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="NOw-6V-loB"/>
+                    <connections>
+                        <outlet property="tableView" destination="y10-6z-l3f" id="qgV-HV-lf6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xeL-9k-fRB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="780" y="110.83743842364532"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="xcb-MV-zZx">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="QBb-MB-hq0" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FNi-Kl-Lcc">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="xRs-oN-O9K" kind="relationship" relationship="rootViewController" id="nip-ZS-8EN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Cx-p6-aW3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-162.40000000000001" y="110.83743842364532"/>
+        </scene>
+    </scenes>
 </document>

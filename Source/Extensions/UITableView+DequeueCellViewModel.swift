@@ -11,7 +11,7 @@ import UIKit
 extension UITableView {
     
     func dequeueReusableCell(withModel model: StructuredCell, for indexPath: IndexPath) -> UITableViewCell {
-        let indetifier = model.reuseIdentifier(for: .tableView)
+        let indetifier = type(of: model).reuseIdentifier(for: .tableView)
         let cell = self.dequeueReusableCell(withIdentifier: indetifier, for: indexPath)
         model.configureAny(cell: cell)
         return cell

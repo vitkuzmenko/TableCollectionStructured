@@ -22,7 +22,7 @@ public protocol StructuredCellComparable {
 
 public protocol StructuredCell: StructuredCellComparable {
     
-    func reuseIdentifier(for parentView: StructuredView) -> String
+    static func reuseIdentifier(for parentView: StructuredView) -> String
     
     func configureAny(cell: UIView)
     
@@ -34,8 +34,8 @@ extension StructuredCell {
     
     mutating func makeIdentifyHasher() {
         var hasher = Hasher()
-        hasher.combine(reuseIdentifier(for: .tableView))
-        hasher.combine(reuseIdentifier(for: .collectionView))
+        hasher.combine(type(of: self).reuseIdentifier(for: .tableView))
+        hasher.combine(type(of: self).reuseIdentifier(for: .collectionView))
         hasher.combine(identifyHashable)
         identifyHasher = hasher
     }
