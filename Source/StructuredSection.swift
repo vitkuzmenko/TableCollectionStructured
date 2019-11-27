@@ -11,11 +11,12 @@ import Foundation
 
 extension Sequence where Iterator.Element == StructuredSectionComarable {
     
-    func indexPath(of lhs: StructuredCellComparable) -> IndexPath? {
+    func indexPath(of identifyHasher: Hasher) -> IndexPath? {
         for (index, section) in enumerated() {
                         
             let firstIndex = section.rows.firstIndex { rhs -> Bool in
-                return lhs.identifyHasher.finalize() == rhs.identifyHasher.finalize()
+                guard let rhsIdentifyHasher = rhs.identifyHasher else { return false }
+                return identifyHasher.finalize() == rhsIdentifyHasher.finalize()
             }
             
             if let row = firstIndex {
@@ -25,8 +26,31 @@ extension Sequence where Iterator.Element == StructuredSectionComarable {
         return nil
     }
     
-    func contains(structured element: StructuredCellComparable) -> Bool {
-        return indexPath(of: element) != nil
+    func contains(structured identifyHasher: Hasher) -> Bool {
+        return indexPath(of: identifyHasher) != nil
+    }
+    
+}
+
+extension Sequence where Iterator.Element == StructuredSectionOld {
+    
+    func indexPath(of identifyHasher: Hasher) -> IndexPath? {
+        for (index, section) in enumerated() {
+                        
+            let firstIndex = section.rows.firstIndex { rhs -> Bool in
+                guard let rhsIdentifyHasher = rhs.identifyHasher else { return false }
+                return identifyHasher.finalize() == rhsIdentifyHasher.finalize()
+            }
+            
+            if let row = firstIndex {
+                return IndexPath(row: row, section: index)
+            }
+        }
+        return nil
+    }
+    
+    func contains(structured identifyHasher: Hasher) -> Bool {
+        return indexPath(of: identifyHasher) != nil
     }
     
 }
@@ -95,11 +119,11 @@ public protocol StructuredSectionComarable {
 
 
 
-struct StructuredSectionOld: StructuredSectionComarable {
+struct StructuredSectionOld {
     
     let identifier: AnyHashable
     
-    let rows: [StructuredCellComparable]
+    let rows: [StructuredCellOld]
     
 }
 

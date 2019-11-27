@@ -14,9 +14,9 @@ public enum StructuredView {
 
 public protocol StructuredCellComparable {
     
-    var identifyHashable: AnyHashable { get }
+    var identifyHashable: AnyHashable? { get }
     
-    var identifyHasher: Hasher { get set }
+    var identifyHasher: Hasher? { get set }
     
 }
 
@@ -42,11 +42,9 @@ extension StructuredCell {
     
 }
 
-public struct StructuredCellOld: StructuredCellComparable {
+public struct StructuredCellOld {
     
-    public let identifyHashable: AnyHashable
-    
-    public var identifyHasher: Hasher
+    public var identifyHasher: Hasher?
     
 }
 

@@ -19,7 +19,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     open var structure: [StructuredSection] = []
     
-    private var previousStructure: [StructuredSectionComarable] = [] {
+    private var previousStructure: [StructuredSectionOld] = [] {
         didSet {
             structure.forEach { section in
                 section.rows.forEach { object in
@@ -33,7 +33,8 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     open func indexPath(for object: StructuredCellComparable) -> IndexPath? {
         let structure = self.structure as [StructuredSectionComarable]
-        return structure.indexPath(of: object)
+        guard let objectIdentifyHasher = object.identifyHasher else { return nil }
+        return structure.indexPath(of: objectIdentifyHasher)
     }
         
     open func cellModel(at indexPath: IndexPath) -> Any {
@@ -45,7 +46,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     open func set(structure newStructure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
         previousStructure = structure.map { oldSection -> StructuredSectionOld in
             return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
-                return StructuredCellOld(identifyHashable: cellOld.identifyHashable, identifyHasher: cellOld.identifyHasher)
+                return StructuredCellOld(identifyHasher: cellOld.identifyHasher)
             }))
         }
         structure = newStructure
@@ -104,7 +105,8 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
+        guard var model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
+        model.makeIdentifyHasher()
         let cell = tableView.dequeueReusableCell(withModel: model, for: indexPath)
         return cell
     }
