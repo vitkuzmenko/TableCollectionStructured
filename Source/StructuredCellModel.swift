@@ -12,13 +12,17 @@ public enum StructuredView {
     case tableView, collectionView
 }
 
-public protocol StructuredCell {
+public protocol StructuredCell: StructuredCellComparable {
     
     func reuseIdentifier(for parentView: StructuredView) -> String
     
     func configureAny(cell: UIView)
     
-    func isEqual(_ object: Any?) -> Bool
+}
+
+public struct StructuredCellOld: StructuredCellComparable {
+    
+    public let identifier: AnyHashable
     
 }
 
@@ -32,11 +36,7 @@ public protocol StructuredCellConfigurable: StructuredCell {
 
 public extension StructuredCellConfigurable {
     
-    //    public var reuseIdentifier: String {
-    //        return String(describing: CellType.self).components(separatedBy: ".").last!
-    //    }
-    
-    public func configureAny(cell: UIView) {
+    func configureAny(cell: UIView) {
         if let cell = cell as? CellType {
             configure(cell: cell)
         } else {
@@ -48,13 +48,13 @@ public extension StructuredCellConfigurable {
 
 public protocol StructuredCellDynamicHeight {
     
-    func height(for parentView: UIView) -> CGFloat
+    func height(for parentView: UITableView) -> CGFloat
     
 }
 
 public protocol StructuredCellDynamicSize {
     
-    func size(for parentView: UIView) -> CGSize
+    func size(for parentView: UICollectionView) -> CGSize
     
 }
 
@@ -68,7 +68,7 @@ public protocol StructuredCellSelectable {
 
 public protocol StructuredCellDeselectable {
     
-    typealias DidDeselect = () -> Void
+    typealias DidDeselect = (UIView) -> Void
     
     var didDeselect: DidDeselect? { get }
     
@@ -76,7 +76,7 @@ public protocol StructuredCellDeselectable {
 
 public protocol StructuredCellWillDisplay {
     
-    typealias WillDisplay = () -> Void
+    typealias WillDisplay = (UIView) -> Void
     
     var willDisplay: WillDisplay? { get }
     
@@ -84,7 +84,7 @@ public protocol StructuredCellWillDisplay {
 
 public protocol StructuredCellDidEndDisplay {
     
-    typealias DidEndDisplay = () -> Void
+    typealias DidEndDisplay = (UIView) -> Void
     
     var didEndDisplay: DidEndDisplay? { get }
     
@@ -94,30 +94,30 @@ public protocol StructuredCellInvalidatable {
     func invalidated()
 }
 
-open class StructuredObject: Equatable {
-    
-    public let value: Any
-    
-    private let equals: (Any) -> Bool
-    
-    init<T: StructuredCell>(value: T) {
-        
-        func isEqual(_ other: Any) -> Bool {
-            if let r = other as? T {
-                return value.isEqual(r)
-            } else {
-                return false
-            }
-        }
-        
-        self.value = value
-        self.equals = isEqual
-    }
-    
-    public static func ==(lhs: StructuredObject, rhs: StructuredObject) -> Bool {
-        return lhs.equals(rhs.value)
-    }
-    
-}
-
+//open class StructuredObject: Equatable {
+//
+//    public let value: Any
+//
+//    private let equals: (Any) -> Bool
+//
+//    init<T: StructuredCell>(value: T) {
+//
+//        func isEqual(_ other: Any) -> Bool {
+//            if let r = other as? T {
+//                return value.isEqual(r)
+//            } else {
+//                return false
+//            }
+//        }
+//
+//        self.value = value
+//        self.equals = isEqual
+//    }
+//
+//    public static func ==(lhs: StructuredObject, rhs: StructuredObject) -> Bool {
+//        return lhs.equals(rhs.value)
+//    }
+//
+//}
+//
 

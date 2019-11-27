@@ -8,38 +8,86 @@
 
 import Foundation
 
-extension Array where Element: StructuredSection {
+
+extension Sequence where Iterator.Element == StructuredSectionComarable {
     
-    func indexPath(of element: StructuredObject) -> IndexPath? {
+    func indexPath(of element: AnyHashable) -> IndexPath? {
         for (index, section) in self.enumerated() {
-            if let row = section.index(of: element) {
+            
+            var lhsHasher = Hasher()
+            lhsHasher.combine(index)
+            lhsHasher.combine(element)
+            
+            var rhsHasher = Hasher()
+            rhsHasher.combine(index)
+            
+            let firstIndex = section.rows.firstIndex { rhs -> Bool in
+                rhs.identify(into: &rhsHasher)
+                return lhsHasher.finalize() == rhsHasher.finalize()
+            }
+            
+            if let row = firstIndex {
                 return IndexPath(row: row, section: index)
             }
         }
         return nil
     }
     
-    func contains(structured object: StructuredObject) -> Bool {
-        return self.contains(where: { (section) -> Bool in
-            return section.rows.contains(object)
-        })
+    func indexPath(of element: StructuredCellComparable) -> IndexPath? {
+        for (index, section) in enumerated() {
+            
+            var lhsHasher = Hasher()
+            lhsHasher.combine(index)
+            element.identify(into: &lhsHasher)
+            
+            var rhsHasher = Hasher()
+            rhsHasher.combine(index)
+            
+            let firstIndex = section.rows.firstIndex { rhs -> Bool in
+                rhs.identify(into: &rhsHasher)
+                return lhsHasher.finalize() == rhsHasher.finalize()
+            }
+            
+            if let row = firstIndex {
+                return IndexPath(row: row, section: index)
+            }
+        }
+        return nil
+    }
+    
+    func contains(structured element: StructuredCellComparable) -> Bool {
+        for (index, section) in enumerated() {
+            
+            var lhsHasher = Hasher()
+            lhsHasher.combine(index)
+            element.identify(into: &lhsHasher)
+            
+            var rhsHasher = Hasher()
+            rhsHasher.combine(index)
+            
+            let firstIndex = section.rows.firstIndex { rhs -> Bool in
+                rhs.identify(into: &rhsHasher)
+                return lhsHasher.finalize() == rhsHasher.finalize()
+            }
+            
+            if firstIndex != nil {
+                return true
+            }
+        }
+        return false
     }
     
 }
 
-open class StructuredSection: Equatable {
+open class StructuredSection: StructuredSectionComarable {
     
-    public static func ==(lhs: StructuredSection, rhs: StructuredSection) -> Bool {
-        return lhs.identifier == rhs.identifier && lhs.identifier != nil
-    }
-    
-    open var identifier: String?
+    public let identifier: AnyHashable
     
     open var headerTitle: String?
     
     open var footerTitle: String?
     
-    open var rows: [StructuredObject] = [] {
+    open var rows: [StructuredCellComparable] = [] {
         didSet {
             count = rows.count
         }
@@ -51,47 +99,66 @@ open class StructuredSection: Equatable {
     
     var isClosed = false
     
-    public init(identifier: String?) {
+    public init(identifier: AnyHashable) {
         self.identifier = identifier
     }
     
-    public init<T: StructuredCell>(identifier: String? = nil, rows: [T]) {
+    public init(identifier: AnyHashable, rows: [StructuredCellComparable]) {
         self.identifier = identifier
-        self.rows = rows.map({ StructuredObject(value: $0) })
-        self.count = self.rows.count
+        self.rows = rows
     }
     
-    open func append<T: StructuredCell>(_ object: T) {
+    open func append(_ object: StructuredCellComparable) {
         if isClosed {
             fatalError("TableCollectionStructured: Section is appended to structue. You can not add rows more.")
         }
-        let obj = StructuredObject(value: object)
-        rows.append(obj)
+        rows.append(object)
     }
     
-    open func append<T: StructuredCell>(contentsOf objects: [T]) {
+    open func append(contentsOf objects: [StructuredCellComparable]) {
         if isClosed {
             fatalError("TableCollectionStructured: Section is appended to structue alredy. You can not add rows more.")
         }
-        let objs = objects.map({ StructuredObject(value: $0) })
-        rows.append(contentsOf: objs)
+        rows.append(contentsOf: objects)
     }
     
-    open subscript(index: Int) -> Any {
-        return rows[index].value
+    open subscript(index: Int) -> StructuredCellComparable {
+        return rows[index]
     }
+        
+}
+
+extension StructuredSection: Hashable {
     
-    func contains(element: StructuredObject) -> Bool {
-        return rows.contains(element)
+    public static func == (lhs: StructuredSection, rhs: StructuredSection) -> Bool {
+        return lhs.identifier == rhs.identifier
     }
-    
-    func index(of element: StructuredObject) -> Int? {
-        return rows.index(of: element)
-    }
-    
-    open func useIdentifierAsHeaderTitle() {
-        headerTitle = identifier
+        
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
     }
     
 }
 
+public protocol StructuredSectionComarable {
+    var identifier: AnyHashable { get }
+    var rows: [StructuredCellComparable] { get }
+}
+
+public protocol StructuredCellComparable {
+    func identify(into hasher: inout Hasher)
+}
+
+struct StructuredSectionOld: StructuredSectionComarable {
+    
+    let identifier: AnyHashable
+    
+    let rows: [StructuredCellComparable]
+    
+}
+
+extension StructuredSectionOld: Equatable {
+    static func == (lhs: StructuredSectionOld, rhs: StructuredSectionOld) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+}

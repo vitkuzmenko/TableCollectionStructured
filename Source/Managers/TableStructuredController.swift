@@ -14,19 +14,16 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         didSet {
             tableView.dataSource = self
             tableView.delegate = self
-            configureTableView()
         }
     }
     
     open var structure: [StructuredSection] = []
     
-    open var shouldReloadData: Bool { return true }
-    
-    private var previousStructure: [StructuredSection] = [] {
+    private var previousStructure: [StructuredSectionComarable] = [] {
         didSet {
             structure.forEach { section in
                 section.rows.forEach { object in
-                    if let invalidatableCell = object.value as? StructuredCellInvalidatable {
+                    if let invalidatableCell = object as? StructuredCellInvalidatable {
                         invalidatableCell.invalidated()
                     }
                 }
@@ -34,139 +31,69 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         }
     }
     
-    open func indexPath<T: StructuredCell>(for object: T) -> IndexPath? {
-        let obj = StructuredObject(value: object)
-        return structure.indexPath(of: obj)
+    open func indexPath(for object: AnyHashable) -> IndexPath? {
+        let structure = self.structure as [StructuredSectionComarable]
+        return structure.indexPath(of: object)
     }
-    
-    open func isSafe(indexPath: IndexPath) -> Bool {
-        if structure.isEmpty {
-            return false
-        } else if structure.count - 1 >= indexPath.section {
-            if structure[indexPath.section].isEmpty {
-                return false
-            } else if structure[indexPath.section].count - 1 >= indexPath.row {
-                return true
-            }
-        }
-        return false
-    }
-    
-    open func object(at indexPath: IndexPath) -> Any {
-        return structure[indexPath.section][indexPath.row]
-    }
-    
-    open func set(structure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
-        beginBuilding()
-        self.structure = structure
-        buildStructure(with: animation)
-    }
-    
-    open func beginBuilding() {
-        previousStructure = structure
-        structure = []
-    }
-    
-    open func newSection(identifier: String? = nil) -> StructuredSection {
-        return StructuredSection(identifier: identifier)
-    }
-    
-    open func append(section: StructuredSection) {
-        section.isClosed = true
-        if structure.contains(section) {
-            fatalError("TableCollectionStructured: Table structure is contains section with \"\(section.identifier!)\" identifier")
-        }
-        if section.identifier == nil {
-            section.identifier = String(format: "#Section%d", structure.count)
-        }
         
-        for _section in structure {
-            for row in section.rows {
-                if _section.rows.contains(where: { (obj) -> Bool in
-                    return obj == row
-                }) {
+    open func cellModel(at indexPath: IndexPath) -> Any {
+        return structure[indexPath.section].rows[indexPath.row]
+    }
+    
+    // MARK: - Sctructure Updating
+    
+    open func set(structure newStructure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
+        previousStructure = structure.map { oldSection -> StructuredSectionOld in
+            return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
+                return StructuredCellOld(identifier: cellOld.identifier)
+            }))
+        }
+        structure = newStructure
+        switch animation {
+        case .none:
+            tableView.reloadData()
+        default:
+            performReload(with: animation)
+        }
+    }
+    
+    func performReload(with animation: UITableView.RowAnimation) {
+        do {
+            let diff = try StructuredDifference(from: previousStructure, to: structure)
+            tableView.beginUpdates()
                     
-                }
+            for movement in diff.sectionsToMove {
+                tableView.moveSection(movement.from, toSection: movement.to)
             }
-        }
-        
-        structure.append(section)
-    }
-    
-    open func append(section: inout StructuredSection, new identifier: String? = nil) {
-        append(section: section)
-        section = StructuredSection(identifier: identifier)
-    }
-    
-    open func configureTableView() {
-        tableView.tableFooterView = UIView()
-    }
-    
-    open func buildStructure(with animation: UITableView.RowAnimation? = nil) {
-        if let animation = animation {
-            self.performReload(with: animation)
-        }
-    }
-    
-    open func reloadData() {
-        tableView.reloadData()
-    }
-    
-    var queue: Int = 0
-    
-    open func performReload(with animation: UITableView.RowAnimation = .fade) {
-        
-        if animation == .none {
-            if shouldReloadData {
-                reloadData()
+            
+            if !diff.sectionsToDelete.isEmpty {
+                tableView.deleteSections(diff.sectionsToDelete, with: animation)
             }
-            return
-        }
-        
-        let diff = StructuredDifference(from: previousStructure, to: structure)
-        
-        if !diff.reloadConstraint.isEmpty || tableView.window == nil {
-            return reloadData()
-        }
-        
-        CATransaction.begin()
-        
-        tableView.beginUpdates()
-        
-        if shouldReloadData {
-            CATransaction.setCompletionBlock { [weak self] in
-                self?.tableView?.reloadData()
+            
+            if !diff.sectionsToInsert.isEmpty {
+                tableView.insertSections(diff.sectionsToInsert, with: animation)
             }
+            
+            for movement in diff.rowsToMove {
+                tableView.moveRow(at: movement.from, to: movement.to)
+            }
+            
+            if !diff.rowsToDelete.isEmpty {
+                tableView.deleteRows(at: diff.rowsToDelete, with: animation)
+            }
+            
+            if !diff.rowsToInsert.isEmpty {
+                tableView.insertRows(at: diff.rowsToInsert, with: animation)
+            }
+            
+            tableView.endUpdates()
+        } catch let error {
+            NSLog("TableStructuredController: Can not reload animated. %@", error.localizedDescription)
+            tableView.reloadData()
         }
-        
-        for movement in diff.sectionsToMove {
-            tableView.moveSection(movement.from, toSection: movement.to)
-        }
-        
-        if !diff.sectionsToDelete.isEmpty {
-            tableView.deleteSections(diff.sectionsToDelete, with: animation)
-        }
-        
-        if !diff.sectionsToInsert.isEmpty {
-            tableView.insertSections(diff.sectionsToInsert, with: animation)
-        }
-        
-        for movement in diff.rowsToMove {
-            tableView.moveRow(at: movement.from, to: movement.to)
-        }
-        
-        if !diff.rowsToDelete.isEmpty {
-            tableView.deleteRows(at: diff.rowsToDelete, with: animation)
-        }
-        
-        if !diff.rowsToInsert.isEmpty {
-            tableView.insertRows(at: diff.rowsToInsert, with: animation)
-        }
-        
-        tableView.endUpdates()
-        
-        CATransaction.commit()
     }
+    
+    // MARK: - UITableViewDataSource
     
     public func numberOfSections(in tableView: UITableView) -> Int {
         return structure.count
@@ -177,7 +104,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let model = object(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCellModelProtocol") }
+        guard let model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
         let cell = tableView.dequeueReusableCell(withModel: model, for: indexPath)
         return cell
     }
