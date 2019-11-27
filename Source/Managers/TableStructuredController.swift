@@ -31,7 +31,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         }
     }
     
-    open func indexPath(for object: AnyHashable) -> IndexPath? {
+    open func indexPath(for object: StructuredCellComparable) -> IndexPath? {
         let structure = self.structure as [StructuredSectionComarable]
         return structure.indexPath(of: object)
     }
@@ -45,7 +45,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     open func set(structure newStructure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
         previousStructure = structure.map { oldSection -> StructuredSectionOld in
             return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
-                return StructuredCellOld(identifier: cellOld.identifier)
+                return StructuredCellOld(identifyHashable: cellOld.identifyHashable, identifyHasher: cellOld.identifyHasher)
             }))
         }
         structure = newStructure
@@ -109,10 +109,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         return cell
     }
     
-    @available(*, deprecated, message: "deprecated")
-    open func tableView(_ tableView: UITableView, reuseIdentifierFor object: Any) -> String? {
-        fatalError("Depreacted")
-    }
+    // MARK: - Titles
     
     public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return structure[section].headerTitle
@@ -122,138 +119,102 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         return structure[section].footerTitle
     }
     
-    @available(*, deprecated, message: "deprecated")
-    open func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for object: Any, at indexPath: IndexPath) {
-        
-    }
 
+    // MARK: - Displaying
+    
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let object = self.object(at: indexPath) as? StructuredCellWillDisplay {
-            object.willDisplay?()
+        if let object = self.cellModel(at: indexPath) as? StructuredCellWillDisplay {
+            object.willDisplay?(cell)
         }
     }
     
-//    @available(*, deprecated, message: "")
-//    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, for object: Any) {
-//
-//    }
+    // MARK: - Sizing
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let object = self.object(at: indexPath) as? StructuredCellDynamicHeight {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellDynamicHeight {
             return object.height(for: tableView)
         } else {
             return tableView.rowHeight
         }
     }
     
-    @available(*, deprecated, message: "deprecated")
-    open func rowHeight(forIdentifier identifier: String) -> CGFloat {
-        return tableView.rowHeight
-    }
-    
-    @available(*, deprecated, message: "deprecated")
-    open func rowHeight(forObject object: Any) -> CGFloat {
-        if let object = object as? String {
-            return rowHeight(forIdentifier: object)
-        }
-        return tableView.rowHeight
-    }
-    
-    open var automaticallyDeselect: Bool {
-        return true
-    }
+    // MARK: - Selection
     
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let object = self.object(at: indexPath) as? StructuredCellSelectable, let cell = tableView.cellForRow(at: indexPath) {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellSelectable, let cell = tableView.cellForRow(at: indexPath) {
             if let deselect = object.didSelect?(cell), deselect {
                 self.tableView.deselectRow(at: indexPath, animated: false)
             }
         }
     }
-    
-    @available(*, deprecated, message: "deprecated")
-    open func tableView(_ tableView: UITableView, didSelect cell: UITableViewCell, with identifier: String, object: Any, at indexPath: IndexPath) {
         
-    }
-    
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if let object = self.object(at: indexPath) as? StructuredCellDeselectable {
-            object.didDeselect?()
+        if let object = self.cellModel(at: indexPath) as? StructuredCellDeselectable {
+            let cell = tableView.cellForRow(at: indexPath)
+            object.didDeselect?(cell)
         }
     }
     
-    @available(*, deprecated, message: "deprecated")
-    open func tableView(_ tableView: UITableView, didDeselect cell: UITableViewCell, with identifier: String, object: Any, at indexPath: IndexPath) {
-        
-    }
+    // MARK: - Editing
     
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        let object = self.object(at: indexPath)
-        return self.tableView(tableView, canEditRowWith: object, at: indexPath)
-    }
-    
-    open func tableView(_ tableView: UITableView, canEditRowWith object: Any, at indexPath: IndexPath) -> Bool {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+            return object.canEdit?() ?? false
+        }
         return false
     }
     
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let object = self.object(at: indexPath)
-        self.tableView(tableView, commit: editingStyle, for: object, forRowAt: indexPath)
+    public func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+            return object.editingStyle?() ?? .none
+        }
+        return .none
     }
     
-    open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, for object: Any, forRowAt indexPath: IndexPath) {
-        
+    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+            object.commitEditing?(editingStyle)
+        }
     }
+    
+    // MARK: - Moving
     
     public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        let object = self.object(at: indexPath)
-        return self.tableView(tableView, canMove: object, at: indexPath)
-    }
-    
-    open func tableView(_ tableView: UITableView, canMove object: Any, at indexPath: IndexPath) -> Bool {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellMovable {
+            return object.canMove?() ?? false
+        }
         return false
     }
     
     public func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let object = self.object(at: sourceIndexPath)
-        self.tableView(tableView, move: object, from: sourceIndexPath, to: destinationIndexPath)
-    }
-    
-    open func tableView(_ tableView: UITableView, move object: Any, from sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
-    }
-    
-    open func reloadRows<T: StructuredCell>(objects: [T], with animation: UITableView.RowAnimation = .fade) {
-        
-        var indexPaths: [IndexPath] = []
-        for object in objects {
-            if let indexPath = self.indexPath(for: object) {
-                indexPaths.append(indexPath)
-            }
+        if let object = self.cellModel(at: sourceIndexPath) as? StructuredCellMovable {
+            object.didMove?(sourceIndexPath, destinationIndexPath)
         }
-        
-        tableView.reloadRows(at: indexPaths, with: animation)
     }
+    
+    // MARK: - Focus
     
     public func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
-        guard let reuseIdentifier = tableView.cellForRow(at: indexPath)?.reuseIdentifier else { return true }
-        return self.tableView(tableView, canFocus: object(at: indexPath), with: reuseIdentifier, at: indexPath)
+        if let object = self.cellModel(at: indexPath) as? StructuredCellFocusable {
+            return object.canFocus?() ?? false
+        }
+        return false
     }
     
-    open func tableView(_ tableView: UITableView, canFocus object: Any, with identifier: String, at indexPath: IndexPath) -> Bool {
-        return true
+    // MARK: - Section Header
+    
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0
     }
     
     open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return nil
     }
     
+    // MARK: - Section Footer
+    
     open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return nil
-    }
-    
-    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0
     }
     
     open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

@@ -117,7 +117,7 @@ class StructuredDifference {
         
         for section in newStructure {
             for newRow in section.rows {
-                if unique.contains(where: { $0.identifier == newRow.identifier }) {
+                if unique.contains(where: { $0.identifyHasher.finalize() == newRow.identifyHasher.finalize() }) {
                     throw DifferenceError.similarObjects
                 } else {
                     unique.append(newRow)

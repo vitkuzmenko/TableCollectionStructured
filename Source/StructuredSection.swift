@@ -11,41 +11,11 @@ import Foundation
 
 extension Sequence where Iterator.Element == StructuredSectionComarable {
     
-    func indexPath(of element: AnyHashable) -> IndexPath? {
-        for (index, section) in self.enumerated() {
-            
-            var lhsHasher = Hasher()
-            lhsHasher.combine(index)
-            lhsHasher.combine(element)
-            
-            var rhsHasher = Hasher()
-            rhsHasher.combine(index)
-            
-            let firstIndex = section.rows.firstIndex { rhs -> Bool in
-                rhs.identify(into: &rhsHasher)
-                return lhsHasher.finalize() == rhsHasher.finalize()
-            }
-            
-            if let row = firstIndex {
-                return IndexPath(row: row, section: index)
-            }
-        }
-        return nil
-    }
-    
-    func indexPath(of element: StructuredCellComparable) -> IndexPath? {
+    func indexPath(of lhs: StructuredCellComparable) -> IndexPath? {
         for (index, section) in enumerated() {
-            
-            var lhsHasher = Hasher()
-            lhsHasher.combine(index)
-            element.identify(into: &lhsHasher)
-            
-            var rhsHasher = Hasher()
-            rhsHasher.combine(index)
-            
+                        
             let firstIndex = section.rows.firstIndex { rhs -> Bool in
-                rhs.identify(into: &rhsHasher)
-                return lhsHasher.finalize() == rhsHasher.finalize()
+                return lhs.identifyHasher.finalize() == rhs.identifyHasher.finalize()
             }
             
             if let row = firstIndex {
@@ -56,25 +26,7 @@ extension Sequence where Iterator.Element == StructuredSectionComarable {
     }
     
     func contains(structured element: StructuredCellComparable) -> Bool {
-        for (index, section) in enumerated() {
-            
-            var lhsHasher = Hasher()
-            lhsHasher.combine(index)
-            element.identify(into: &lhsHasher)
-            
-            var rhsHasher = Hasher()
-            rhsHasher.combine(index)
-            
-            let firstIndex = section.rows.firstIndex { rhs -> Bool in
-                rhs.identify(into: &rhsHasher)
-                return lhsHasher.finalize() == rhsHasher.finalize()
-            }
-            
-            if firstIndex != nil {
-                return true
-            }
-        }
-        return false
+        return indexPath(of: element) != nil
     }
     
 }
@@ -121,10 +73,6 @@ open class StructuredSection: StructuredSectionComarable {
         }
         rows.append(contentsOf: objects)
     }
-    
-    open subscript(index: Int) -> StructuredCellComparable {
-        return rows[index]
-    }
         
 }
 
@@ -145,9 +93,7 @@ public protocol StructuredSectionComarable {
     var rows: [StructuredCellComparable] { get }
 }
 
-public protocol StructuredCellComparable {
-    func identify(into hasher: inout Hasher)
-}
+
 
 struct StructuredSectionOld: StructuredSectionComarable {
     

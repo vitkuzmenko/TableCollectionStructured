@@ -12,17 +12,41 @@ public enum StructuredView {
     case tableView, collectionView
 }
 
+public protocol StructuredCellComparable {
+    
+    var identifyHashable: AnyHashable { get }
+    
+    var identifyHasher: Hasher { get set }
+    
+}
+
 public protocol StructuredCell: StructuredCellComparable {
     
     func reuseIdentifier(for parentView: StructuredView) -> String
     
     func configureAny(cell: UIView)
     
+    mutating func makeIdentifyHasher()
+    
+}
+
+extension StructuredCell {
+    
+    mutating func makeIdentifyHasher() {
+        var hasher = Hasher()
+        hasher.combine(reuseIdentifier(for: .tableView))
+        hasher.combine(reuseIdentifier(for: .collectionView))
+        hasher.combine(identifyHashable)
+        identifyHasher = hasher
+    }
+    
 }
 
 public struct StructuredCellOld: StructuredCellComparable {
     
-    public let identifier: AnyHashable
+    public let identifyHashable: AnyHashable
+    
+    public var identifyHasher: Hasher
     
 }
 
@@ -68,11 +92,28 @@ public protocol StructuredCellSelectable {
 
 public protocol StructuredCellDeselectable {
     
-    typealias DidDeselect = (UIView) -> Void
+    typealias DidDeselect = (UIView?) -> Void
     
     var didDeselect: DidDeselect? { get }
     
 }
+
+public protocol StructuredCellEditable {
+    
+    typealias CanEdit = () -> Bool
+    
+    var canEdit: CanEdit? { get }
+    
+    typealias EditingStyle = () -> UITableViewCell.EditingStyle
+    
+    var editingStyle: EditingStyle? { get }
+    
+    typealias CommitEditing = (UITableViewCell.EditingStyle) -> Void
+    
+    var commitEditing: CommitEditing? { get }
+    
+}
+
 
 public protocol StructuredCellWillDisplay {
     
@@ -90,34 +131,26 @@ public protocol StructuredCellDidEndDisplay {
     
 }
 
+public protocol StructuredCellMovable {
+    
+    typealias CanMove = () -> Bool
+    
+    var canMove: CanMove? { get }
+    
+    typealias DidMove = (IndexPath, IndexPath) -> Void
+    
+    var didMove: DidMove? { get }
+    
+}
+
+public protocol StructuredCellFocusable {
+    
+    typealias CanFocus = () -> Bool
+    
+    var canFocus: CanFocus? { get }
+    
+}
+
 public protocol StructuredCellInvalidatable {
     func invalidated()
 }
-
-//open class StructuredObject: Equatable {
-//
-//    public let value: Any
-//
-//    private let equals: (Any) -> Bool
-//
-//    init<T: StructuredCell>(value: T) {
-//
-//        func isEqual(_ other: Any) -> Bool {
-//            if let r = other as? T {
-//                return value.isEqual(r)
-//            } else {
-//                return false
-//            }
-//        }
-//
-//        self.value = value
-//        self.equals = isEqual
-//    }
-//
-//    public static func ==(lhs: StructuredObject, rhs: StructuredObject) -> Bool {
-//        return lhs.equals(rhs.value)
-//    }
-//
-//}
-//
-
