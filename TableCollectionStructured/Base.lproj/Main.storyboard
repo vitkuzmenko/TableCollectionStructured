@@ -35,7 +35,7 @@
                     <navigationItem key="navigationItem" title="UITableVIew" id="Lrg-dr-hbJ">
                         <barButtonItem key="rightBarButtonItem" title="Shuffle" id="2l3-GC-HAP">
                             <connections>
-                                <action selector="makeStrucuture" destination="xRs-oN-O9K" id="e3F-7T-Jnh"/>
+                                <action selector="makeStructure" destination="xRs-oN-O9K" id="MuA-8x-VqI"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

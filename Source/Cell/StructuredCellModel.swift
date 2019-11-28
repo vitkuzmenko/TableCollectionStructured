@@ -12,23 +12,6 @@ public enum StructuredView {
     case tableView, collectionView
 }
 
-public protocol StructuredCellIdentifable {
-
-    func identifyHash(into hasher: inout Hasher)
-    
-}
-
-extension StructuredCellIdentifable {
-    
-    internal func identifyHasher(for structuredView: StructuredView) -> Hasher {
-        var hasher = Hasher()
-        let cell = self as! StructuredCell
-        hasher.combine(type(of: cell).reuseIdentifier(for: structuredView))
-        identifyHash(into: &hasher)
-        return hasher
-    }
-    
-}
 
 public protocol StructuredCellContentIdentifable {
     
