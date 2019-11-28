@@ -36,10 +36,7 @@ class ViewController: UIViewController {
             section.headerTitle = country.title
             return section
         }
-        DispatchQueue.main.async {
-            self.tableController.set(structure: structure, animation: TableAnimationRule(insert: .left, delete: .right, reload: .fade))
-        }
-        
+        tableController.set(structure: structure, animation: TableAnimationRule(insert: .left, delete: .right, reload: .fade))
     }
     
 
