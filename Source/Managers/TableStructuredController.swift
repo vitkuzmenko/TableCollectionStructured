@@ -8,6 +8,30 @@
 
 import UIKit
 
+public struct TableAnimationRule: Equatable {
+    let insert, delete, reload: UITableView.RowAnimation
+}
+
+extension TableAnimationRule {
+    
+    public static let fade = TableAnimationRule(insert: .fade, delete: .fade, reload: .fade)
+
+    public static let right = TableAnimationRule(insert: .right, delete: .right, reload: .right)
+
+    public static let left = TableAnimationRule(insert: .left, delete: .left, reload: .left)
+
+    public static let top = TableAnimationRule(insert: .top, delete: .top, reload: .top)
+
+    public static let bottom = TableAnimationRule(insert: .bottom, delete: .bottom, reload: .bottom)
+
+    public static let none = TableAnimationRule(insert: .none, delete: .none, reload: .none)
+
+    public static let middle = TableAnimationRule(insert: .middle, delete: .middle, reload: .middle)
+
+    public static let automatic = TableAnimationRule(insert: .automatic, delete: .automatic, reload: .automatic)
+    
+}
+
 open class TableStructuredController: NSObject, UITableViewDataSource, UITableViewDelegate {
     
     private var tableView: UITableView!
@@ -48,7 +72,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     // MARK: - Sctructure Updating
     
-    open func set(structure newStructure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
+    open func set(structure newStructure: [StructuredSection], animation: TableAnimationRule = .fade) {
         previousStructure = structure.map { oldSection -> StructuredSectionOld in
             return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
                 let cellOldIdentifable = cellOld as? StructuredCellIdentifable
@@ -64,6 +88,9 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
             }))
         }
         structure = newStructure
+        guard !previousStructure.isEmpty else {
+            return tableView.reloadData()
+        }
         switch animation {
         case .none:
             tableView.reloadData()
@@ -72,21 +99,30 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         }
     }
     
-    func performReload(with animation: UITableView.RowAnimation) {
+    func performReload(with animation: TableAnimationRule) {
         do {
             let diff = try StructuredDifference(from: previousStructure, to: structure, structuredView: .tableView)
+            
+//            CATransaction.begin()
+            
             tableView.beginUpdates()
+            
+//            CATransaction.setCompletionBlock { [weak self] in
+//                if !diff.rowsToReload.isEmpty {
+//                    self?.tableView.reloadRows(at: diff.rowsToReload, with: animation.reload)
+//                }
+//            }
                     
             for movement in diff.sectionsToMove {
                 tableView.moveSection(movement.from, toSection: movement.to)
             }
             
             if !diff.sectionsToDelete.isEmpty {
-                tableView.deleteSections(diff.sectionsToDelete, with: animation)
+                tableView.deleteSections(diff.sectionsToDelete, with: animation.delete)
             }
             
             if !diff.sectionsToInsert.isEmpty {
-                tableView.insertSections(diff.sectionsToInsert, with: animation)
+                tableView.insertSections(diff.sectionsToInsert, with: animation.insert)
             }
             
             for movement in diff.rowsToMove {
@@ -94,18 +130,22 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
             }
             
             if !diff.rowsToDelete.isEmpty {
-                tableView.deleteRows(at: diff.rowsToDelete, with: animation)
+                tableView.deleteRows(at: diff.rowsToDelete, with: animation.delete)
             }
             
             if !diff.rowsToInsert.isEmpty {
-                tableView.insertRows(at: diff.rowsToInsert, with: animation)
+                tableView.insertRows(at: diff.rowsToInsert, with: animation.insert)
             }
             
-            if !diff.rowsToReload.isEmpty {
-                tableView.reloadRows(at: diff.rowsToReload, with: animation)
+            DispatchQueue.main.async { [weak self] in
+                if !diff.rowsToReload.isEmpty {
+                    self?.tableView.reloadRows(at: diff.rowsToReload, with: animation.reload)
+                }
             }
             
             tableView.endUpdates()
+            
+//            CATransaction.commit()
         } catch let error {
             NSLog("TableStructuredController: Can not reload animated. %@", error.localizedDescription)
             tableView.reloadData()

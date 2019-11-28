@@ -55,6 +55,7 @@ class StructuredDifference {
             }
             
             for (oldRowIndex, oldRow) in oldSection.rows.enumerated() {
+                var skipForContentUpdater = false
                 let oldIndexPath = IndexPath(row: oldRowIndex, section: oldSectionIndex)
                 if let rowIdentifyHasher = oldRow.identifyHasher, let newRow = newStructure.indexPath(of: rowIdentifyHasher, structuredView: structuredView) {
                     let newRowIndexPath = newRow.indexPath
@@ -65,17 +66,20 @@ class StructuredDifference {
                                 rowsToMove.append((from: oldIndexPath, to: newRowIndexPath))
                             } else {
                                 rowsToDelete.append(oldIndexPath)
+                                skipForContentUpdater = true
                             }
                         } else {
                             rowsToInsert.append(newRowIndexPath)
                         }
                     }
-                    var contentHasher = Hasher()
-                    if let oldRowContentHasher = oldRow.contentHasher,
-                        let newRowContentIdentifable = newRow.cellModel as? StructuredCellContentIdentifable {
-                        newRowContentIdentifable.contentHash(into: &contentHasher)
-                        if contentHasher.finalize() != oldRowContentHasher.finalize() {
-                            rowsToReload.append(newRowIndexPath)
+                    if !skipForContentUpdater {
+                        var contentHasher = Hasher()
+                        if let oldRowContentHasher = oldRow.contentHasher,
+                            let newRowContentIdentifable = newRow.cellModel as? StructuredCellContentIdentifable {
+                            newRowContentIdentifable.contentHash(into: &contentHasher)
+                            if contentHasher.finalize() != oldRowContentHasher.finalize() {
+                                rowsToReload.append(newRowIndexPath)
+                            }
                         }
                     }
                 } else {

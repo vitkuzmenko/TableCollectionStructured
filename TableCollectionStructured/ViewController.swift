@@ -29,19 +29,17 @@ class ViewController: UIViewController {
     
     @IBAction func makeStrucuture() {
         let structure = CitiesDataSource().countries().map { country -> StructuredSection in
-            let rows = country.cities.map({ CityTableViewCellModel(city: $0) })
-            let section = StructuredSection(identifier: country.title)
-            section.rows = rows
+            let section = StructuredSection(
+                identifier: country.title,
+                rows: country.cities.map({ CityTableViewCellModel(city: $0) })
+            )
             section.headerTitle = country.title
-            
-//            section.append(contentsOf: country.cities.map({ CityTableViewCellModel(city: $0) }))
-//            country.cities.forEach { city in
-//                let cellModel = CityTableViewCellModel(city: city)
-//                section.append(cellModel)
-//            }
             return section
-        }        
-        tableController.set(structure: structure, animation: .left)
+        }
+        DispatchQueue.main.async {
+            self.tableController.set(structure: structure, animation: TableAnimationRule(insert: .left, delete: .right, reload: .fade))
+        }
+        
     }
     
 

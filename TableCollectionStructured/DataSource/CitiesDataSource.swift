@@ -23,7 +23,7 @@ class CitiesDataSource {
             City(name: "Las Vegas", population: getRandomPopulation()),
             City(name: "San Francisco", population: getRandomPopulation()),
             City(name: "Los Angeles", population: getRandomPopulation())
-            ] //.shuffled().dropLast(Int.random(in: 0...3))
+            ].dropLast(Int.random(in: 0...3))
     }
     
     func russia() -> [City] {
@@ -32,7 +32,7 @@ class CitiesDataSource {
             City(name: "Rostov-on-Don", population: getRandomPopulation()),
             City(name: "st. Pitersberg", population: getRandomPopulation()),
             City(name: "Vladivostok", population: getRandomPopulation())
-            ] //.shuffled().dropLast(Int.random(in: 0...3))
+            ].dropLast(Int.random(in: 0...3))
     }
     
     func getRandomPopulation() -> Int {

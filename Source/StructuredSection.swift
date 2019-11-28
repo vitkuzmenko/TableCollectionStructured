@@ -23,7 +23,7 @@ extension Array where Element == StructuredSection {
                 return identifyHasher.finalize() == rhsIdentifyHasher.finalize()
             }
             
-            if let row = firstIndex, let cellModel = section.rows[index] as? StructuredCellIdentifable {
+            if let row = firstIndex, let cellModel = section.rows[row] as? StructuredCellIdentifable {
                 return (IndexPath(row: row, section: index), cellModel)
             }
         }
@@ -82,6 +82,7 @@ open class StructuredSection {
     public init(identifier: AnyHashable, rows: [StructuredCell] = []) {
         self.identifier = identifier
         self.rows = rows
+        self.count = rows.count
     }
     
     open func append(_ object: StructuredCell) {
