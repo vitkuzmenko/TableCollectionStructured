@@ -27,29 +27,19 @@ class ViewController: UIViewController {
         ])
     }
     
-    func makeStrucuture() {
-        var structure: [StructuredSection] = []
-        
-        let dataSource = CitiesDataSource()
-        
-        let russiaSection = StructuredSection(identifier: "russia")
-        russiaSection.headerTitle = "Russia"
-        dataSource.russia().forEach { city in
-            let cellModel = CityTableViewCellModel(city: city)
-            russiaSection.append(cellModel)
-        }
-        
-        structure.append(russiaSection)
-        
-        let usaSection = StructuredSection(identifier: "usa")
-        usaSection.headerTitle = "USA"
-        dataSource.usa().forEach { city in
-            let cellModel = CityTableViewCellModel(city: city)
-            usaSection.append(cellModel)
-        }
-        
-        structure.append(usaSection)
-        
+    @IBAction func makeStrucuture() {
+        let structure = CitiesDataSource().countries().map { country -> StructuredSection in
+            let section = StructuredSection(identifier: country.title)
+            section.rows = country.cities.map({ CityTableViewCellModel(city: $0) })
+            section.headerTitle = country.title
+            
+//            section.append(contentsOf: country.cities.map({ CityTableViewCellModel(city: $0) }))
+//            country.cities.forEach { city in
+//                let cellModel = CityTableViewCellModel(city: city)
+//                section.append(cellModel)
+//            }
+            return section
+        }        
         tableController.set(structure: structure, animation: .fade)
     }
     

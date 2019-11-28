@@ -26,10 +26,9 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         }
     }
     
-    open func indexPath(for object: StructuredCellComparable) -> IndexPath? {
-        let structure = self.structure as [StructuredSectionComarable]
-        guard let objectIdentifyHasher = object.identifyHasher else { return nil }
-        return structure.indexPath(of: objectIdentifyHasher)
+    open func indexPath(for object: StructuredCell) -> IndexPath? {
+        guard let objectIdentifyHasher = object.identifyHasher(for: .tableView) else { return nil }
+        return structure.indexPath(of: objectIdentifyHasher, structuredView: .tableView)
     }
         
     open func cellModel(at indexPath: IndexPath) -> Any {
@@ -52,7 +51,8 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     open func set(structure newStructure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
         previousStructure = structure.map { oldSection -> StructuredSectionOld in
             return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
-                return StructuredCellOld(identifyHasher: cellOld.identifyHasher)
+                
+                return StructuredCellOld(identifyHasher: cellOld.identifyHasher(for: .tableView))
             }))
         }
         structure = newStructure
@@ -66,7 +66,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     func performReload(with animation: UITableView.RowAnimation) {
         do {
-            let diff = try StructuredDifference(from: previousStructure, to: structure)
+            let diff = try StructuredDifference(from: previousStructure, to: structure, structuredView: .tableView)
             tableView.beginUpdates()
                     
             for movement in diff.sectionsToMove {
@@ -111,8 +111,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard var model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
-        model.makeIdentifyHasher()
+        guard let model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
         let cell = tableView.dequeueReusableCell(withModel: model, for: indexPath)
         return cell
     }

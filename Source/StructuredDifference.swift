@@ -42,7 +42,7 @@ class StructuredDifference {
     
     var rowsToReload: [IndexPath] = []
     
-    init(from oldStructure: [StructuredSectionOld], to newStructure: [StructuredSectionComarable]) throws {
+    init(from oldStructure: [StructuredSectionOld], to newStructure: [StructuredSection], structuredView: StructuredView) throws {
         
         for (oldSectionIndex, oldSection) in oldStructure.enumerated() {
             
@@ -56,7 +56,7 @@ class StructuredDifference {
             
             for (oldRowIndex, row) in oldSection.rows.enumerated() {
                 let oldIndexPath = IndexPath(row: oldRowIndex, section: oldSectionIndex)
-                if let rowIdentifyHasher = row.identifyHasher, let newRowIndexPath = newStructure.indexPath(of: rowIdentifyHasher) {
+                if let rowIdentifyHasher = row.identifyHasher, let newRowIndexPath = newStructure.indexPath(of: rowIdentifyHasher, structuredView: structuredView) {
                     if oldIndexPath != newRowIndexPath {
                         if newStructure.contains(where: { $0.identifier == oldSection.identifier }) {
                             let newSection = newStructure[newRowIndexPath.section]
@@ -81,7 +81,7 @@ class StructuredDifference {
             }
             
             for (newRowIndex, newRow) in newSection.rows.enumerated() {
-                if let newRowIdentifyHasher = newRow.identifyHasher, oldStructure.contains(structured: newRowIdentifyHasher) {
+                if let newRowIdentifyHasher = newRow.identifyHasher(for: structuredView), oldStructure.contains(structured: newRowIdentifyHasher) {
                     // nothing
                 } else {
                     rowsToInsert.append(IndexPath(row: newRowIndex, section: newSectionIndex))
@@ -105,7 +105,7 @@ class StructuredDifference {
             throw DifferenceError.insertion
         }
         
-        var uniqueSections: [StructuredSectionComarable] = []
+        var uniqueSections: [StructuredSection] = []
         
         for newSection in newStructure {
             if uniqueSections.contains(where: { $0.identifier == newSection.identifier }) {
@@ -115,14 +115,17 @@ class StructuredDifference {
             }
         }
         
-        var unique: [StructuredCellComparable] = []
+        var unique: [StructuredCell] = []
         
         for section in newStructure {
-            for newRow in section.rows {
-                if unique.contains(where: { $0.identifyHasher != nil && $0.identifyHasher?.finalize() == newRow.identifyHasher?.finalize() }) {
+            for lhs in section.rows {
+                if let lhsIdentifyHasher = lhs.identifyHasher(for: structuredView), unique.contains(where: { rhs -> Bool in
+                    let rhsIdentifyHasher = rhs.identifyHasher(for: structuredView)
+                    return rhsIdentifyHasher != nil && lhsIdentifyHasher.finalize() == rhsIdentifyHasher?.finalize()
+                }) {
                     throw DifferenceError.similarObjects
                 } else {
-                    unique.append(newRow)
+                    unique.append(lhs)
                 }
             }
         }

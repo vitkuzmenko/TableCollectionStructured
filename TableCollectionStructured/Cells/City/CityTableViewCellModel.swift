@@ -12,8 +12,6 @@ class CityTableViewCellModel: StructuredCellConfigurable {
     
     var identifyHashable: AnyHashable?
     
-    var identifyHasher: Hasher?
-    
     let text: String
     
     init(city: City) {

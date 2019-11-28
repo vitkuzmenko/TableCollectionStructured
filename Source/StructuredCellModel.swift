@@ -12,32 +12,24 @@ public enum StructuredView {
     case tableView, collectionView
 }
 
-public protocol StructuredCellComparable {
+public protocol StructuredCell {
     
     var identifyHashable: AnyHashable? { get }
-    
-    var identifyHasher: Hasher? { get set }
-    
-}
-
-public protocol StructuredCell: StructuredCellComparable {
     
     static func reuseIdentifier(for parentView: StructuredView) -> String
     
     func configureAny(cell: UIView)
     
-    mutating func makeIdentifyHasher()
-    
 }
 
 extension StructuredCell {
     
-    mutating func makeIdentifyHasher() {
+    public func identifyHasher(for structuredView: StructuredView) -> Hasher? {
+        guard let identifyHashable = identifyHashable else { return nil }
         var hasher = Hasher()
-        hasher.combine(type(of: self).reuseIdentifier(for: .tableView))
-        hasher.combine(type(of: self).reuseIdentifier(for: .collectionView))
+        hasher.combine(type(of: self).reuseIdentifier(for: structuredView))
         hasher.combine(identifyHashable)
-        identifyHasher = hasher
+        return hasher
     }
     
 }
