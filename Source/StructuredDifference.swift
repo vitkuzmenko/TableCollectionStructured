@@ -54,9 +54,10 @@ class StructuredDifference {
                 sectionsToDelete.insert(oldSectionIndex)
             }
             
-            for (oldRowIndex, row) in oldSection.rows.enumerated() {
+            for (oldRowIndex, oldRow) in oldSection.rows.enumerated() {
                 let oldIndexPath = IndexPath(row: oldRowIndex, section: oldSectionIndex)
-                if let rowIdentifyHasher = row.identifyHasher, let newRowIndexPath = newStructure.indexPath(of: rowIdentifyHasher, structuredView: structuredView) {
+                if let rowIdentifyHasher = oldRow.identifyHasher, let newRow = newStructure.indexPath(of: rowIdentifyHasher, structuredView: structuredView) {
+                    let newRowIndexPath = newRow.indexPath
                     if oldIndexPath != newRowIndexPath {
                         if newStructure.contains(where: { $0.identifier == oldSection.identifier }) {
                             let newSection = newStructure[newRowIndexPath.section]
@@ -69,9 +70,18 @@ class StructuredDifference {
                             rowsToInsert.append(newRowIndexPath)
                         }
                     }
+                    var contentHasher = Hasher()
+                    if let oldRowContentHasher = oldRow.contentHasher,
+                        let newRowContentIdentifable = newRow.cellModel as? StructuredCellContentIdentifable {
+                        newRowContentIdentifable.contentHash(into: &contentHasher)
+                        if contentHasher.finalize() != oldRowContentHasher.finalize() {
+                            rowsToReload.append(newRowIndexPath)
+                        }
+                    }
                 } else {
                     rowsToDelete.append(oldIndexPath)
                 }
+                
             }
         }
         

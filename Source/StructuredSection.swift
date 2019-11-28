@@ -11,7 +11,7 @@ import Foundation
 
 extension Array where Element == StructuredSection {
     
-    func indexPath(of identifyHasher: Hasher, structuredView: StructuredView) -> IndexPath? {
+    func indexPath(of identifyHasher: Hasher, structuredView: StructuredView) -> (indexPath: IndexPath, cellModel: StructuredCellIdentifable)? {
         for (index, section) in enumerated() {
                         
             let firstIndex = section.rows.firstIndex { rhs -> Bool in
@@ -22,8 +22,8 @@ extension Array where Element == StructuredSection {
                 return identifyHasher.finalize() == rhsIdentifyHasher.finalize()
             }
             
-            if let row = firstIndex {
-                return IndexPath(row: row, section: index)
+            if let row = firstIndex, let cellModel = section.rows[index] as? StructuredCellIdentifable {
+                return (IndexPath(row: row, section: index), cellModel)
             }
         }
         return nil

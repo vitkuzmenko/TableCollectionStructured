@@ -41,7 +41,7 @@ class ViewController: UIViewController {
 //            }
             return section
         }        
-        tableController.set(structure: structure, animation: .fade)
+        tableController.set(structure: structure, animation: .left)
     }
     
 

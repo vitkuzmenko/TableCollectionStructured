@@ -28,7 +28,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     open func indexPath(for object: StructuredCellIdentifable) -> IndexPath? {
         let objectIdentifyHasher = object.identifyHasher(for: .tableView)
-        return structure.indexPath(of: objectIdentifyHasher, structuredView: .tableView)
+        return structure.indexPath(of: objectIdentifyHasher, structuredView: .tableView)?.indexPath
     }
         
     open func cellModel(at indexPath: IndexPath) -> Any {
@@ -52,7 +52,15 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         previousStructure = structure.map { oldSection -> StructuredSectionOld in
             return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
                 let cellOldIdentifable = cellOld as? StructuredCellIdentifable
-                return StructuredCellOld(identifyHasher: cellOldIdentifable?.identifyHasher(for: .tableView))
+                var contentHasher: Hasher?
+                if let cellOldContentIdentifable = cellOld as? StructuredCellContentIdentifable {
+                    contentHasher = Hasher()
+                    cellOldContentIdentifable.contentHash(into: &contentHasher!)
+                }
+                return StructuredCellOld(
+                    identifyHasher: cellOldIdentifable?.identifyHasher(for: .tableView),
+                    contentHasher: contentHasher
+                )
             }))
         }
         structure = newStructure
@@ -91,6 +99,10 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
             
             if !diff.rowsToInsert.isEmpty {
                 tableView.insertRows(at: diff.rowsToInsert, with: animation)
+            }
+            
+            if !diff.rowsToReload.isEmpty {
+                tableView.reloadRows(at: diff.rowsToReload, with: animation)
             }
             
             tableView.endUpdates()

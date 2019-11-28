@@ -182,8 +182,8 @@
 			isa = PBXGroup;
 			children = (
 				79AEEBF1238F12D5006A11B1 /* CityTableViewCell.swift */,
-				79AEEBF5238F12DA006A11B1 /* CityTableViewCellModel.swift */,
 				79AEEBF2238F12D5006A11B1 /* CityTableViewCell.xib */,
+				79AEEBF5238F12DA006A11B1 /* CityTableViewCellModel.swift */,
 			);
 			path = City;
 			sourceTree = "<group>";

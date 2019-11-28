@@ -20,6 +20,12 @@ public protocol StructuredCellIdentifable {
     
 }
 
+public protocol StructuredCellContentIdentifable {
+    
+    func contentHash(into hasher: inout Hasher)
+    
+}
+
 public protocol StructuredCell {
     
     static func reuseIdentifier(for parentView: StructuredView) -> String
@@ -41,11 +47,13 @@ extension StructuredCell where Self : StructuredCellIdentifable {
 
 public struct StructuredCellOld {
     
-    public var identifyHasher: Hasher?
+    public let identifyHasher: Hasher?
+    
+    public let contentHasher: Hasher?
     
 }
 
-public protocol StructuredCellConfigurable: StructuredCell {
+public protocol StructuredCellAssociated: StructuredCell {
     
     associatedtype CellType: UIView
     
@@ -53,13 +61,13 @@ public protocol StructuredCellConfigurable: StructuredCell {
     
 }
 
-public extension StructuredCellConfigurable {
+public extension StructuredCellAssociated {
     
     func configureAny(cell: UIView) {
         if let cell = cell as? CellType {
             configure(cell: cell)
         } else {
-            assertionFailure("StructuredCellConfigurable and be implemet UIView and subclass only")
+            assertionFailure("StructuredCellAssociated: cell should be associated CellType")
         }
     }
     

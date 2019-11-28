@@ -8,15 +8,18 @@
 
 import UIKit
 
-class CityTableViewCellModel: StructuredCellConfigurable, StructuredCellIdentifable {
+class CityTableViewCellModel: StructuredCellAssociated, StructuredCellIdentifable {
     
     var identifyHashable: AnyHashable
         
     let text: String
     
+    let population: String
+    
     init(city: City) {
         identifyHashable = city.name
         text = city.name
+        population = String(city.population)
     }
     
     static func reuseIdentifier(for parentView: StructuredView) -> String {
@@ -25,6 +28,15 @@ class CityTableViewCellModel: StructuredCellConfigurable, StructuredCellIdentifa
     
     func configure(cell: CityTableViewCell) {
         cell.textLabel?.text = text
+        cell.detailTextLabel?.text = population
     }
     
+}
+
+extension CityTableViewCellModel: StructuredCellContentIdentifable {
+
+    func contentHash(into hasher: inout Hasher) {
+        hasher.combine(population)
+    }
+
 }
