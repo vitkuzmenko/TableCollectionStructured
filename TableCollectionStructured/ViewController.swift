@@ -18,7 +18,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         configureTableView()
-        makeStrucuture()
+        makeStructure()
     }
     
     func configureTableView() {
@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         ])
     }
     
-    @IBAction func makeStrucuture() {
+    @IBAction func makeStructure() {
         let structure = CitiesDataSource().countries().map { country -> StructuredSection in
             let section = StructuredSection(
                 identifier: country.title,
