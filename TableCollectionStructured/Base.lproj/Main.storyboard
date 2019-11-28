@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Table View-->
+        <!--UITableVIew-->
         <scene sceneID="WUr-2h-Yal">
             <objects>
                 <viewController id="xRs-oN-O9K" customClass="ViewController" customModule="TableCollectionStructured" customModuleProvider="target" sceneMemberID="viewController">
@@ -32,7 +32,7 @@
                             <constraint firstAttribute="bottom" secondItem="y10-6z-l3f" secondAttribute="bottom" id="m9C-B1-t2q"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Table View" id="Lrg-dr-hbJ">
+                    <navigationItem key="navigationItem" title="UITableVIew" id="Lrg-dr-hbJ">
                         <barButtonItem key="rightBarButtonItem" title="Shuffle" id="2l3-GC-HAP">
                             <connections>
                                 <action selector="makeStrucuture" destination="xRs-oN-O9K" id="e3F-7T-Jnh"/>

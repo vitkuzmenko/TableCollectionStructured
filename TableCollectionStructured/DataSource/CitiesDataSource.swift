@@ -12,17 +12,18 @@ class CitiesDataSource {
     
     func countries() -> [Country] {
         return [
-            Country(title: "USA", cities: usa().shuffled())
+            Country(title: "USA", cities: usa()),
+            Country(title: "Russia", cities: russia())
         ]
     }
     
     func usa() -> [City] {
         return [
             City(name: "New York"),
-            City(name: "Las Vegas")
-//            City(name: "San Francisco"),
-//            City(name: "Los Angeles")
-        ]
+            City(name: "Las Vegas"),
+            City(name: "San Francisco"),
+            City(name: "Los Angeles")
+            ].shuffled().dropLast(Int.random(in: 0...3))
     }
     
     func russia() -> [City] {
@@ -31,7 +32,7 @@ class CitiesDataSource {
             City(name: "Rostov-on-Don"),
             City(name: "st. Pitersberg"),
             City(name: "Vladivostok")
-        ].shuffled()
+            ].shuffled().dropLast(Int.random(in: 0...3))
     }
     
 }

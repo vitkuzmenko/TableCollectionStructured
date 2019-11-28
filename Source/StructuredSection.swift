@@ -15,7 +15,10 @@ extension Array where Element == StructuredSection {
         for (index, section) in enumerated() {
                         
             let firstIndex = section.rows.firstIndex { rhs -> Bool in
-                guard let rhsIdentifyHasher = rhs.identifyHasher(for: structuredView) else { return false }
+                guard let rhsIdentifable = rhs as? StructuredCellIdentifable else {
+                    return false
+                }
+                let rhsIdentifyHasher = rhsIdentifable.identifyHasher(for: structuredView)
                 return identifyHasher.finalize() == rhsIdentifyHasher.finalize()
             }
             
@@ -75,11 +78,7 @@ open class StructuredSection {
     
     var isClosed = false
     
-    public init(identifier: AnyHashable) {
-        self.identifier = identifier
-    }
-    
-    public init(identifier: AnyHashable, rows: [StructuredCell]) {
+    public init(identifier: AnyHashable, rows: [StructuredCell] = []) {
         self.identifier = identifier
         self.rows = rows
     }
@@ -111,7 +110,6 @@ extension StructuredSection: Hashable {
     }
     
 }
-
 
 struct StructuredSectionOld {
     

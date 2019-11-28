@@ -26,8 +26,8 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         }
     }
     
-    open func indexPath(for object: StructuredCell) -> IndexPath? {
-        guard let objectIdentifyHasher = object.identifyHasher(for: .tableView) else { return nil }
+    open func indexPath(for object: StructuredCellIdentifable) -> IndexPath? {
+        let objectIdentifyHasher = object.identifyHasher(for: .tableView)
         return structure.indexPath(of: objectIdentifyHasher, structuredView: .tableView)
     }
         
@@ -51,8 +51,8 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     open func set(structure newStructure: [StructuredSection], animation: UITableView.RowAnimation = .fade) {
         previousStructure = structure.map { oldSection -> StructuredSectionOld in
             return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
-                
-                return StructuredCellOld(identifyHasher: cellOld.identifyHasher(for: .tableView))
+                let cellOldIdentifable = cellOld as? StructuredCellIdentifable
+                return StructuredCellOld(identifyHasher: cellOldIdentifable?.identifyHasher(for: .tableView))
             }))
         }
         structure = newStructure

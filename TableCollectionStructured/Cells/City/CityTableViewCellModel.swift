@@ -8,10 +8,10 @@
 
 import UIKit
 
-class CityTableViewCellModel: StructuredCellConfigurable {
+class CityTableViewCellModel: StructuredCellConfigurable, StructuredCellIdentifable {
     
-    var identifyHashable: AnyHashable?
-    
+    var identifyHashable: AnyHashable
+        
     let text: String
     
     init(city: City) {

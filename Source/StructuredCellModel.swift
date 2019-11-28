@@ -12,9 +12,15 @@ public enum StructuredView {
     case tableView, collectionView
 }
 
-public protocol StructuredCell {
+public protocol StructuredCellIdentifable {
     
-    var identifyHashable: AnyHashable? { get }
+    var identifyHashable: AnyHashable { get }
+    
+    func identifyHasher(for structuredView: StructuredView) -> Hasher
+    
+}
+
+public protocol StructuredCell {
     
     static func reuseIdentifier(for parentView: StructuredView) -> String
     
@@ -22,10 +28,9 @@ public protocol StructuredCell {
     
 }
 
-extension StructuredCell {
+extension StructuredCell where Self : StructuredCellIdentifable {
     
-    public func identifyHasher(for structuredView: StructuredView) -> Hasher? {
-        guard let identifyHashable = identifyHashable else { return nil }
+    public func identifyHasher(for structuredView: StructuredView) -> Hasher {
         var hasher = Hasher()
         hasher.combine(type(of: self).reuseIdentifier(for: structuredView))
         hasher.combine(identifyHashable)

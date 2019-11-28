@@ -81,7 +81,7 @@ class StructuredDifference {
             }
             
             for (newRowIndex, newRow) in newSection.rows.enumerated() {
-                if let newRowIdentifyHasher = newRow.identifyHasher(for: structuredView), oldStructure.contains(structured: newRowIdentifyHasher) {
+                if let newRowIdentifable = newRow as? StructuredCellIdentifable, oldStructure.contains(structured: newRowIdentifable.identifyHasher(for: structuredView)) {
                     // nothing
                 } else {
                     rowsToInsert.append(IndexPath(row: newRowIndex, section: newSectionIndex))
@@ -119,9 +119,10 @@ class StructuredDifference {
         
         for section in newStructure {
             for lhs in section.rows {
-                if let lhsIdentifyHasher = lhs.identifyHasher(for: structuredView), unique.contains(where: { rhs -> Bool in
-                    let rhsIdentifyHasher = rhs.identifyHasher(for: structuredView)
-                    return rhsIdentifyHasher != nil && lhsIdentifyHasher.finalize() == rhsIdentifyHasher?.finalize()
+                if let lhsIdentifable = lhs as? StructuredCellIdentifable, unique.contains(where: { rhs -> Bool in
+                    guard let rhsIdentifable = rhs as? StructuredCellIdentifable else { return false }
+                    let rhsIdentifyHasher = rhsIdentifable.identifyHasher(for: structuredView)
+                    return lhsIdentifable.identifyHasher(for: structuredView).finalize() == rhsIdentifyHasher.finalize()
                 }) {
                     throw DifferenceError.similarObjects
                 } else {

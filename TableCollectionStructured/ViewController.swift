@@ -29,8 +29,9 @@ class ViewController: UIViewController {
     
     @IBAction func makeStrucuture() {
         let structure = CitiesDataSource().countries().map { country -> StructuredSection in
+            let rows = country.cities.map({ CityTableViewCellModel(city: $0) })
             let section = StructuredSection(identifier: country.title)
-            section.rows = country.cities.map({ CityTableViewCellModel(city: $0) })
+            section.rows = rows
             section.headerTitle = country.title
             
 //            section.append(contentsOf: country.cities.map({ CityTableViewCellModel(city: $0) }))
