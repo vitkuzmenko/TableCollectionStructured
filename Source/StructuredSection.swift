@@ -18,6 +18,7 @@ extension Array where Element == StructuredSection {
                 guard let rhsIdentifable = rhs as? StructuredCellIdentifable else {
                     return false
                 }
+                
                 let rhsIdentifyHasher = rhsIdentifable.identifyHasher(for: structuredView)
                 return identifyHasher.finalize() == rhsIdentifyHasher.finalize()
             }

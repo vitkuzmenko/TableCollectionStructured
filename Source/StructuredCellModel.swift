@@ -13,10 +13,20 @@ public enum StructuredView {
 }
 
 public protocol StructuredCellIdentifable {
+
+    func identifyHash(into hasher: inout Hasher)
     
-    var identifyHashable: AnyHashable { get }
+}
+
+extension StructuredCellIdentifable {
     
-    func identifyHasher(for structuredView: StructuredView) -> Hasher
+    internal func identifyHasher(for structuredView: StructuredView) -> Hasher {
+        var hasher = Hasher()
+        let cell = self as! StructuredCell
+        hasher.combine(type(of: cell).reuseIdentifier(for: structuredView))
+        identifyHash(into: &hasher)
+        return hasher
+    }
     
 }
 
@@ -34,17 +44,6 @@ public protocol StructuredCell {
     
 }
 
-extension StructuredCell where Self : StructuredCellIdentifable {
-    
-    public func identifyHasher(for structuredView: StructuredView) -> Hasher {
-        var hasher = Hasher()
-        hasher.combine(type(of: self).reuseIdentifier(for: structuredView))
-        hasher.combine(identifyHashable)
-        return hasher
-    }
-    
-}
-
 public struct StructuredCellOld {
     
     public let identifyHasher: Hasher?
@@ -53,21 +52,63 @@ public struct StructuredCellOld {
     
 }
 
-public protocol StructuredCellAssociated: StructuredCell {
+public protocol StructuredTableViewCell: StructuredCell {
     
-    associatedtype CellType: UIView
+    associatedtype TableViewCellType: UITableViewCell
     
-    func configure(cell: CellType)
+    static func reuseIdentifierForTableView() -> String
+    
+    func configure(tableViewCell cell: TableViewCellType)
     
 }
 
-public extension StructuredCellAssociated {
+public extension StructuredTableViewCell {
+    
+    static func reuseIdentifier(for parentView: StructuredView) -> String {
+        switch parentView {
+        case .tableView:
+            return reuseIdentifierForTableView()
+        default:
+            fatalError()
+        }
+    }
     
     func configureAny(cell: UIView) {
-        if let cell = cell as? CellType {
-            configure(cell: cell)
+        if let cell = cell as? TableViewCellType {
+            configure(tableViewCell: cell)
         } else {
-            assertionFailure("StructuredCellAssociated: cell should be associated CellType")
+            assertionFailure("StructuredTableViewCell: cell should be subclass of UITableViewCell")
+        }
+    }
+    
+}
+
+public protocol StructuredCollectionViewCell: StructuredCell {
+    
+    associatedtype CollectionViewCellType: UICollectionViewCell
+    
+    func reuseIdentifierForCollectionView() -> String
+    
+    func configure(collectionViewCell cell: CollectionViewCellType)
+    
+}
+
+public extension StructuredCollectionViewCell {
+    
+    func reuseIdentifier(for parentView: StructuredView) -> String {
+        switch parentView {
+        case .collectionView:
+            return reuseIdentifierForCollectionView()
+        default:
+            fatalError()
+        }
+    }
+    
+    func configureAny(cell: UIView) {
+        if let cell = cell as? CollectionViewCellType {
+            configure(collectionViewCell: cell)
+        } else {
+            assertionFailure("StructuredTableViewCell: cell should be subclass of UICollectionViewCell")
         }
     }
     

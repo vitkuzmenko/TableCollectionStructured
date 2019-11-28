@@ -131,8 +131,9 @@ class StructuredDifference {
             for lhs in section.rows {
                 if let lhsIdentifable = lhs as? StructuredCellIdentifable, unique.contains(where: { rhs -> Bool in
                     guard let rhsIdentifable = rhs as? StructuredCellIdentifable else { return false }
+                    let lhsIdentifyHasher = lhsIdentifable.identifyHasher(for: structuredView)
                     let rhsIdentifyHasher = rhsIdentifable.identifyHasher(for: structuredView)
-                    return lhsIdentifable.identifyHasher(for: structuredView).finalize() == rhsIdentifyHasher.finalize()
+                    return lhsIdentifyHasher.finalize() == rhsIdentifyHasher.finalize()
                 }) {
                     throw DifferenceError.similarObjects
                 } else {

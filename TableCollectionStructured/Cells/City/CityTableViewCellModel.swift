@@ -8,27 +8,36 @@
 
 import UIKit
 
-class CityTableViewCellModel: StructuredCellAssociated, StructuredCellIdentifable {
-    
-    var identifyHashable: AnyHashable
-        
-    let text: String
+class CityTableViewCellModel {
+            
+    let title: String
     
     let population: String
     
     init(city: City) {
-        identifyHashable = city.name
-        text = city.name
+        title = city.name
         population = String(city.population)
     }
     
-    static func reuseIdentifier(for parentView: StructuredView) -> String {
+}
+
+extension CityTableViewCellModel: StructuredTableViewCell {
+    
+    class func reuseIdentifierForTableView() -> String {
         return "CityTableViewCell"
     }
     
-    func configure(cell: CityTableViewCell) {
-        cell.textLabel?.text = text
+    func configure(tableViewCell cell: CityTableViewCell) {
+        cell.textLabel?.text = title
         cell.detailTextLabel?.text = population
+    }
+    
+}
+
+extension CityTableViewCellModel: StructuredCellIdentifable {
+    
+    func identifyHash(into hasher: inout Hasher) {
+        hasher.combine(title)
     }
     
 }
