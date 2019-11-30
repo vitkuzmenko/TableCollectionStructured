@@ -22,8 +22,10 @@ class ViewController: UIViewController {
     }
     
     func configureTableView() {
-        tableController.register(tableView, with: [
+        tableController.register(tableView, cellModelTypes: [
             CityTableViewCellModel.self
+        ], headerFooterModelTypes: [
+            CountryHeaderViewModel.self
         ])
     }
     
@@ -33,7 +35,7 @@ class ViewController: UIViewController {
                 identifier: country.title,
                 rows: country.cities.map({ CityTableViewCellModel(city: $0) })
             )
-            section.headerTitle = country.title
+            section.header = .view(CountryHeaderViewModel(country: country))
             return section
         }
         tableController.set(structure: structure, animation: TableAnimationRule(insert: .left, delete: .right, reload: .fade))

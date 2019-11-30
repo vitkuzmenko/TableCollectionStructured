@@ -39,13 +39,23 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     // MARK: - Registration
     
-    open func register(_ tableView: UITableView, with cellModels: [StructuredCell.Type]) {
+    open func register(_ tableView: UITableView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = []) {
         self.tableView = tableView
+        
         tableView.dataSource = self
         tableView.delegate = self
         
-        let identifiers = cellModels.map({ $0.reuseIdentifier(for: .tableView) })
-        tableView.registerNibs(with: identifiers)
+        cellModelTypes.forEach { type in
+            let identifier = type.reuseIdentifier(for: .tableView)
+            let nib = UINib(nibName: identifier, bundle: nil)
+            tableView.register(nib, forCellReuseIdentifier: identifier)
+        }
+        
+        headerFooterModelTypes.forEach { type in
+            let identifier = type.reuseIdentifier(for: .tableView)
+            let nib = UINib(nibName: identifier, bundle: nil)
+            tableView.register(nib, forHeaderFooterViewReuseIdentifier: identifier)
+        }
     }
     
     // MARK: - Sctructure Updating
@@ -120,18 +130,10 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
-        let cell = tableView.dequeueReusableCell(withModel: model, for: indexPath)
+        let indetifier = type(of: model).reuseIdentifier(for: .tableView)
+        let cell = tableView.dequeueReusableCell(withIdentifier: indetifier, for: indexPath)
+        model.configureAny(cell: cell)
         return cell
-    }
-    
-    // MARK: - Titles
-    
-    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return structure[section].headerTitle
-    }
-    
-    public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return structure[section].footerTitle
     }
     
     // MARK: - Displaying
@@ -217,15 +219,59 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     // MARK: - Section Header
     
-//    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 0
-//    }
-//
-//    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        return nil
-//    }
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        guard let header = structure[section].header else {
+            return tableView.sectionHeaderHeight
+        }
+        switch header {
+        case .text:
+            return tableView.sectionHeaderHeight
+        case .view(let viewModel):
+            if let viewModel = viewModel as? StructuredTableSectionHeaderFooterDynamicHeight {
+                return viewModel.height(for: tableView)
+            } else {
+                return tableView.sectionHeaderHeight
+            }
+        }
+    }
+
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard let header = structure[section].header else { return nil }
+        switch header {
+        case .text(let text):
+            return text
+        default:
+            return nil
+        }
+    }
+    
+    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let header = structure[section].header else { return nil }
+        switch header {
+        case .view(let viewModel):
+            let identifier = type(of: viewModel).reuseIdentifier(for: .tableView)
+            if let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) {
+                viewModel.configureAny(view: view)
+                return view
+            } else {
+                return nil
+            }
+        default:
+            return nil
+        }
+    }
     
     // MARK: - Section Footer
+    
+//    public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+//        guard let footer = structure[section].footer else { return nil }
+//        switch footer {
+//        case .text(let text):
+//            return text
+//        default:
+//            return nil
+//        }
+//    }
     
 //    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 //        return nil

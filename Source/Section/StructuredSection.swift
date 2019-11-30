@@ -10,11 +10,15 @@ import Foundation
 
 public struct StructuredSection {
     
+    public enum HeaderFooter {
+        case text(String), view(StructuredSectionHeaderFooter)
+    }
+    
     public let identifier: AnyHashable
     
-    public var headerTitle: String?
+    public var header: HeaderFooter?
     
-    public var footerTitle: String?
+    public var footer: HeaderFooter?
     
     public var rows: [StructuredCell] = [] {
         didSet {

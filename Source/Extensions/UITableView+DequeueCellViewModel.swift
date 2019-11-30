@@ -17,11 +17,5 @@ extension UITableView {
         return cell
     }
     
-    public func registerNibs(with identifiers: [String]) {
-        for identifier in identifiers {
-            let nib = UINib(nibName: identifier, bundle: nil)
-            self.register(nib, forCellReuseIdentifier: identifier)
-        }
-    }
     
 }

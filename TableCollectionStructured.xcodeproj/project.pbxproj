@@ -30,6 +30,10 @@
 		79808B3323925F4200596A2C /* StructuredCellOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B3223925F4200596A2C /* StructuredCellOld.swift */; };
 		79808B352392621400596A2C /* TableAnimationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B342392621400596A2C /* TableAnimationRule.swift */; };
 		79808B372392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B362392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift */; };
+		79808B3A23926A9B00596A2C /* StructuredSectionHeaderFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B3923926A9B00596A2C /* StructuredSectionHeaderFooter.swift */; };
+		79808B3D239270E900596A2C /* CountryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B3C239270E900596A2C /* CountryHeaderView.swift */; };
+		79808B3F239270F500596A2C /* CountryHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79808B3E239270F500596A2C /* CountryHeaderView.xib */; };
+		79808B412392725000596A2C /* CountryHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B402392725000596A2C /* CountryHeaderViewModel.swift */; };
 		798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */; };
 		79AEEBEE238F1218006A11B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AEEBED238F1218006A11B1 /* ViewController.swift */; };
 		79AEEBF3238F12D5006A11B1 /* CityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AEEBF1238F12D5006A11B1 /* CityTableViewCell.swift */; };
@@ -63,6 +67,10 @@
 		79808B3223925F4200596A2C /* StructuredCellOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredCellOld.swift; sourceTree = "<group>"; };
 		79808B342392621400596A2C /* TableAnimationRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableAnimationRule.swift; sourceTree = "<group>"; };
 		79808B362392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableStructuredController+UIScrollViewDelegate.swift"; sourceTree = "<group>"; };
+		79808B3923926A9B00596A2C /* StructuredSectionHeaderFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredSectionHeaderFooter.swift; sourceTree = "<group>"; };
+		79808B3C239270E900596A2C /* CountryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryHeaderView.swift; sourceTree = "<group>"; };
+		79808B3E239270F500596A2C /* CountryHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryHeaderView.xib; sourceTree = "<group>"; };
+		79808B402392725000596A2C /* CountryHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryHeaderViewModel.swift; sourceTree = "<group>"; };
 		798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructuredSection.swift; sourceTree = "<group>"; };
 		79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionStructuredController.swift; sourceTree = "<group>"; };
 		79AEEBED238F1218006A11B1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -142,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				79808B29239071D100596A2C /* Section */,
+				79808B3823926A9000596A2C /* HeaderFooter */,
 				79808B2A239071DA00596A2C /* Cell */,
 				79D733271FA9A5A50056FEBD /* StructuredDifference.swift */,
 				7965A0DC20D135A40076B164 /* Managers */,
@@ -198,9 +207,28 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		79808B3823926A9000596A2C /* HeaderFooter */ = {
+			isa = PBXGroup;
+			children = (
+				79808B3923926A9B00596A2C /* StructuredSectionHeaderFooter.swift */,
+			);
+			path = HeaderFooter;
+			sourceTree = "<group>";
+		};
+		79808B3B239270C500596A2C /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				79808B3C239270E900596A2C /* CountryHeaderView.swift */,
+				79808B3E239270F500596A2C /* CountryHeaderView.xib */,
+				79808B402392725000596A2C /* CountryHeaderViewModel.swift */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
 		79AEEBEF238F12AD006A11B1 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				79808B3B239270C500596A2C /* Header */,
 				79AEEBF0238F12BF006A11B1 /* City */,
 			);
 			path = Cells;
@@ -313,6 +341,7 @@
 				794C150C1DA650C80076DEC0 /* Assets.xcassets in Resources */,
 				79AEEBF4238F12D5006A11B1 /* CityTableViewCell.xib in Resources */,
 				794C150A1DA650C80076DEC0 /* Main.storyboard in Resources */,
+				79808B3F239270F500596A2C /* CountryHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,15 +372,18 @@
 				7965A0E120D14F290076B164 /* UITableView+DequeueCellViewModel.swift in Sources */,
 				79808B352392621400596A2C /* TableAnimationRule.swift in Sources */,
 				794C15181DA6511C0076DEC0 /* TableStructuredController.swift in Sources */,
+				79808B412392725000596A2C /* CountryHeaderViewModel.swift in Sources */,
 				79808B282390336C00596A2C /* Country.swift in Sources */,
 				79D733241FA9A3720056FEBD /* StructuredCell.swift in Sources */,
 				79808B25238F150D00596A2C /* CitiesDataSource.swift in Sources */,
 				79808B3323925F4200596A2C /* StructuredCellOld.swift in Sources */,
+				79808B3A23926A9B00596A2C /* StructuredSectionHeaderFooter.swift in Sources */,
 				79D733281FA9A5A50056FEBD /* StructuredDifference.swift in Sources */,
 				7965A0E020D14F290076B164 /* UICollectionView+DequeueCellViewModel.swift in Sources */,
 				79808B23238F150200596A2C /* City.swift in Sources */,
 				79808B2C239071F600596A2C /* StructuredSectionOld.swift in Sources */,
 				79AEEBEE238F1218006A11B1 /* ViewController.swift in Sources */,
+				79808B3D239270E900596A2C /* CountryHeaderView.swift in Sources */,
 				79AEEBF6238F12DA006A11B1 /* CityTableViewCellModel.swift in Sources */,
 				794C15051DA650C80076DEC0 /* AppDelegate.swift in Sources */,
 			);
