@@ -30,10 +30,18 @@ extension CountryHeaderViewModel: StructuredTableSectionHeaderFooter {
         return "CountryHeaderView"
     }
     
-    func configure(tableViewHeaderFooterView view: CountryHeaderView) {
+    func configure(tableViewHeaderFooterView view: CountryHeaderView, isUpdating: Bool) {
         view.imageView.image = image
         view.titleLabel.text = title
         view.countLabel.text = count
+    }
+    
+}
+
+extension CountryHeaderViewModel: StructuredTableSectionHeaderFooterContentIdentifable {
+    
+    func contentHash(into hasher: inout Hasher) {
+        hasher.combine(count)
     }
     
 }

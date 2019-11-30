@@ -14,6 +14,10 @@ struct StructuredSectionOld {
     
     let rows: [StructuredCellOld]
     
+    let headerContentHasher: Hasher?
+    
+    let footerContentHasher: Hasher?
+    
 }
 
 extension StructuredSectionOld: Equatable {

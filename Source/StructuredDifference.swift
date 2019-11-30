@@ -34,6 +34,10 @@ class StructuredDifference {
     
     var sectionsToInsert = IndexSet()
     
+    var sectionHeadersToReload = IndexSet()
+    
+    var sectionFootersToReload = IndexSet()
+    
     var rowsToMove: [(from: IndexPath, to: IndexPath)] = []
     
     var rowsToDelete: [IndexPath] = []
@@ -50,6 +54,19 @@ class StructuredDifference {
                 if oldSectionIndex != newSectionIndex {
                     sectionsToMove.append((from: oldSectionIndex, to: newSectionIndex))
                 }
+                
+                if let oldHeaderHasher = oldSection.headerContentHasher,
+                    let newHeaderHasher = newStructure[newSectionIndex].headerContentHasher,
+                    oldHeaderHasher.finalize() != newHeaderHasher.finalize() {
+                    sectionHeadersToReload.insert(newSectionIndex)
+                }
+                
+                if let oldFooterHasher = oldSection.footerContentHasher,
+                    let newFooterHasher = newStructure[newSectionIndex].footerContentHasher,
+                    oldFooterHasher.finalize() != newFooterHasher.finalize() {
+                    sectionFootersToReload.insert(newSectionIndex)
+                }
+                
             } else {
                 sectionsToDelete.insert(oldSectionIndex)
             }

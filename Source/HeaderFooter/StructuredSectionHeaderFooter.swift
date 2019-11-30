@@ -14,7 +14,7 @@ public protocol StructuredSectionHeaderFooter {
     
     static func reuseIdentifier(for parentView: StructuredView) -> String
     
-    func configureAny(view: UIView)
+    func configureAny(view: UIView, isUpdating: Bool)
     
 }
 
@@ -26,7 +26,7 @@ public protocol StructuredTableSectionHeaderFooter: StructuredSectionHeaderFoote
     
     static func reuseIdentifierForTableViewHeaderFooter() -> String
     
-    func configure(tableViewHeaderFooterView view: TableViewHeaderFooterType)
+    func configure(tableViewHeaderFooterView view: TableViewHeaderFooterType, isUpdating: Bool)
     
 }
 
@@ -41,9 +41,9 @@ public extension StructuredTableSectionHeaderFooter {
         }
     }
     
-    func configureAny(view: UIView) {
+    func configureAny(view: UIView, isUpdating: Bool) {
         if let view = view as? TableViewHeaderFooterType {
-            configure(tableViewHeaderFooterView: view)
+            configure(tableViewHeaderFooterView: view, isUpdating: isUpdating)
         } else {
             assertionFailure("StructuredTableViewCell: cell should be subclass of UITableViewCell")
         }
@@ -56,5 +56,23 @@ public extension StructuredTableSectionHeaderFooter {
 public protocol StructuredTableSectionHeaderFooterDynamicHeight {
     
     func height(for parentView: UITableView) -> CGFloat
+    
+}
+
+// MARK: - StructuredTableSectionHeaderFooterContentIdentifable
+
+public protocol StructuredTableSectionHeaderFooterContentIdentifable {
+    
+    func contentHash(into hasher: inout Hasher)
+    
+}
+
+extension StructuredTableSectionHeaderFooterContentIdentifable {
+    
+    internal func contentHasher() -> Hasher {
+        var hasher = Hasher()
+        contentHash(into: &hasher)
+        return hasher
+    }
     
 }

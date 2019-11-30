@@ -62,6 +62,47 @@ extension StructuredSection: Hashable {
     
 }
 
+extension StructuredSection {
+    
+    var headerContentHasher: Hasher? {
+        return hasher(for: header)
+    }
+    
+    var footerContentHasher: Hasher? {
+        return hasher(for: footer)
+    }
+    
+    fileprivate func hasher(for headerFooter: HeaderFooter?) -> Hasher? {
+        if let headerFooter = headerFooter {
+            switch headerFooter {
+            case .text(let text):
+                var hasher = Hasher()
+                hasher.combine(text)
+                return hasher
+            case .view(let viewModel):
+                return (viewModel as? StructuredTableSectionHeaderFooterContentIdentifable)?.contentHasher()
+            }
+        } else {
+            return nil
+        }
+    }
+    
+}
+
+extension StructuredSection {
+    
+//    internal func reload(headerFooter: HeaderFooter) {
+//        guard let headerFooter = headerFooter else { return }
+//        switch headerFooter {
+//        case .text(let text):
+//            <#code#>
+//        default:
+//            <#code#>
+//        }
+//    }
+    
+}
+
 extension Sequence where Iterator.Element == StructuredSection {
     
     func indexPath(of identifyHasher: Hasher, structuredView: StructuredView) -> (indexPath: IndexPath, cellModel: StructuredCellIdentifable)? {
@@ -91,12 +132,17 @@ extension Sequence where Iterator.Element == StructuredSection {
     
     func old(for structuredView: StructuredView) -> [StructuredSectionOld] {
         return map { oldSection -> StructuredSectionOld in
-            return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map { cellOld in
-                return StructuredCellOld(
-                    identifyHasher: (cellOld as? StructuredCellIdentifable)?.identifyHasher(for: structuredView),
-                    contentHasher: (cellOld as? StructuredCellContentIdentifable)?.contentHasher()
-                )
-            })
+            return StructuredSectionOld(
+                identifier: oldSection.identifier,
+                rows: oldSection.rows.map { cellOld in
+                    return StructuredCellOld(
+                        identifyHasher: (cellOld as? StructuredCellIdentifable)?.identifyHasher(for: structuredView),
+                        contentHasher: (cellOld as? StructuredCellContentIdentifable)?.contentHasher()
+                    )
+                },
+                headerContentHasher: oldSection.headerContentHasher,
+                footerContentHasher: oldSection.footerContentHasher
+            )
         }
     }
     

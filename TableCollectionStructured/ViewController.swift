@@ -36,6 +36,7 @@ class ViewController: UIViewController {
                 rows: country.cities.map({ CityTableViewCellModel(city: $0) })
             )
             section.header = .view(CountryHeaderViewModel(country: country))
+            section.footer = .text("Population: \(country.cities.reduce(0, { $0 + $1.population }))")
             return section
         }
         tableController.set(structure: structure, animation: TableAnimationRule(insert: .left, delete: .right, reload: .fade))

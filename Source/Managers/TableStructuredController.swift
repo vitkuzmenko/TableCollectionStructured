@@ -105,8 +105,38 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
             }
             
             DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                
                 if !diff.rowsToReload.isEmpty {
-                    self?.tableView.reloadRows(at: diff.rowsToReload, with: animation.reload)
+                    self.tableView.reloadRows(at: diff.rowsToReload, with: animation.reload)
+                }
+                
+                if !diff.sectionHeadersToReload.isEmpty {
+                    diff.sectionHeadersToReload.forEach { index in
+                        if let header = self.structure[index].header, let headerView = self.tableView.headerView(forSection: index) {
+                            switch header {
+                            case .text(let text):
+                                headerView.textLabel?.text = text
+                                headerView.textLabel?.sizeToFit()
+                            case .view(let viewModel):
+                                viewModel.configureAny(view: headerView, isUpdating: true)
+                            }
+                        }
+                    }
+                }
+                
+                if !diff.sectionFootersToReload.isEmpty {
+                    diff.sectionFootersToReload.forEach { index in
+                        if let footer = self.structure[index].footer, let footerView = self.tableView.footerView(forSection: index) {
+                            switch footer {
+                            case .text(let text):
+                                footerView.textLabel?.text = text
+                                footerView.textLabel?.sizeToFit()
+                            case .view(let viewModel):
+                                viewModel.configureAny(view: footerView, isUpdating: true)
+                            }
+                        }
+                    }
                 }
             }
             
@@ -251,7 +281,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         case .view(let viewModel):
             let identifier = type(of: viewModel).reuseIdentifier(for: .tableView)
             if let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) {
-                viewModel.configureAny(view: view)
+                viewModel.configureAny(view: view, isUpdating: false)
                 return view
             } else {
                 return nil
@@ -263,23 +293,47 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     // MARK: - Section Footer
     
-//    public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-//        guard let footer = structure[section].footer else { return nil }
-//        switch footer {
-//        case .text(let text):
-//            return text
-//        default:
-//            return nil
-//        }
-//    }
+    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        guard let footer = structure[section].footer else {
+            return tableView.sectionFooterHeight
+        }
+        switch footer {
+        case .text:
+            return tableView.sectionFooterHeight
+        case .view(let viewModel):
+            if let viewModel = viewModel as? StructuredTableSectionHeaderFooterDynamicHeight {
+                return viewModel.height(for: tableView)
+            } else {
+                return tableView.sectionFooterHeight
+            }
+        }
+    }
+
+    public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        guard let footer = structure[section].footer else { return nil }
+        switch footer {
+        case .text(let text):
+            return text
+        default:
+            return nil
+        }
+    }
     
-//    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        return nil
-//    }
-//
-//    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        return 0
-//    }
+    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard let footer = structure[section].footer else { return nil }
+        switch footer {
+        case .view(let viewModel):
+            let identifier = type(of: viewModel).reuseIdentifier(for: .tableView)
+            if let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) {
+                viewModel.configureAny(view: view, isUpdating: false)
+                return view
+            } else {
+                return nil
+            }
+        default:
+            return nil
+        }
+    }
     
 }
 
