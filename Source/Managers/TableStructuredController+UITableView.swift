@@ -77,16 +77,7 @@ extension TableStructuredController {
         tableView.endUpdates()
         
     }
-    
-    fileprivate var tableViewDelegate: UITableViewDelegate? {
-        switch delegateOverride {
-        case .tableView(let _tableViewDelegate):
-            return _tableViewDelegate
-        default:
-            return nil
-        }
-    }
-    
+        
 }
 
 extension TableStructuredController: UITableViewDataSource {
@@ -181,14 +172,17 @@ extension TableStructuredController: UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        guard let header = structure[section].header else { return }
-        switch header {
-        case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredViewDisplayable {
-                viewModel.willDisplay?(view)
+        if tableViewDelegate?.responds(to: #selector(tableView(_:willDisplayHeaderView:forSection:))) == true {
+            tableViewDelegate?.tableView?(tableView, willDisplayHeaderView: view, forSection: section)
+        } else if let header = structure[section].header {
+            switch header {
+            case .view(let viewModel):
+                if let viewModel = viewModel as? StructuredViewDisplayable {
+                    viewModel.willDisplay?(view)
+                }
+            default:
+                return
             }
-        default:
-            return
         }
     }
     

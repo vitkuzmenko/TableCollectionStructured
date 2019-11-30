@@ -13,16 +13,11 @@ public enum StructuredView {
     case collectionView(UICollectionView)
 }
 
-public enum StructuredViewDelegateOverride {
-    case tableView(UITableViewDelegate)
-    case collectionView(UICollectionViewDelegate)
-}
-
 open class TableStructuredController: NSObject {
     
     private var structuredView: StructuredView!
     
-    public var delegateOverride: StructuredViewDelegateOverride?
+    public var tableViewDelegate: UITableViewDelegate?
     
     public weak var scrollViewDelegate: UIScrollViewDelegate?
     
