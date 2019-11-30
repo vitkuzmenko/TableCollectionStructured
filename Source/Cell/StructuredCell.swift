@@ -189,17 +189,17 @@ public protocol StructuredCellSelectable {
     
 }
 
-public extension StructuredCellSelectable {
+extension StructuredCellSelectable {
     
-    var willSelect: WillSelect? {
+    public var willSelect: WillSelect? {
         return nil
     }
     
-    var willDeselect: WillDeselect? {
+    public var willDeselect: WillDeselect? {
         return nil
     }
     
-    var didDeselect: DidSelect? {
+    public var didDeselect: DidSelect? {
         return nil
     }
     
@@ -227,40 +227,65 @@ public protocol StructuredCellSwipable {
 // MARK: - StructuredCellEditable
 
 public protocol StructuredCellEditable {
-    
-    typealias CanEdit = () -> Bool
-    
-    typealias EditingStyle = () -> UITableViewCell.EditingStyle
-    
+        
     typealias CommitEditing = (UITableViewCell.EditingStyle) -> Void
     
-    var canEdit: CanEdit? { get }
+    typealias WillBeginEditing = () -> Void
+    
+    typealias DidEndEditing = () -> Void
+    
+    var canEdit: Bool { get }
 
-    var editingStyle: EditingStyle? { get }
+    var editingStyle: UITableViewCell.EditingStyle { get }
+    
+    var shouldIndentWhileEditing: Bool { get }
 
     var commitEditing: CommitEditing? { get }
+    
+    var willBeginEditing: WillBeginEditing? { get }
+    
+    var didEndEditing: DidEndEditing? { get }
+    
+}
+
+extension StructuredCellEditable {
+    
+    public var shouldIndentWhileEditing: Bool {
+        return true
+    }
+    
+    var willBeginEditing: WillBeginEditing? {
+        return nil
+    }
+    
+    var didEndEditing: DidEndEditing? {
+        return nil
+    }
     
 }
 
 // MARK: - StructuredViewWillDisplay
 
-public protocol StructuredViewWillDisplay {
+public protocol StructuredViewDisplayable {
     
     typealias WillDisplay = (UIView) -> Void
     
-    var willDisplay: WillDisplay? { get }
-    
-}
-
-// MARK: - StructuredViewDidEndDisplay
-
-public protocol StructuredViewDidEndDisplay {
-    
     typealias DidEndDisplay = (UIView) -> Void
+    
+    var willDisplay: WillDisplay? { get }
     
     var didEndDisplay: DidEndDisplay? { get }
     
 }
+
+extension StructuredViewDisplayable {
+    
+    public var didEndDisplay: DidEndDisplay? {
+        return nil
+    }
+    
+}
+
 
 // MARK: - StructuredCellMovable
 
@@ -283,6 +308,41 @@ public protocol StructuredCellFocusable {
     typealias CanFocus = () -> Bool
     
     var canFocus: CanFocus? { get }
+    
+}
+
+// MARK: - StructuredCellSpringLoadable
+
+@available(iOS 11.0, *)
+public protocol StructuredCellSpringLoadable {
+    
+    typealias DidBeginMultipleSelection = (UISpringLoadedInteractionContext) -> Bool
+    
+    var shouldSpringLoad: DidBeginMultipleSelection? { get }
+    
+}
+
+// MARK: - StructuredCellMultipleSelectable
+
+@available(iOS 13.0, *)
+public protocol StructuredCellMultipleSelectable {
+    
+    typealias DidBeginMultipleSelection = () -> Void
+    
+    var shouldBeginMultipleSelection: Bool { get }
+    
+    var didBeginMultipleSelection: DidBeginMultipleSelection? { get }
+    
+}
+
+// MARK: - StructuredCellContextualMenuConfigurable
+
+@available(iOS 13.0, *)
+public protocol StructuredCellContextualMenuConfigurable {
+    
+    typealias ContextMenuConfiguration = (CGPoint) -> UIContextMenuConfiguration?
+    
+    var contextMenuConfiguration: ContextMenuConfiguration? { get }
     
 }
 

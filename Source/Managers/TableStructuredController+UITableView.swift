@@ -125,7 +125,7 @@ extension TableStructuredController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
-            return object.canEdit?() ?? false
+            return object.canEdit
         }
         return false
     }
@@ -164,7 +164,7 @@ extension TableStructuredController: UITableViewDelegate {
     // MARK: - Will Display
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredViewWillDisplay {
+        if let object = self.cellModel(at: indexPath) as? StructuredViewDisplayable {
             object.willDisplay?(cell)
         }
     }
@@ -173,7 +173,7 @@ extension TableStructuredController: UITableViewDelegate {
         guard let header = structure[section].header else { return }
         switch header {
         case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredViewWillDisplay {
+            if let viewModel = viewModel as? StructuredViewDisplayable {
                 viewModel.willDisplay?(view)
             }
         default:
@@ -185,7 +185,7 @@ extension TableStructuredController: UITableViewDelegate {
         guard let footer = structure[section].footer else { return }
         switch footer {
         case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredViewWillDisplay {
+            if let viewModel = viewModel as? StructuredViewDisplayable {
                 viewModel.willDisplay?(view)
             }
         default:
@@ -196,7 +196,7 @@ extension TableStructuredController: UITableViewDelegate {
     // MARK: - Did End Display
     
     public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredViewDidEndDisplay {
+        if let object = self.cellModel(at: indexPath) as? StructuredViewDisplayable {
             object.didEndDisplay?(cell)
         }
     }
@@ -205,7 +205,7 @@ extension TableStructuredController: UITableViewDelegate {
         guard let header = structure[section].header else { return }
         switch header {
         case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredViewDidEndDisplay {
+            if let viewModel = viewModel as? StructuredViewDisplayable {
                 viewModel.didEndDisplay?(view)
             }
         default:
@@ -217,7 +217,7 @@ extension TableStructuredController: UITableViewDelegate {
         guard let footer = structure[section].footer else { return }
         switch footer {
         case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredViewDidEndDisplay {
+            if let viewModel = viewModel as? StructuredViewDisplayable {
                 viewModel.didEndDisplay?(view)
             }
         default:
@@ -391,7 +391,7 @@ extension TableStructuredController: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
-            return object.editingStyle?() ?? .none
+            return object.editingStyle
         }
         return .none
     }
@@ -401,6 +401,26 @@ extension TableStructuredController: UITableViewDelegate {
             return object.titleForDeleteConfirmationButton
         }
         return nil
+    }
+    
+    public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+            return object.shouldIndentWhileEditing
+        }
+        return true
+    }
+    
+    public func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+            object.willBeginEditing?()
+        }
+    }
+    
+    public func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        guard let indexPath = indexPath else { return }
+        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+            object.didEndEditing?()
+        }
     }
     
     // MARK: - Swipe
@@ -421,6 +441,19 @@ extension TableStructuredController: UITableViewDelegate {
         return nil
     }
     
+    // MARK: - Moving
+    
+//    public func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+//
+//    }
+    
+    // MARK: - Indention
+    
+//    public func tableView(_ tableView: UITableView, indentationLevelForRowAt indexPath: IndexPath) -> Int {
+//
+//    }
+
+    
     // MARK: - Focus
     
     public func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
@@ -430,8 +463,74 @@ extension TableStructuredController: UITableViewDelegate {
         return false
     }
     
-    // MARK: - Section Header
+//    func tableView(_ tableView: UITableView, shouldUpdateFocusIn context: UITableViewFocusUpdateContext) -> Bool {
+//
+//    }
     
+//    func tableView(_ tableView: UITableView, didUpdateFocusIn context: UITableViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+//
+//    }
+    
+//    func indexPathForPreferredFocusedView(in tableView: UITableView) -> IndexPath? {
+//        
+//    }
+    
+    // MARK: - Spring Loading
+    
+    @available(iOS 11.0, *)
+    public func tableView(_ tableView: UITableView, shouldSpringLoadRowAt indexPath: IndexPath, with context: UISpringLoadedInteractionContext) -> Bool {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellSpringLoadable {
+            return object.shouldSpringLoad?(context) ?? false
+        }
+        return false
+    }
+    
+    // MARK: - Multiple Selection
+    
+    @available(iOS 13.0, *)
+    public func tableView(_ tableView: UITableView, shouldBeginMultipleSelectionInteractionAt indexPath: IndexPath) -> Bool {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellMultipleSelectable {
+            return object.shouldBeginMultipleSelection
+        }
+        return false
+    }
+    
+    @available(iOS 13.0, *)
+    public func tableView(_ tableView: UITableView, didBeginMultipleSelectionInteractionAt indexPath: IndexPath) {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellMultipleSelectable {
+            object.didBeginMultipleSelection?()
+        }
+    }
+    
+//    @available(iOS 13.0, *)
+//    public func tableViewDidEndMultipleSelectionInteraction(_ tableView: UITableView) {
+//
+//    }
+    
+    // MARK: - Contextual menu
+    
+    @available(iOS 13.0, *)
+    public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellContextualMenuConfigurable {
+            return object.contextMenuConfiguration?(point)
+        }
+        return nil
+    }
+    
+//    @available(iOS 13.0, *)
+//    public func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+//
+//    }
+
+//    @available(iOS 13.0, *)
+//    public func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+//
+//    }
+
+//    @available(iOS 13.0, *)
+//    public func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+//
+//    }
     
 
     
