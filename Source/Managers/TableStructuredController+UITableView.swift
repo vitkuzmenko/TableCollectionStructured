@@ -389,8 +389,6 @@ extension TableStructuredController: UITableViewDelegate {
     
     // MARK: - Editing
     
-    
-    
     public func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
             return object.editingStyle?() ?? .none
@@ -398,12 +396,30 @@ extension TableStructuredController: UITableViewDelegate {
         return .none
     }
     
+    public func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellDeletable {
+            return object.titleForDeleteConfirmationButton
+        }
+        return nil
+    }
     
+    // MARK: - Swipe
     
-    // MARK: - Moving
-    
-    
+    @available(iOS 11.0, *)
+    public func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellSwipable {
+            return object.leadingSwipeActions
+        }
+        return nil
+    }
 
+    @available(iOS 11.0, *)
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if let object = self.cellModel(at: indexPath) as? StructuredCellSwipable {
+            return object.trailingSwipeActions
+        }
+        return nil
+    }
     
     // MARK: - Focus
     

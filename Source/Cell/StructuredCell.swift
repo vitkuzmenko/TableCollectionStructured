@@ -205,6 +205,25 @@ public extension StructuredCellSelectable {
     
 }
 
+// MARK: - Delete confirmation
+
+public protocol StructuredCellDeletable {
+    
+    var titleForDeleteConfirmationButton: String? { get }
+    
+}
+
+// MARK: - Swipe Actions
+
+@available(iOS 11.0, *)
+public protocol StructuredCellSwipable {
+    
+    var leadingSwipeActions: UISwipeActionsConfiguration? { get }
+    
+    var trailingSwipeActions: UISwipeActionsConfiguration? { get }
+    
+}
+
 // MARK: - StructuredCellEditable
 
 public protocol StructuredCellEditable {
