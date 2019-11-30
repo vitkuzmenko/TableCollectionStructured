@@ -316,6 +316,14 @@ public protocol StructuredCellSpringLoadable {
     
 }
 
+// MARK: - StructuredCellIndentable
+
+public protocol StructuredCellIndentable {
+    
+    var indentationLevel: Int { get }
+    
+}
+
 // MARK: - StructuredCellMultipleSelectable
 
 @available(iOS 13.0, *)

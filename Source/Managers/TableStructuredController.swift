@@ -17,7 +17,7 @@ open class TableStructuredController: NSObject {
     
     private var structuredView: StructuredView!
     
-    public var tableViewDelegate: UITableViewDelegate?
+    public weak var structuredViewDelegate: AnyObject?
     
     public weak var scrollViewDelegate: UIScrollViewDelegate?
     
