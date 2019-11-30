@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CityTableViewCellModel {
+struct CityTableViewCellModel {
             
     let title: String
     
@@ -23,7 +23,7 @@ class CityTableViewCellModel {
 
 extension CityTableViewCellModel: StructuredTableViewCell {
     
-    class func reuseIdentifierForTableView() -> String {
+    static func reuseIdentifierForTableView() -> String {
         return "CityTableViewCell"
     }
     
