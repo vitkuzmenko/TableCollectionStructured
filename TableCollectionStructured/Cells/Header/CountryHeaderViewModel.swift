@@ -46,9 +46,9 @@ extension CountryHeaderViewModel: StructuredTableSectionHeaderFooterContentIdent
     
 }
 
-extension CountryHeaderViewModel: StructuredTableSectionHeaderFooterDynamicHeight {
+extension CountryHeaderViewModel: StructuredViewHeight {
     
-    func height(for parentView: UITableView) -> CGFloat {
+    func height(for tableView: UITableView) -> CGFloat {
         return 42
     }
     

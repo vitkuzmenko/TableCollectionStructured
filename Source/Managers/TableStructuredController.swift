@@ -8,9 +8,14 @@
 
 import UIKit
 
-open class TableStructuredController: NSObject, UITableViewDataSource, UITableViewDelegate {
+public enum StructuredView {
+    case tableView(UITableView)
+    case collectionView(UICollectionView)
+}
+
+open class TableStructuredController: NSObject {
     
-    private var tableView: UITableView!
+    private var structuredView: StructuredView!
     
     public weak var scrollViewDelegate: UIScrollViewDelegate?
     
@@ -29,8 +34,8 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     }
     
     open func indexPath(for object: StructuredCellIdentifable) -> IndexPath? {
-        let objectIdentifyHasher = object.identifyHasher(for: .tableView)
-        return structure.indexPath(of: objectIdentifyHasher, structuredView: .tableView)?.indexPath
+        let objectIdentifyHasher = object.identifyHasher(for: structuredView)
+        return structure.indexPath(of: objectIdentifyHasher, structuredView: structuredView)?.indexPath
     }
         
     open func cellModel(at indexPath: IndexPath) -> Any {
@@ -39,20 +44,32 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     
     // MARK: - Registration
     
-    open func register(_ tableView: UITableView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = []) {
-        self.tableView = tableView
+    open func register(_ strcturedView: StructuredView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = []) {
+        if self.structuredView != nil {
+            fatalError("TableStructuredController: Registration may be once")
+        }
+        self.structuredView = strcturedView
+        switch strcturedView {
+        case .tableView(let tableView):
+            register(tableView, cellModelTypes: cellModelTypes, headerFooterModelTypes: headerFooterModelTypes)
+        case .collectionView(let collectionView):
+            break
+        }
+    }
+    
+    private func register(_ tableView: UITableView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = []) {
         
         tableView.dataSource = self
         tableView.delegate = self
         
         cellModelTypes.forEach { type in
-            let identifier = type.reuseIdentifier(for: .tableView)
+            let identifier = type.reuseIdentifier(for: structuredView)
             let nib = UINib(nibName: identifier, bundle: nil)
             tableView.register(nib, forCellReuseIdentifier: identifier)
         }
         
         headerFooterModelTypes.forEach { type in
-            let identifier = type.reuseIdentifier(for: .tableView)
+            let identifier = type.reuseIdentifier(for: structuredView)
             let nib = UINib(nibName: identifier, bundle: nil)
             tableView.register(nib, forHeaderFooterViewReuseIdentifier: identifier)
         }
@@ -61,279 +78,30 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     // MARK: - Sctructure Updating
     
     open func set(structure newStructure: [StructuredSection], animation: TableAnimationRule = .fade) {
-        previousStructure = structure.old(for: .tableView)
+        guard let structuredView = structuredView else { fatalError("StructuredView is not configured") }
+        previousStructure = structure.old(for: structuredView)
         structure = newStructure
-        guard !previousStructure.isEmpty else {
-            return tableView.reloadData()
-        }
-        switch animation {
-        case .none:
-            tableView.reloadData()
-        default:
-            performReload(with: animation)
-        }
-    }
-    
-    func performReload(with animation: TableAnimationRule) {
-        do {
-            let diff = try StructuredDifference(from: previousStructure, to: structure, structuredView: .tableView)
-            
-            tableView.beginUpdates()
-                                
-            for movement in diff.sectionsToMove {
-                tableView.moveSection(movement.from, toSection: movement.to)
+        switch structuredView {
+        case .tableView(let tableView):
+            guard !previousStructure.isEmpty else {
+                return tableView.reloadData()
             }
-            
-            if !diff.sectionsToDelete.isEmpty {
-                tableView.deleteSections(diff.sectionsToDelete, with: animation.delete)
-            }
-            
-            if !diff.sectionsToInsert.isEmpty {
-                tableView.insertSections(diff.sectionsToInsert, with: animation.insert)
-            }
-            
-            for movement in diff.rowsToMove {
-                tableView.moveRow(at: movement.from, to: movement.to)
-            }
-            
-            if !diff.rowsToDelete.isEmpty {
-                tableView.deleteRows(at: diff.rowsToDelete, with: animation.delete)
-            }
-            
-            if !diff.rowsToInsert.isEmpty {
-                tableView.insertRows(at: diff.rowsToInsert, with: animation.insert)
-            }
-            
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else { return }
-                
-                if !diff.rowsToReload.isEmpty {
-                    self.tableView.reloadRows(at: diff.rowsToReload, with: animation.reload)
-                }
-                
-                if !diff.sectionHeadersToReload.isEmpty {
-                    diff.sectionHeadersToReload.forEach { index in
-                        if let header = self.structure[index].header, let headerView = self.tableView.headerView(forSection: index) {
-                            switch header {
-                            case .text(let text):
-                                headerView.textLabel?.text = text
-                                headerView.textLabel?.sizeToFit()
-                            case .view(let viewModel):
-                                viewModel.configureAny(view: headerView, isUpdating: true)
-                            }
-                        }
-                    }
-                }
-                
-                if !diff.sectionFootersToReload.isEmpty {
-                    diff.sectionFootersToReload.forEach { index in
-                        if let footer = self.structure[index].footer, let footerView = self.tableView.footerView(forSection: index) {
-                            switch footer {
-                            case .text(let text):
-                                footerView.textLabel?.text = text
-                                footerView.textLabel?.sizeToFit()
-                            case .view(let viewModel):
-                                viewModel.configureAny(view: footerView, isUpdating: true)
-                            }
-                        }
-                    }
+            switch animation {
+            case .none:
+                tableView.reloadData()
+            default:
+                do {
+                    let diff = try StructuredDifference(from: previousStructure, to: structure, structuredView: .tableView(tableView))
+                    performTableViewReload(tableView, diff: diff, with: animation)
+                } catch let error {
+                    NSLog("TableStructuredController: Can not reload animated. %@", error.localizedDescription)
+                    tableView.reloadData()
                 }
             }
-            
-            tableView.endUpdates()
-            
-        } catch let error {
-            NSLog("TableStructuredController: Can not reload animated. %@", error.localizedDescription)
-            tableView.reloadData()
-        }
-    }
-    
-    // MARK: - UITableViewDataSource
-    
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return structure.count
-    }
-    
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return structure[section].count
-    }
-    
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
-        let indetifier = type(of: model).reuseIdentifier(for: .tableView)
-        let cell = tableView.dequeueReusableCell(withIdentifier: indetifier, for: indexPath)
-        model.configureAny(cell: cell)
-        return cell
-    }
-    
-    // MARK: - Displaying
-    
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellWillDisplay {
-            object.willDisplay?(cell)
-        }
-    }
-    
-    // MARK: - Sizing
-    
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellDynamicHeight {
-            return object.height(for: tableView)
-        } else {
-            return tableView.rowHeight
-        }
-    }
-    
-    // MARK: - Selection
-    
-    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellSelectable, let cell = tableView.cellForRow(at: indexPath) {
-            if let deselect = object.didSelect?(cell), deselect {
-                self.tableView.deselectRow(at: indexPath, animated: false)
-            }
+        case .collectionView(let collectionView):
+            break
         }
     }
         
-    public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellDeselectable {
-            let cell = tableView.cellForRow(at: indexPath)
-            object.didDeselect?(cell)
-        }
-    }
-    
-    // MARK: - Editing
-    
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
-            return object.canEdit?() ?? false
-        }
-        return false
-    }
-    
-    public func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
-            return object.editingStyle?() ?? .none
-        }
-        return .none
-    }
-    
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
-            object.commitEditing?(editingStyle)
-        }
-    }
-    
-    // MARK: - Moving
-    
-    public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellMovable {
-            return object.canMove?() ?? false
-        }
-        return false
-    }
-    
-    public func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        if let object = self.cellModel(at: sourceIndexPath) as? StructuredCellMovable {
-            object.didMove?(sourceIndexPath, destinationIndexPath)
-        }
-    }
-    
-    // MARK: - Focus
-    
-    public func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellFocusable {
-            return object.canFocus?() ?? false
-        }
-        return false
-    }
-    
-    // MARK: - Section Header
-    
-    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard let header = structure[section].header else {
-            return tableView.sectionHeaderHeight
-        }
-        switch header {
-        case .text:
-            return tableView.sectionHeaderHeight
-        case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredTableSectionHeaderFooterDynamicHeight {
-                return viewModel.height(for: tableView)
-            } else {
-                return tableView.sectionHeaderHeight
-            }
-        }
-    }
-
-    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let header = structure[section].header else { return nil }
-        switch header {
-        case .text(let text):
-            return text
-        default:
-            return nil
-        }
-    }
-    
-    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let header = structure[section].header else { return nil }
-        switch header {
-        case .view(let viewModel):
-            let identifier = type(of: viewModel).reuseIdentifier(for: .tableView)
-            if let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) {
-                viewModel.configureAny(view: view, isUpdating: false)
-                return view
-            } else {
-                return nil
-            }
-        default:
-            return nil
-        }
-    }
-    
-    // MARK: - Section Footer
-    
-    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        guard let footer = structure[section].footer else {
-            return tableView.sectionFooterHeight
-        }
-        switch footer {
-        case .text:
-            return tableView.sectionFooterHeight
-        case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredTableSectionHeaderFooterDynamicHeight {
-                return viewModel.height(for: tableView)
-            } else {
-                return tableView.sectionFooterHeight
-            }
-        }
-    }
-
-    public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        guard let footer = structure[section].footer else { return nil }
-        switch footer {
-        case .text(let text):
-            return text
-        default:
-            return nil
-        }
-    }
-    
-    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard let footer = structure[section].footer else { return nil }
-        switch footer {
-        case .view(let viewModel):
-            let identifier = type(of: viewModel).reuseIdentifier(for: .tableView)
-            if let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) {
-                viewModel.configureAny(view: view, isUpdating: false)
-                return view
-            } else {
-                return nil
-            }
-        default:
-            return nil
-        }
-    }
-    
 }
 

@@ -157,7 +157,7 @@ open class CollectionStructuredController: NSObject, UICollectionViewDataSource,
     }
     
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let object = self.object(at: indexPath) as? StructuredCellWillDisplay {
+        if let object = self.object(at: indexPath) as? StructuredViewWillDisplay {
             object.willDisplay?()
         }
     }
@@ -168,7 +168,7 @@ open class CollectionStructuredController: NSObject, UICollectionViewDataSource,
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? StructuredCellDidEndDisplay {
+        if let cell = cell as? StructuredViewDidEndDisplay {
             cell.didEndDisplay?()
         }
     }

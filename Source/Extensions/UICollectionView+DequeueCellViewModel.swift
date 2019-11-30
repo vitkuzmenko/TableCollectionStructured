@@ -10,18 +10,18 @@ import UIKit
 
 extension UICollectionView {
     
-    func dequeueReusableCell(withModel model: StructuredCell, for indexPath: IndexPath) -> UICollectionViewCell {
-        let indetifier = type(of: model).reuseIdentifier(for: .collectionView)
-        let cell = self.dequeueReusableCell(withReuseIdentifier: indetifier, for: indexPath)
-        model.configureAny(cell: cell)
-        return cell
-    }
-    
-    public func registerNibs(with identifiers: [String]) {
-        for identifier in identifiers {
-            let nib = UINib(nibName: identifier, bundle: nil)
-            self.register(nib, forCellWithReuseIdentifier: identifier)
-        }
-    }
+//    func dequeueReusableCell(withModel model: StructuredCell, for indexPath: IndexPath) -> UICollectionViewCell {
+//        let indetifier = type(of: model).reuseIdentifier(for: .collectionView)
+//        let cell = self.dequeueReusableCell(withReuseIdentifier: indetifier, for: indexPath)
+//        model.configureAny(cell: cell)
+//        return cell
+//    }
+//
+//    public func registerNibs(with identifiers: [String]) {
+//        for identifier in identifiers {
+//            let nib = UINib(nibName: identifier, bundle: nil)
+//            self.register(nib, forCellWithReuseIdentifier: identifier)
+//        }
+//    }
     
 }

@@ -51,14 +51,6 @@ public extension StructuredTableSectionHeaderFooter {
     
 }
 
-// MARK: - StructuredTableSectionHeaderFooterDynamicHeight
-
-public protocol StructuredTableSectionHeaderFooterDynamicHeight {
-    
-    func height(for parentView: UITableView) -> CGFloat
-    
-}
-
 // MARK: - StructuredTableSectionHeaderFooterContentIdentifable
 
 public protocol StructuredTableSectionHeaderFooterContentIdentifable {

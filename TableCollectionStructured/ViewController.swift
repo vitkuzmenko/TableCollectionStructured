@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     }
     
     func configureTableView() {
-        tableController.register(tableView, cellModelTypes: [
+        tableController.register(.tableView(tableView), cellModelTypes: [
             CityTableViewCellModel.self
         ], headerFooterModelTypes: [
             CountryHeaderViewModel.self

@@ -8,10 +8,6 @@
 
 import UIKit
 
-public enum StructuredView {
-    case tableView, collectionView
-}
-
 // MARK: - StructuredCell
 
 public protocol StructuredCell {
@@ -126,11 +122,17 @@ extension StructuredCellContentIdentifable {
     
 }
 
-// MARK: - StructuredCellDynamicHeight
+// MARK: - StructuredViewHeight
 
-public protocol StructuredCellDynamicHeight {
+public protocol StructuredViewHeight {
     
-    func height(for parentView: UITableView) -> CGFloat
+    func height(for tableView: UITableView) -> CGFloat
+    
+}
+
+public protocol StructuredViewEstimatedHeight {
+    
+    func estimatedHeight(for tableView: UITableView) -> CGFloat
     
 }
 
@@ -142,23 +144,64 @@ public protocol StructuredCellDynamicSize {
     
 }
 
+public protocol StructuredCellAccessoryButtonTappable {
+    
+    typealias AccessoryButtonTappedAction = (UITableViewCell?) -> Void
+    
+    var accessoryButtonTapped: AccessoryButtonTappedAction? { get }
+    
+}
+
+public protocol StructuredCellHighlightable {
+    
+    var shouldHighlightRow: Bool { get }
+    
+    typealias DidHighlightRow = () -> Void
+    
+    var didHighlightRow: DidHighlightRow? { get }
+    
+    typealias DidUnhighlightRow = () -> Void
+    
+    var didUnhighlightRow: DidUnhighlightRow? { get }
+    
+}
+
 // MARK: - StructuredCellSelectable
 
 public protocol StructuredCellSelectable {
     
-    typealias DidSelect = (UIView) -> Bool
+    typealias WillSelect = (UIView?) -> IndexPath?
     
-    var didSelect: DidSelect? { get }
+    typealias WillDeselect = (UIView?) -> IndexPath?
     
-}
-
-// MARK: - StructuredCellDeselectable
-
-public protocol StructuredCellDeselectable {
+    /// return nil -> no deselction. return true -> deselect animted. return false -> deselect without animation
+    typealias DidSelect = (UIView?) -> Bool?
     
     typealias DidDeselect = (UIView?) -> Void
     
+    var willSelect: WillSelect? { get }
+    
+    var willDeselect: WillDeselect? { get }
+    
+    var didSelect: DidSelect? { get }
+    
     var didDeselect: DidDeselect? { get }
+    
+}
+
+public extension StructuredCellSelectable {
+    
+    var willSelect: WillSelect? {
+        return nil
+    }
+    
+    var willDeselect: WillDeselect? {
+        return nil
+    }
+    
+    var didDeselect: DidSelect? {
+        return nil
+    }
     
 }
 
@@ -180,9 +223,9 @@ public protocol StructuredCellEditable {
     
 }
 
-// MARK: - StructuredCellWillDisplay
+// MARK: - StructuredViewWillDisplay
 
-public protocol StructuredCellWillDisplay {
+public protocol StructuredViewWillDisplay {
     
     typealias WillDisplay = (UIView) -> Void
     
@@ -190,9 +233,9 @@ public protocol StructuredCellWillDisplay {
     
 }
 
-// MARK: - StructuredCellDidEndDisplay
+// MARK: - StructuredViewDidEndDisplay
 
-public protocol StructuredCellDidEndDisplay {
+public protocol StructuredViewDidEndDisplay {
     
     typealias DidEndDisplay = (UIView) -> Void
     
