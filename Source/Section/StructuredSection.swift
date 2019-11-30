@@ -8,25 +8,23 @@
 
 import Foundation
 
-open class StructuredSection {
+public struct StructuredSection {
     
     public let identifier: AnyHashable
     
-    open var headerTitle: String?
+    public var headerTitle: String?
     
-    open var footerTitle: String?
+    public var footerTitle: String?
     
-    open var rows: [StructuredCell] = [] {
+    public var rows: [StructuredCell] = [] {
         didSet {
             count = rows.count
         }
     }
     
-    open var count: Int = 0
+    public var count: Int = 0
     
-    open var isEmpty: Bool { return rows.isEmpty }
-    
-    var isClosed = false
+    public var isEmpty: Bool { return rows.isEmpty }
     
     public init(identifier: AnyHashable, rows: [StructuredCell] = []) {
         self.identifier = identifier
@@ -34,17 +32,11 @@ open class StructuredSection {
         self.count = rows.count
     }
     
-    open func append(_ object: StructuredCell) {
-        if isClosed {
-            fatalError("TableCollectionStructured: Section is appended to structue. You can not add rows more.")
-        }
+    public mutating func append(_ object: StructuredCell) {
         rows.append(object)
     }
     
-    open func append(contentsOf objects: [StructuredCell]) {
-        if isClosed {
-            fatalError("TableCollectionStructured: Section is appended to structue alredy. You can not add rows more.")
-        }
+    public mutating func append(contentsOf objects: [StructuredCell]) {
         rows.append(contentsOf: objects)
     }
         
@@ -66,7 +58,7 @@ extension StructuredSection: Hashable {
     
 }
 
-extension Array where Element == StructuredSection {
+extension Sequence where Iterator.Element == StructuredSection {
     
     func indexPath(of identifyHasher: Hasher, structuredView: StructuredView) -> (indexPath: IndexPath, cellModel: StructuredCellIdentifable)? {
         for (index, section) in enumerated() {

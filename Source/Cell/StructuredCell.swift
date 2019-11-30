@@ -12,12 +12,7 @@ public enum StructuredView {
     case tableView, collectionView
 }
 
-
-public protocol StructuredCellContentIdentifable {
-    
-    func contentHash(into hasher: inout Hasher)
-    
-}
+// MARK: - StructuredCell
 
 public protocol StructuredCell {
     
@@ -27,13 +22,7 @@ public protocol StructuredCell {
     
 }
 
-public struct StructuredCellOld {
-    
-    public let identifyHasher: Hasher?
-    
-    public let contentHasher: Hasher?
-    
-}
+// MARK: - StructuredTableViewCell
 
 public protocol StructuredTableViewCell: StructuredCell {
     
@@ -66,6 +55,8 @@ public extension StructuredTableViewCell {
     
 }
 
+// MARK: - StructuredCollectionViewCell
+
 public protocol StructuredCollectionViewCell: StructuredCell {
     
     associatedtype CollectionViewCellType: UICollectionViewCell
@@ -97,17 +88,51 @@ public extension StructuredCollectionViewCell {
     
 }
 
+// MARK: - StructuredCellIdentifable
+
+public protocol StructuredCellIdentifable {
+
+    func identifyHash(into hasher: inout Hasher)
+    
+}
+
+extension StructuredCellIdentifable {
+    
+    internal func identifyHasher(for structuredView: StructuredView) -> Hasher {
+        var hasher = Hasher()
+        let cell = self as! StructuredCell
+        hasher.combine(type(of: cell).reuseIdentifier(for: structuredView))
+        identifyHash(into: &hasher)
+        return hasher
+    }
+    
+}
+
+// MARK: - StructuredCellContentIdentifable
+
+public protocol StructuredCellContentIdentifable {
+    
+    func contentHash(into hasher: inout Hasher)
+    
+}
+
+// MARK: - StructuredCellDynamicHeight
+
 public protocol StructuredCellDynamicHeight {
     
     func height(for parentView: UITableView) -> CGFloat
     
 }
 
+// MARK: - StructuredCellDynamicSize
+
 public protocol StructuredCellDynamicSize {
     
     func size(for parentView: UICollectionView) -> CGSize
     
 }
+
+// MARK: - StructuredCellSelectable
 
 public protocol StructuredCellSelectable {
     
@@ -117,6 +142,8 @@ public protocol StructuredCellSelectable {
     
 }
 
+// MARK: - StructuredCellDeselectable
+
 public protocol StructuredCellDeselectable {
     
     typealias DidDeselect = (UIView?) -> Void
@@ -125,22 +152,25 @@ public protocol StructuredCellDeselectable {
     
 }
 
+// MARK: - StructuredCellEditable
+
 public protocol StructuredCellEditable {
     
     typealias CanEdit = () -> Bool
     
-    var canEdit: CanEdit? { get }
-    
     typealias EditingStyle = () -> UITableViewCell.EditingStyle
-    
-    var editingStyle: EditingStyle? { get }
     
     typealias CommitEditing = (UITableViewCell.EditingStyle) -> Void
     
+    var canEdit: CanEdit? { get }
+
+    var editingStyle: EditingStyle? { get }
+
     var commitEditing: CommitEditing? { get }
     
 }
 
+// MARK: - StructuredCellWillDisplay
 
 public protocol StructuredCellWillDisplay {
     
@@ -150,6 +180,8 @@ public protocol StructuredCellWillDisplay {
     
 }
 
+// MARK: - StructuredCellDidEndDisplay
+
 public protocol StructuredCellDidEndDisplay {
     
     typealias DidEndDisplay = (UIView) -> Void
@@ -158,17 +190,21 @@ public protocol StructuredCellDidEndDisplay {
     
 }
 
+// MARK: - StructuredCellMovable
+
 public protocol StructuredCellMovable {
     
     typealias CanMove = () -> Bool
     
-    var canMove: CanMove? { get }
-    
     typealias DidMove = (IndexPath, IndexPath) -> Void
+    
+    var canMove: CanMove? { get }
     
     var didMove: DidMove? { get }
     
 }
+
+// MARK: - StructuredCellFocusable
 
 public protocol StructuredCellFocusable {
     
@@ -177,6 +213,8 @@ public protocol StructuredCellFocusable {
     var canFocus: CanFocus? { get }
     
 }
+
+// MARK: - StructuredCellInvalidatable
 
 public protocol StructuredCellInvalidatable {
     func invalidated()

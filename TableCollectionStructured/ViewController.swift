@@ -29,7 +29,7 @@ class ViewController: UIViewController {
     
     @IBAction func makeStructure() {
         let structure = CitiesDataSource().countries().map { country -> StructuredSection in
-            let section = StructuredSection(
+            var section = StructuredSection(
                 identifier: country.title,
                 rows: country.cities.map({ CityTableViewCellModel(city: $0) })
             )

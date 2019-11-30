@@ -13,7 +13,7 @@
 		793E1389204963ED00AAA5CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 793E1388204963ED00AAA5CA /* Assets.xcassets */; };
 		793E138E2049640200AAA5CA /* StructuredSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */; };
 		793E138F2049640200AAA5CA /* StructuredDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733271FA9A5A50056FEBD /* StructuredDifference.swift */; };
-		793E13902049640200AAA5CA /* StructuredCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733231FA9A3720056FEBD /* StructuredCellModel.swift */; };
+		793E13902049640200AAA5CA /* StructuredCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733231FA9A3720056FEBD /* StructuredCell.swift */; };
 		793E13912049640200AAA5CA /* TableStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794C15171DA6511C0076DEC0 /* TableStructuredController.swift */; };
 		793E13922049640200AAA5CA /* CollectionStructuredController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */; };
 		794C15051DA650C80076DEC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794C15041DA650C80076DEC0 /* AppDelegate.swift */; };
@@ -27,13 +27,13 @@
 		79808B25238F150D00596A2C /* CitiesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B24238F150D00596A2C /* CitiesDataSource.swift */; };
 		79808B282390336C00596A2C /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B272390336C00596A2C /* Country.swift */; };
 		79808B2C239071F600596A2C /* StructuredSectionOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B2B239071F600596A2C /* StructuredSectionOld.swift */; };
-		79808B2E239072B500596A2C /* StructuredCellIdentifable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B2D239072B500596A2C /* StructuredCellIdentifable.swift */; };
+		79808B3323925F4200596A2C /* StructuredCellOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B3223925F4200596A2C /* StructuredCellOld.swift */; };
 		798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */; };
 		79AEEBEE238F1218006A11B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AEEBED238F1218006A11B1 /* ViewController.swift */; };
 		79AEEBF3238F12D5006A11B1 /* CityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AEEBF1238F12D5006A11B1 /* CityTableViewCell.swift */; };
 		79AEEBF4238F12D5006A11B1 /* CityTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79AEEBF2238F12D5006A11B1 /* CityTableViewCell.xib */; };
 		79AEEBF6238F12DA006A11B1 /* CityTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AEEBF5238F12DA006A11B1 /* CityTableViewCellModel.swift */; };
-		79D733241FA9A3720056FEBD /* StructuredCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733231FA9A3720056FEBD /* StructuredCellModel.swift */; };
+		79D733241FA9A3720056FEBD /* StructuredCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733231FA9A3720056FEBD /* StructuredCell.swift */; };
 		79D733281FA9A5A50056FEBD /* StructuredDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D733271FA9A5A50056FEBD /* StructuredDifference.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,14 +58,14 @@
 		79808B24238F150D00596A2C /* CitiesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesDataSource.swift; sourceTree = "<group>"; };
 		79808B272390336C00596A2C /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		79808B2B239071F600596A2C /* StructuredSectionOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredSectionOld.swift; sourceTree = "<group>"; };
-		79808B2D239072B500596A2C /* StructuredCellIdentifable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredCellIdentifable.swift; sourceTree = "<group>"; };
+		79808B3223925F4200596A2C /* StructuredCellOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredCellOld.swift; sourceTree = "<group>"; };
 		798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructuredSection.swift; sourceTree = "<group>"; };
 		79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionStructuredController.swift; sourceTree = "<group>"; };
 		79AEEBED238F1218006A11B1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		79AEEBF1238F12D5006A11B1 /* CityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityTableViewCell.swift; sourceTree = "<group>"; };
 		79AEEBF2238F12D5006A11B1 /* CityTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CityTableViewCell.xib; sourceTree = "<group>"; };
 		79AEEBF5238F12DA006A11B1 /* CityTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityTableViewCellModel.swift; sourceTree = "<group>"; };
-		79D733231FA9A3720056FEBD /* StructuredCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredCellModel.swift; sourceTree = "<group>"; };
+		79D733231FA9A3720056FEBD /* StructuredCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredCell.swift; sourceTree = "<group>"; };
 		79D733271FA9A5A50056FEBD /* StructuredDifference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredDifference.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -186,8 +186,8 @@
 		79808B2A239071DA00596A2C /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				79D733231FA9A3720056FEBD /* StructuredCellModel.swift */,
-				79808B2D239072B500596A2C /* StructuredCellIdentifable.swift */,
+				79D733231FA9A3720056FEBD /* StructuredCell.swift */,
+				79808B3223925F4200596A2C /* StructuredCellOld.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -323,7 +323,7 @@
 				793E1384204963ED00AAA5CA /* ViewController.swift in Sources */,
 				793E13912049640200AAA5CA /* TableStructuredController.swift in Sources */,
 				793E1382204963ED00AAA5CA /* AppDelegate.swift in Sources */,
-				793E13902049640200AAA5CA /* StructuredCellModel.swift in Sources */,
+				793E13902049640200AAA5CA /* StructuredCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,10 +336,10 @@
 				7965A0E120D14F290076B164 /* UITableView+DequeueCellViewModel.swift in Sources */,
 				794C15181DA6511C0076DEC0 /* TableStructuredController.swift in Sources */,
 				79808B282390336C00596A2C /* Country.swift in Sources */,
-				79D733241FA9A3720056FEBD /* StructuredCellModel.swift in Sources */,
+				79D733241FA9A3720056FEBD /* StructuredCell.swift in Sources */,
 				79808B25238F150D00596A2C /* CitiesDataSource.swift in Sources */,
+				79808B3323925F4200596A2C /* StructuredCellOld.swift in Sources */,
 				79D733281FA9A5A50056FEBD /* StructuredDifference.swift in Sources */,
-				79808B2E239072B500596A2C /* StructuredCellIdentifable.swift in Sources */,
 				7965A0E020D14F290076B164 /* UICollectionView+DequeueCellViewModel.swift in Sources */,
 				79808B23238F150200596A2C /* City.swift in Sources */,
 				79808B2C239071F600596A2C /* StructuredSectionOld.swift in Sources */,
