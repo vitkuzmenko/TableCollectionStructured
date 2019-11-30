@@ -83,4 +83,19 @@ extension Sequence where Iterator.Element == StructuredSection {
         return indexPath(of: identifyHasher, structuredView: structuredView) != nil
     }
     
+    // MARK: - Converting to old strcuture
+    
+    func old(for structuredView: StructuredView) -> [StructuredSectionOld] {
+        return map { oldSection -> StructuredSectionOld in
+            return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map { cellOld in
+                return StructuredCellOld(
+                    identifyHasher: (cellOld as? StructuredCellIdentifable)?.identifyHasher(for: structuredView),
+                    contentHasher: (cellOld as? StructuredCellContentIdentifable)?.contentHasher()
+                )
+            })
+        }
+    }
+    
 }
+
+

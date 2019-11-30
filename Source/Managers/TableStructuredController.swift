@@ -8,33 +8,11 @@
 
 import UIKit
 
-public struct TableAnimationRule: Equatable {
-    let insert, delete, reload: UITableView.RowAnimation
-}
-
-extension TableAnimationRule {
-    
-    public static let fade = TableAnimationRule(insert: .fade, delete: .fade, reload: .fade)
-
-    public static let right = TableAnimationRule(insert: .right, delete: .right, reload: .right)
-
-    public static let left = TableAnimationRule(insert: .left, delete: .left, reload: .left)
-
-    public static let top = TableAnimationRule(insert: .top, delete: .top, reload: .top)
-
-    public static let bottom = TableAnimationRule(insert: .bottom, delete: .bottom, reload: .bottom)
-
-    public static let none = TableAnimationRule(insert: .none, delete: .none, reload: .none)
-
-    public static let middle = TableAnimationRule(insert: .middle, delete: .middle, reload: .middle)
-
-    public static let automatic = TableAnimationRule(insert: .automatic, delete: .automatic, reload: .automatic)
-    
-}
-
 open class TableStructuredController: NSObject, UITableViewDataSource, UITableViewDelegate {
     
     private var tableView: UITableView!
+    
+    public weak var scrollViewDelegate: UIScrollViewDelegate?
     
     open var structure: [StructuredSection] = []
     
@@ -73,20 +51,7 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
     // MARK: - Sctructure Updating
     
     open func set(structure newStructure: [StructuredSection], animation: TableAnimationRule = .fade) {
-        previousStructure = structure.map { oldSection -> StructuredSectionOld in
-            return StructuredSectionOld(identifier: oldSection.identifier, rows: oldSection.rows.map({ cellOld -> StructuredCellOld in
-                let cellOldIdentifable = cellOld as? StructuredCellIdentifable
-                var contentHasher: Hasher?
-                if let cellOldContentIdentifable = cellOld as? StructuredCellContentIdentifable {
-                    contentHasher = Hasher()
-                    cellOldContentIdentifable.contentHash(into: &contentHasher!)
-                }
-                return StructuredCellOld(
-                    identifyHasher: cellOldIdentifable?.identifyHasher(for: .tableView),
-                    contentHasher: contentHasher
-                )
-            }))
-        }
+        previousStructure = structure.old(for: .tableView)
         structure = newStructure
         guard !previousStructure.isEmpty else {
             return tableView.reloadData()
@@ -103,16 +68,8 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
         do {
             let diff = try StructuredDifference(from: previousStructure, to: structure, structuredView: .tableView)
             
-//            CATransaction.begin()
-            
             tableView.beginUpdates()
-            
-//            CATransaction.setCompletionBlock { [weak self] in
-//                if !diff.rowsToReload.isEmpty {
-//                    self?.tableView.reloadRows(at: diff.rowsToReload, with: animation.reload)
-//                }
-//            }
-                    
+                                
             for movement in diff.sectionsToMove {
                 tableView.moveSection(movement.from, toSection: movement.to)
             }
@@ -145,7 +102,6 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
             
             tableView.endUpdates()
             
-//            CATransaction.commit()
         } catch let error {
             NSLog("TableStructuredController: Can not reload animated. %@", error.localizedDescription)
             tableView.reloadData()
@@ -278,65 +234,6 @@ open class TableStructuredController: NSObject, UITableViewDataSource, UITableVi
 //    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
 //        return 0
 //    }
-    
-    // MARK: - UIScrollViewDelegate
-    
-    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-    }
-    
-    open func scrollViewDidZoom(_ scrollView: UIScrollView)  {
-        
-    }
-    
-    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        
-    }
-    
-    open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        
-    }
-    
-    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        
-    }
-    
-    open func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        
-    }
-    
-    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)  {
-        
-    }
-    
-    
-    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        
-    }
-    
-    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return nil
-    }
-    
-    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        
-    }
-    
-    open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        
-    }
-    
-    open func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        return true
-    }
-    
-    open func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
-        
-    }
-    
-    open func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) {
-        
-    }
     
 }
 

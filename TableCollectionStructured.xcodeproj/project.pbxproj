@@ -28,6 +28,8 @@
 		79808B282390336C00596A2C /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B272390336C00596A2C /* Country.swift */; };
 		79808B2C239071F600596A2C /* StructuredSectionOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B2B239071F600596A2C /* StructuredSectionOld.swift */; };
 		79808B3323925F4200596A2C /* StructuredCellOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B3223925F4200596A2C /* StructuredCellOld.swift */; };
+		79808B352392621400596A2C /* TableAnimationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B342392621400596A2C /* TableAnimationRule.swift */; };
+		79808B372392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808B362392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift */; };
 		798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */; };
 		79AEEBEE238F1218006A11B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AEEBED238F1218006A11B1 /* ViewController.swift */; };
 		79AEEBF3238F12D5006A11B1 /* CityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AEEBF1238F12D5006A11B1 /* CityTableViewCell.swift */; };
@@ -59,6 +61,8 @@
 		79808B272390336C00596A2C /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		79808B2B239071F600596A2C /* StructuredSectionOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredSectionOld.swift; sourceTree = "<group>"; };
 		79808B3223925F4200596A2C /* StructuredCellOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredCellOld.swift; sourceTree = "<group>"; };
+		79808B342392621400596A2C /* TableAnimationRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableAnimationRule.swift; sourceTree = "<group>"; };
+		79808B362392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableStructuredController+UIScrollViewDelegate.swift"; sourceTree = "<group>"; };
 		798E9EAB1E8D1FE0007F24A9 /* StructuredSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructuredSection.swift; sourceTree = "<group>"; };
 		79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionStructuredController.swift; sourceTree = "<group>"; };
 		79AEEBED238F1218006A11B1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -149,7 +153,9 @@
 		7965A0DC20D135A40076B164 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				79808B342392621400596A2C /* TableAnimationRule.swift */,
 				794C15171DA6511C0076DEC0 /* TableStructuredController.swift */,
+				79808B362392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift */,
 				79AB0D061DA655ED0021330E /* CollectionStructuredController.swift */,
 			);
 			path = Managers;
@@ -333,7 +339,9 @@
 			files = (
 				79AEEBF3238F12D5006A11B1 /* CityTableViewCell.swift in Sources */,
 				798E9EAC1E8D1FE0007F24A9 /* StructuredSection.swift in Sources */,
+				79808B372392657E00596A2C /* TableStructuredController+UIScrollViewDelegate.swift in Sources */,
 				7965A0E120D14F290076B164 /* UITableView+DequeueCellViewModel.swift in Sources */,
+				79808B352392621400596A2C /* TableAnimationRule.swift in Sources */,
 				794C15181DA6511C0076DEC0 /* TableStructuredController.swift in Sources */,
 				79808B282390336C00596A2C /* Country.swift in Sources */,
 				79D733241FA9A3720056FEBD /* StructuredCell.swift in Sources */,
@@ -538,6 +546,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 34YX679QH2;
 				INFOPLIST_FILE = TableCollectionStructured/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = info.kuzmenko.TableCollectionStructured;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -551,6 +560,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 34YX679QH2;
 				INFOPLIST_FILE = TableCollectionStructured/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = info.kuzmenko.TableCollectionStructured;
 				PRODUCT_NAME = "$(TARGET_NAME)";

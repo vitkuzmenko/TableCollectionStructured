@@ -116,6 +116,16 @@ public protocol StructuredCellContentIdentifable {
     
 }
 
+extension StructuredCellContentIdentifable {
+    
+    internal func contentHasher() -> Hasher {
+        var hasher = Hasher()
+        contentHash(into: &hasher)
+        return hasher
+    }
+    
+}
+
 // MARK: - StructuredCellDynamicHeight
 
 public protocol StructuredCellDynamicHeight {

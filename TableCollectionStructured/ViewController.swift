@@ -39,5 +39,4 @@ class ViewController: UIViewController {
         tableController.set(structure: structure, animation: TableAnimationRule(insert: .left, delete: .right, reload: .fade))
     }
     
-
 }
