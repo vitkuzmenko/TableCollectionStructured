@@ -78,6 +78,15 @@ extension TableStructuredController {
         
     }
     
+    fileprivate var tableViewDelegate: UITableViewDelegate? {
+        switch delegateOverride {
+        case .tableView(let _tableViewDelegate):
+            return _tableViewDelegate
+        default:
+            return nil
+        }
+    }
+    
 }
 
 extension TableStructuredController: UITableViewDataSource {
@@ -164,7 +173,9 @@ extension TableStructuredController: UITableViewDelegate {
     // MARK: - Will Display
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredViewDisplayable {
+        if tableViewDelegate?.responds(to: #selector(tableView(_:willDisplay:forRowAt:))) == true {
+            tableViewDelegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+        } else if let object = self.cellModel(at: indexPath) as? StructuredViewDisplayable {
             object.willDisplay?(cell)
         }
     }
