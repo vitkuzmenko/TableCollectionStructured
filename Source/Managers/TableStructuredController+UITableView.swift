@@ -84,6 +84,10 @@ extension TableStructuredController: UITableViewDataSource {
     
     // MARK: - Row
     
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return structure.count
+    }
+    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return structure[section].count
     }
@@ -95,12 +99,7 @@ extension TableStructuredController: UITableViewDataSource {
         model.configureAny(cell: cell)
         return cell
     }
-    
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return structure.count
-    }
-    
-    
+        
     public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let header = structure[section].header else { return nil }
         switch header {
@@ -268,48 +267,6 @@ extension TableStructuredController: UITableViewDelegate {
                 return viewModel.height(for: tableView)
             } else {
                 return tableView.sectionFooterHeight
-            }
-        }
-    }
-    
-    // MARK: - Estimated Height
-    
-    public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let object = self.cellModel(at: indexPath) as? StructuredViewEstimatedHeight {
-            return object.estimatedHeight(for: tableView)
-        } else {
-            return tableView.estimatedRowHeight
-        }
-    }
-    
-    public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        guard let header = structure[section].header else {
-            return tableView.estimatedSectionFooterHeight
-        }
-        switch header {
-        case .text:
-            return tableView.estimatedSectionFooterHeight
-        case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredViewEstimatedHeight {
-                return viewModel.estimatedHeight(for: tableView)
-            } else {
-                return tableView.estimatedSectionFooterHeight
-            }
-        }
-    }
-    
-    public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        guard let footer = structure[section].footer else {
-            return tableView.estimatedSectionFooterHeight
-        }
-        switch footer {
-        case .text:
-            return tableView.estimatedSectionFooterHeight
-        case .view(let viewModel):
-            if let viewModel = viewModel as? StructuredViewEstimatedHeight {
-                return viewModel.estimatedHeight(for: tableView)
-            } else {
-                return tableView.estimatedSectionFooterHeight
             }
         }
     }

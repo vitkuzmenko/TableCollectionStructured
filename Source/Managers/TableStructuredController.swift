@@ -40,8 +40,14 @@ open class TableStructuredController: NSObject {
         return structure.indexPath(of: objectIdentifyHasher, structuredView: structuredView)?.indexPath
     }
         
-    open func cellModel(at indexPath: IndexPath) -> Any {
-        return structure[indexPath.section].rows[indexPath.row]
+    open func cellModel(at indexPath: IndexPath) -> Any? {
+        if structure.count - 1 >= indexPath.section {
+            let section = structure[indexPath.section]
+            if section.rows.count - 1 >= indexPath.row {
+                return section.rows[indexPath.row]
+            }
+        }
+        return nil
     }
     
     // MARK: - Registration

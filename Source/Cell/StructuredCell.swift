@@ -130,12 +130,6 @@ public protocol StructuredViewHeight {
     
 }
 
-public protocol StructuredViewEstimatedHeight {
-    
-    func estimatedHeight(for tableView: UITableView) -> CGFloat
-    
-}
-
 // MARK: - StructuredCellDynamicSize
 
 public protocol StructuredCellDynamicSize {
