@@ -1,6 +1,6 @@
 //
-//  TableStructuredController+UIScrollViewDelegate.swift
-//  TableCollectionStructured
+//  StructureController+UIScrollViewDelegate.swift
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 30.11.2019.
 //  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension TableStructuredController {
+extension StructureController {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollViewDelegate?.scrollViewDidScroll?(scrollView)

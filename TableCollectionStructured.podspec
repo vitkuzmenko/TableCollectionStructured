@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
 
-  s.name         = "TableCollectionStructured"
+  s.name         = "StructureKit"
   s.version      = "4.0"
-  s.summary      = "Table and Collection View Structured objects"
+  s.summary      = "Table and Collection View Structure objects"
 
-  s.homepage     = "https://github.com/vitkuzmenko/TableCollectionStructured.git"
+  s.homepage     = "https://github.com/vitkuzmenko/StructureKit.git"
 
   s.license      = { :type => "Apache 2.0", :file => "LICENSE" }
 

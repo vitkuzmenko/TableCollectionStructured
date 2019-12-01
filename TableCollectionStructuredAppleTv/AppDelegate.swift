@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  TableCollectionStructuredAppleTv
+//  StructureKitAppleTv
 //
 //  Created by Vitaliy Kuzmenko on 02/03/2018.
 //  Copyright © 2018 Vitaliy Kuzmenko. All rights reserved.

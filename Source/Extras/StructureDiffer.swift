@@ -1,6 +1,6 @@
 //
-//  StructuredDifference.swift
-//  TableCollectionStructured
+//  StructureDiffer.swift
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 01/11/2017.
 //  Copyright © 2017 Vitaliy Kuzmenko. All rights reserved.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class StructuredDifference {
+class StructureDiffer {
     
     enum DifferenceError: Error, LocalizedError {
         
@@ -46,7 +46,7 @@ class StructuredDifference {
     
     var rowsToReload: [IndexPath] = []
     
-    init(from oldStructure: [StructuredSectionOld], to newStructure: [StructuredSection], structuredView: StructuredView) throws {
+    init(from oldStructure: [StructureOldSection], to newStructure: [StructureSection], StructureView: StructureView) throws {
         
         for (oldSectionIndex, oldSection) in oldStructure.enumerated() {
             
@@ -74,7 +74,7 @@ class StructuredDifference {
             for (oldRowIndex, oldRow) in oldSection.rows.enumerated() {
                 var skipForContentUpdater = false
                 let oldIndexPath = IndexPath(row: oldRowIndex, section: oldSectionIndex)
-                if let rowIdentifyHasher = oldRow.identifyHasher, let newRow = newStructure.indexPath(of: rowIdentifyHasher, structuredView: structuredView) {
+                if let rowIdentifyHasher = oldRow.identifyHasher, let newRow = newStructure.indexPath(of: rowIdentifyHasher, StructureView: StructureView) {
                     let newRowIndexPath = newRow.indexPath
                     if oldIndexPath != newRowIndexPath {
                         if newStructure.contains(where: { $0.identifier == oldSection.identifier }) {
@@ -92,7 +92,7 @@ class StructuredDifference {
                     if !skipForContentUpdater {
                         var contentHasher = Hasher()
                         if let oldRowContentHasher = oldRow.contentHasher,
-                            let newRowContentIdentifable = newRow.cellModel as? StructuredCellContentIdentifable {
+                            let newRowContentIdentifable = newRow.cellModel as? StructurableContentIdentifable {
                             newRowContentIdentifable.contentHash(into: &contentHasher)
                             if contentHasher.finalize() != oldRowContentHasher.finalize() {
                                 rowsToReload.append(newRowIndexPath)
@@ -112,7 +112,7 @@ class StructuredDifference {
             }
             
             for (newRowIndex, newRow) in newSection.rows.enumerated() {
-                if let newRowIdentifable = newRow as? StructuredCellIdentifable, oldStructure.contains(structured: newRowIdentifable.identifyHasher(for: structuredView)) {
+                if let newRowIdentifable = newRow as? StructurableIdentifable, oldStructure.contains(Structure: newRowIdentifable.identifyHasher(for: StructureView)) {
                     // nothing
                 } else {
                     rowsToInsert.append(IndexPath(row: newRowIndex, section: newSectionIndex))
@@ -136,7 +136,7 @@ class StructuredDifference {
             throw DifferenceError.insertion
         }
         
-        var uniqueSections: [StructuredSection] = []
+        var uniqueSections: [StructureSection] = []
         
         for newSection in newStructure {
             if uniqueSections.contains(where: { $0.identifier == newSection.identifier }) {
@@ -146,14 +146,14 @@ class StructuredDifference {
             }
         }
         
-        var unique: [StructuredCell] = []
+        var unique: [Structurable] = []
         
         for section in newStructure {
             for lhs in section.rows {
-                if let lhsIdentifable = lhs as? StructuredCellIdentifable, unique.contains(where: { rhs -> Bool in
-                    guard let rhsIdentifable = rhs as? StructuredCellIdentifable else { return false }
-                    let lhsIdentifyHasher = lhsIdentifable.identifyHasher(for: structuredView)
-                    let rhsIdentifyHasher = rhsIdentifable.identifyHasher(for: structuredView)
+                if let lhsIdentifable = lhs as? StructurableIdentifable, unique.contains(where: { rhs -> Bool in
+                    guard let rhsIdentifable = rhs as? StructurableIdentifable else { return false }
+                    let lhsIdentifyHasher = lhsIdentifable.identifyHasher(for: StructureView)
+                    let rhsIdentifyHasher = rhsIdentifable.identifyHasher(for: StructureView)
                     return lhsIdentifyHasher.finalize() == rhsIdentifyHasher.finalize()
                 }) {
                     throw DifferenceError.similarObjects

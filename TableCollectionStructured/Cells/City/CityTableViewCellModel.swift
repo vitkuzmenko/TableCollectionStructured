@@ -1,6 +1,6 @@
 //
 //  CityTableViewCell.swift
-//  TableCollectionStructured
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 27.11.2019.
 //  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
@@ -21,7 +21,7 @@ struct CityTableViewCellModel {
     
 }
 
-extension CityTableViewCellModel: StructuredTableViewCell {
+extension CityTableViewCellModel: StructurableForTableView {
     
     static func reuseIdentifierForTableView() -> String {
         return "CityTableViewCell"
@@ -34,7 +34,7 @@ extension CityTableViewCellModel: StructuredTableViewCell {
     
 }
 
-extension CityTableViewCellModel: StructuredCellIdentifable {
+extension CityTableViewCellModel: StructurableIdentifable {
     
     func identifyHash(into hasher: inout Hasher) {
         hasher.combine(title)
@@ -42,7 +42,7 @@ extension CityTableViewCellModel: StructuredCellIdentifable {
     
 }
 
-extension CityTableViewCellModel: StructuredCellContentIdentifable {
+extension CityTableViewCellModel: StructurableContentIdentifable {
 
     func contentHash(into hasher: inout Hasher) {
         hasher.combine(population)

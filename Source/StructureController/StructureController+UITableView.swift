@@ -1,6 +1,6 @@
 //
-//  TableStructuredController+UITableView.swift
-//  TableCollectionStructured
+//  StructureController+UITableView.swift
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 30.11.2019.
 //  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-extension TableStructuredController {
+extension StructureController {
     
-    internal func performTableViewReload(_ tableView: UITableView, diff: StructuredDifference, with animation: TableAnimationRule) {
+    internal func performTableViewReload(_ tableView: UITableView, diff: StructureDiffer, with animation: TableAnimationRule) {
             
         tableView.beginUpdates()
                             
@@ -80,7 +80,7 @@ extension TableStructuredController {
             
 }
 
-extension TableStructuredController: UITableViewDataSource {
+extension StructureController: UITableViewDataSource {
     
     // MARK: - Row
     
@@ -89,11 +89,11 @@ extension TableStructuredController: UITableViewDataSource {
     }
     
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return structure[section].count
+        return structure[section].rows.count
     }
     
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let model = cellModel(at: indexPath) as? StructuredCell else { fatalError("Model should be StructuredCell") }
+        guard let model = cellModel(at: indexPath) as? Structurable else { fatalError("Model should be Structurable") }
         let indetifier = type(of: model).reuseIdentifier(for: .tableView(tableView))
         let cell = tableView.dequeueReusableCell(withIdentifier: indetifier, for: indexPath)
         model.configureAny(cell: cell)
@@ -123,7 +123,7 @@ extension TableStructuredController: UITableViewDataSource {
     // MARK: - Editing
     
     internal func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+        if let object = self.cellModel(at: indexPath) as? StructurableEditable {
             return object.canEdit
         }
         return false
@@ -132,7 +132,7 @@ extension TableStructuredController: UITableViewDataSource {
     // MARK: - Moving/reordering
     
     internal func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellMovable {
+        if let object = self.cellModel(at: indexPath) as? StructurableMovable {
             return object.canMove?() ?? false
         }
         return false
@@ -143,7 +143,7 @@ extension TableStructuredController: UITableViewDataSource {
     // MARK: - Data manipulation - insert and delete support
     
     internal func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+        if let object = self.cellModel(at: indexPath) as? StructurableEditable {
             object.commitEditing?(editingStyle)
         }
     }
@@ -151,14 +151,14 @@ extension TableStructuredController: UITableViewDataSource {
     // MARK: - Data manipulation - reorder / moving support
     
     internal func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        if let object = self.cellModel(at: sourceIndexPath) as? StructuredCellMovable {
+        if let object = self.cellModel(at: sourceIndexPath) as? StructurableMovable {
             object.didMove?(sourceIndexPath, destinationIndexPath)
         }
     }
     
 }
 
-extension TableStructuredController: UITableViewDataSourcePrefetching {
+extension StructureController: UITableViewDataSourcePrefetching {
         
     internal func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         if tableViewDataSourcePrefetching?.responds(to: #selector(tableView(_:prefetchRowsAt:))) == true {
@@ -174,14 +174,14 @@ extension TableStructuredController: UITableViewDataSourcePrefetching {
     
 }
 
-extension TableStructuredController: UITableViewDelegate {
+extension StructureController: UITableViewDelegate {
     
     // MARK: - Will Display
     
     internal func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:willDisplay:forRowAt:))) == true {
             tableViewDelegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredViewDisplayable {
+        } else if let object = self.cellModel(at: indexPath) as? StructureViewDisplayable {
             object.willDisplay?(cell)
         }
     }
@@ -192,7 +192,7 @@ extension TableStructuredController: UITableViewDelegate {
         } else if let header = structure[section].header {
             switch header {
             case .view(let viewModel):
-                if let viewModel = viewModel as? StructuredViewDisplayable {
+                if let viewModel = viewModel as? StructureViewDisplayable {
                     viewModel.willDisplay?(view)
                 }
             default:
@@ -207,7 +207,7 @@ extension TableStructuredController: UITableViewDelegate {
         } else if let footer = structure[section].footer {
             switch footer {
             case .view(let viewModel):
-                if let viewModel = viewModel as? StructuredViewDisplayable {
+                if let viewModel = viewModel as? StructureViewDisplayable {
                     viewModel.willDisplay?(view)
                 }
             default:
@@ -221,7 +221,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:didEndDisplaying:forRowAt:))) == true {
             tableViewDelegate?.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredViewDisplayable {
+        } else if let object = self.cellModel(at: indexPath) as? StructureViewDisplayable {
             object.didEndDisplay?(cell)
         }
     }
@@ -232,7 +232,7 @@ extension TableStructuredController: UITableViewDelegate {
         } else if let header = structure[section].header {
             switch header {
             case .view(let viewModel):
-                if let viewModel = viewModel as? StructuredViewDisplayable {
+                if let viewModel = viewModel as? StructureViewDisplayable {
                     viewModel.didEndDisplay?(view)
                 }
             default:
@@ -247,7 +247,7 @@ extension TableStructuredController: UITableViewDelegate {
         } else if let footer = structure[section].footer {
             switch footer {
             case .view(let viewModel):
-                if let viewModel = viewModel as? StructuredViewDisplayable {
+                if let viewModel = viewModel as? StructureViewDisplayable {
                     viewModel.didEndDisplay?(view)
                 }
             default:
@@ -261,7 +261,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if tableViewDelegate?.responds(to: #selector(tableView(_:heightForRowAt:))) == true, let height = tableViewDelegate?.tableView?(tableView, heightForRowAt: indexPath) {
             return height
-        } else if let object = self.cellModel(at: indexPath) as? StructuredViewHeight {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableHeightable {
             return object.height(for: tableView)
         } else {
             return tableView.rowHeight
@@ -276,7 +276,7 @@ extension TableStructuredController: UITableViewDelegate {
             case .text:
                 return tableView.sectionHeaderHeight
             case .view(let viewModel):
-                if let viewModel = viewModel as? StructuredViewHeight {
+                if let viewModel = viewModel as? StructurableHeightable {
                     return viewModel.height(for: tableView)
                 } else {
                     return tableView.sectionHeaderHeight
@@ -295,7 +295,7 @@ extension TableStructuredController: UITableViewDelegate {
             case .text:
                 return tableView.sectionFooterHeight
             case .view(let viewModel):
-                if let viewModel = viewModel as? StructuredViewHeight {
+                if let viewModel = viewModel as? StructurableHeightable {
                     return viewModel.height(for: tableView)
                 } else {
                     return tableView.sectionFooterHeight
@@ -355,7 +355,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:accessoryButtonTappedForRowWith:))) == true {
             tableViewDelegate?.tableView?(tableView, accessoryButtonTappedForRowWith: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellAccessoryButtonTappable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableAccessoryButtonTappable {
             let cell = tableView.cellForRow(at: indexPath)
             object.accessoryButtonTapped?(cell)
         }
@@ -366,7 +366,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if tableViewDelegate?.responds(to: #selector(tableView(_:willSelectRowAt:))) == true {
             return tableViewDelegate?.tableView?(tableView, willSelectRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellSelectable, let willSelect = object.willSelect {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableSelectable, let willSelect = object.willSelect {
             let cell = tableView.cellForRow(at: indexPath)
             return willSelect(cell)
         } else {
@@ -377,7 +377,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         if tableViewDelegate?.responds(to: #selector(tableView(_:willDeselectRowAt:))) == true {
             return tableViewDelegate?.tableView?(tableView, willDeselectRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellSelectable, let willDeselect = object.willDeselect {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableSelectable, let willDeselect = object.willDeselect {
             let cell = tableView.cellForRow(at: indexPath)
             return willDeselect(cell)
         } else {
@@ -388,7 +388,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:didSelectRowAt:))) == true {
             tableViewDelegate?.tableView?(tableView, didSelectRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellSelectable, let cell = tableView.cellForRow(at: indexPath) {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableSelectable, let cell = tableView.cellForRow(at: indexPath) {
             if let deselectAnimation = object.didSelect?(cell) {
                 tableView.deselectRow(at: indexPath, animated: deselectAnimation)
             }
@@ -398,7 +398,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:didDeselectRowAt:))) == true {
             tableViewDelegate?.tableView?(tableView, didDeselectRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellSelectable, let didDeselect = object.didDeselect  {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableSelectable, let didDeselect = object.didDeselect  {
             let cell = tableView.cellForRow(at: indexPath)
             didDeselect(cell)
         }
@@ -409,7 +409,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         if tableViewDelegate?.responds(to: #selector(tableView(_:editingStyleForRowAt:))) == true, let editingStyle = tableViewDelegate?.tableView?(tableView, editingStyleForRowAt: indexPath) {
             return editingStyle
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableEditable {
             return object.editingStyle
         } else {
             return .none
@@ -419,7 +419,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         if tableViewDelegate?.responds(to: #selector(tableView(_:titleForDeleteConfirmationButtonForRowAt:))) == true {
             return tableViewDelegate?.tableView?(tableView, titleForDeleteConfirmationButtonForRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellDeletable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableDeletable {
             return object.titleForDeleteConfirmationButton
         } else {
             return nil
@@ -429,7 +429,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         if tableViewDelegate?.responds(to: #selector(tableView(_:shouldIndentWhileEditingRowAt:))) == true, let shouldIndentWhileEditing = tableViewDelegate?.tableView?(tableView, shouldIndentWhileEditingRowAt: indexPath) {
             return shouldIndentWhileEditing
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableEditable {
             return object.shouldIndentWhileEditing
         } else {
             return true
@@ -439,7 +439,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:willBeginEditingRowAt:))) == true {
             tableViewDelegate?.tableView?(tableView, willBeginEditingRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableEditable {
             object.willBeginEditing?()
         }
     }
@@ -447,7 +447,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:didEndEditingRowAt:))) == true {
             tableViewDelegate?.tableView?(tableView, didEndEditingRowAt: indexPath)
-        } else if let indexPath = indexPath, let object = self.cellModel(at: indexPath) as? StructuredCellEditable {
+        } else if let indexPath = indexPath, let object = self.cellModel(at: indexPath) as? StructurableEditable {
             object.didEndEditing?()
         }
     }
@@ -458,7 +458,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         if tableViewDelegate?.responds(to: #selector(tableView(_:leadingSwipeActionsConfigurationForRowAt:))) == true {
             return tableViewDelegate?.tableView?(tableView, leadingSwipeActionsConfigurationForRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellSwipable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableSwipable {
             return object.leadingSwipeActions
         } else {
             return nil
@@ -469,7 +469,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         if tableViewDelegate?.responds(to: #selector(tableView(_:trailingSwipeActionsConfigurationForRowAt:))) == true {
             return tableViewDelegate?.tableView?(tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellSwipable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableSwipable {
             return object.trailingSwipeActions
         } else {
             return nil
@@ -491,7 +491,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, indentationLevelForRowAt indexPath: IndexPath) -> Int {
         if tableViewDelegate?.responds(to: #selector(tableView(_:indentationLevelForRowAt:))) == true, let indexPath = tableViewDelegate?.tableView?(tableView, indentationLevelForRowAt: indexPath) {
             return indexPath
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellIndentable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableIndentable {
             return object.indentationLevel
         } else {
             return 0
@@ -504,7 +504,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
         if tableViewDelegate?.responds(to: #selector(tableView(_:canFocusRowAt:))) == true, let canFocus = tableViewDelegate?.tableView?(tableView, canFocusRowAt: indexPath) {
             return canFocus
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellFocusable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableFocusable {
             return object.canFocus?() ?? false
         } else {
             return false
@@ -539,7 +539,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, shouldSpringLoadRowAt indexPath: IndexPath, with context: UISpringLoadedInteractionContext) -> Bool {
         if tableViewDelegate?.responds(to: #selector(tableView(_:shouldSpringLoadRowAt:with:))) == true, let shouldSpringLoad = tableViewDelegate?.tableView?(tableView, shouldSpringLoadRowAt: indexPath, with: context) {
             return shouldSpringLoad
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellSpringLoadable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableSpringLoadable {
             return object.shouldSpringLoad?(context) ?? false
         } else {
             return false
@@ -552,7 +552,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, shouldBeginMultipleSelectionInteractionAt indexPath: IndexPath) -> Bool {
         if tableViewDelegate?.responds(to: #selector(tableView(_:shouldBeginMultipleSelectionInteractionAt:))) == true, let shouldSpringLoad = tableViewDelegate?.tableView?(tableView, shouldBeginMultipleSelectionInteractionAt: indexPath) {
             return shouldSpringLoad
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellMultipleSelectable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableMultipleSelectable {
             return object.shouldBeginMultipleSelection
         } else {
             return false
@@ -563,7 +563,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, didBeginMultipleSelectionInteractionAt indexPath: IndexPath) {
         if tableViewDelegate?.responds(to: #selector(tableView(_:didBeginMultipleSelectionInteractionAt:))) == true {
             tableViewDelegate?.tableView?(tableView, didBeginMultipleSelectionInteractionAt: indexPath)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellMultipleSelectable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableMultipleSelectable {
             object.didBeginMultipleSelection?()
         }
     }
@@ -581,7 +581,7 @@ extension TableStructuredController: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         if tableViewDelegate?.responds(to: #selector(tableView(_:contextMenuConfigurationForRowAt:point:))) == true {
             return tableViewDelegate?.tableView?(tableView, contextMenuConfigurationForRowAt: indexPath, point: point)
-        } else if let object = self.cellModel(at: indexPath) as? StructuredCellContextualMenuConfigurable {
+        } else if let object = self.cellModel(at: indexPath) as? StructurableContextualMenuConfigurable {
             return object.contextMenuConfiguration?(point)
         } else {
             return nil

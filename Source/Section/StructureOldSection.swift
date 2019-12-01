@@ -1,6 +1,6 @@
 //
-//  StructuredSectionOld.swift
-//  TableCollectionStructured
+//  StructureOldSection.swift
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 29.11.2019.
 //  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct StructuredSectionOld {
+struct StructureOldSection {
     
     let identifier: AnyHashable
     
-    let rows: [StructuredCellOld]
+    let rows: [StructureOldItem]
     
     let headerContentHasher: Hasher?
     
@@ -20,13 +20,13 @@ struct StructuredSectionOld {
     
 }
 
-extension StructuredSectionOld: Equatable {
-    static func == (lhs: StructuredSectionOld, rhs: StructuredSectionOld) -> Bool {
+extension StructureOldSection: Equatable {
+    static func == (lhs: StructureOldSection, rhs: StructureOldSection) -> Bool {
         return lhs.identifier == rhs.identifier
     }
 }
 
-extension Sequence where Iterator.Element == StructuredSectionOld {
+extension Sequence where Iterator.Element == StructureOldSection {
     
     func indexPath(of identifyHasher: Hasher) -> IndexPath? {
         for (index, section) in enumerated() {
@@ -43,7 +43,7 @@ extension Sequence where Iterator.Element == StructuredSectionOld {
         return nil
     }
     
-    func contains(structured identifyHasher: Hasher) -> Bool {
+    func contains(Structure identifyHasher: Hasher) -> Bool {
         return indexPath(of: identifyHasher) != nil
     }
     

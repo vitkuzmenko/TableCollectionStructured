@@ -1,6 +1,6 @@
 //
-//  StructuredObject.swift
-//  TableCollectionStructured
+//  StructureObject.swift
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 01/11/2017.
 //  Copyright © 2017 Vitaliy Kuzmenko. All rights reserved.
@@ -8,19 +8,19 @@
 
 import UIKit
 
-// MARK: - StructuredCell
+// MARK: - Structurable
 
-public protocol StructuredCell {
+public protocol Structurable {
     
-    static func reuseIdentifier(for parentView: StructuredView) -> String
+    static func reuseIdentifier(for parentView: StructureView) -> String
     
     func configureAny(cell: UIView)
     
 }
 
-// MARK: - StructuredTableViewCell
+// MARK: - StructurableForTableView
 
-public protocol StructuredTableViewCell: StructuredCell {
+public protocol StructurableForTableView: Structurable {
     
     associatedtype TableViewCellType: UITableViewCell
     
@@ -30,9 +30,9 @@ public protocol StructuredTableViewCell: StructuredCell {
     
 }
 
-public extension StructuredTableViewCell {
+public extension StructurableForTableView {
     
-    static func reuseIdentifier(for parentView: StructuredView) -> String {
+    static func reuseIdentifier(for parentView: StructureView) -> String {
         switch parentView {
         case .tableView:
             return reuseIdentifierForTableView()
@@ -45,15 +45,15 @@ public extension StructuredTableViewCell {
         if let cell = cell as? TableViewCellType {
             configure(tableViewCell: cell)
         } else {
-            assertionFailure("StructuredTableViewCell: cell should be subclass of UITableViewCell")
+            assertionFailure("StructurableForTableView: cell should be subclass of UITableViewCell")
         }
     }
     
 }
 
-// MARK: - StructuredCollectionViewCell
+// MARK: - StructurableForCollectionView
 
-public protocol StructuredCollectionViewCell: StructuredCell {
+public protocol StructurableForCollectionView: Structurable {
     
     associatedtype CollectionViewCellType: UICollectionViewCell
     
@@ -63,9 +63,9 @@ public protocol StructuredCollectionViewCell: StructuredCell {
     
 }
 
-public extension StructuredCollectionViewCell {
+public extension StructurableForCollectionView {
     
-    func reuseIdentifier(for parentView: StructuredView) -> String {
+    func reuseIdentifier(for parentView: StructureView) -> String {
         switch parentView {
         case .collectionView:
             return reuseIdentifierForCollectionView()
@@ -78,41 +78,41 @@ public extension StructuredCollectionViewCell {
         if let cell = cell as? CollectionViewCellType {
             configure(collectionViewCell: cell)
         } else {
-            assertionFailure("StructuredTableViewCell: cell should be subclass of UICollectionViewCell")
+            assertionFailure("StructurableForTableView: cell should be subclass of UICollectionViewCell")
         }
     }
     
 }
 
-// MARK: - StructuredCellIdentifable
+// MARK: - StructurableIdentifable
 
-public protocol StructuredCellIdentifable {
+public protocol StructurableIdentifable {
 
     func identifyHash(into hasher: inout Hasher)
     
 }
 
-extension StructuredCellIdentifable {
+extension StructurableIdentifable {
     
-    internal func identifyHasher(for structuredView: StructuredView) -> Hasher {
+    internal func identifyHasher(for StructureView: StructureView) -> Hasher {
         var hasher = Hasher()
-        let cell = self as! StructuredCell
-        hasher.combine(type(of: cell).reuseIdentifier(for: structuredView))
+        let cell = self as! Structurable
+        hasher.combine(type(of: cell).reuseIdentifier(for: StructureView))
         identifyHash(into: &hasher)
         return hasher
     }
     
 }
 
-// MARK: - StructuredCellContentIdentifable
+// MARK: - StructurableContentIdentifable
 
-public protocol StructuredCellContentIdentifable {
+public protocol StructurableContentIdentifable {
     
     func contentHash(into hasher: inout Hasher)
     
 }
 
-extension StructuredCellContentIdentifable {
+extension StructurableContentIdentifable {
     
     internal func contentHasher() -> Hasher {
         var hasher = Hasher()
@@ -122,23 +122,23 @@ extension StructuredCellContentIdentifable {
     
 }
 
-// MARK: - StructuredViewHeight
+// MARK: - StructurableHeightable
 
-public protocol StructuredViewHeight {
+public protocol StructurableHeightable {
     
     func height(for tableView: UITableView) -> CGFloat
     
 }
 
-// MARK: - StructuredCellDynamicSize
+// MARK: - StructurableSizable
 
-public protocol StructuredCellDynamicSize {
+public protocol StructurableSizable {
     
     func size(for parentView: UICollectionView) -> CGSize
     
 }
 
-public protocol StructuredCellAccessoryButtonTappable {
+public protocol StructurableAccessoryButtonTappable {
     
     typealias AccessoryButtonTappedAction = (UITableViewCell?) -> Void
     
@@ -146,7 +146,7 @@ public protocol StructuredCellAccessoryButtonTappable {
     
 }
 
-public protocol StructuredCellHighlightable {
+public protocol StructurableHighlightable {
     
     var shouldHighlightRow: Bool { get }
     
@@ -160,9 +160,9 @@ public protocol StructuredCellHighlightable {
     
 }
 
-// MARK: - StructuredCellSelectable
+// MARK: - StructurableSelectable
 
-public protocol StructuredCellSelectable {
+public protocol StructurableSelectable {
     
     typealias WillSelect = (UIView?) -> IndexPath?
     
@@ -183,7 +183,7 @@ public protocol StructuredCellSelectable {
     
 }
 
-extension StructuredCellSelectable {
+extension StructurableSelectable {
     
     public var willSelect: WillSelect? {
         return nil
@@ -201,7 +201,7 @@ extension StructuredCellSelectable {
 
 // MARK: - Delete confirmation
 
-public protocol StructuredCellDeletable {
+public protocol StructurableDeletable {
     
     var titleForDeleteConfirmationButton: String? { get }
     
@@ -210,7 +210,7 @@ public protocol StructuredCellDeletable {
 // MARK: - Swipe Actions
 
 @available(iOS 11.0, *)
-public protocol StructuredCellSwipable {
+public protocol StructurableSwipable {
     
     var leadingSwipeActions: UISwipeActionsConfiguration? { get }
     
@@ -218,9 +218,9 @@ public protocol StructuredCellSwipable {
     
 }
 
-// MARK: - StructuredCellEditable
+// MARK: - StructurableEditable
 
-public protocol StructuredCellEditable {
+public protocol StructurableEditable {
         
     typealias CommitEditing = (UITableViewCell.EditingStyle) -> Void
     
@@ -242,7 +242,7 @@ public protocol StructuredCellEditable {
     
 }
 
-extension StructuredCellEditable {
+extension StructurableEditable {
     
     public var shouldIndentWhileEditing: Bool {
         return true
@@ -258,9 +258,9 @@ extension StructuredCellEditable {
     
 }
 
-// MARK: - StructuredViewWillDisplay
+// MARK: - StructureViewWillDisplay
 
-public protocol StructuredViewDisplayable {
+public protocol StructureViewDisplayable {
     
     typealias WillDisplay = (UIView) -> Void
     
@@ -272,7 +272,7 @@ public protocol StructuredViewDisplayable {
     
 }
 
-extension StructuredViewDisplayable {
+extension StructureViewDisplayable {
     
     public var didEndDisplay: DidEndDisplay? {
         return nil
@@ -281,9 +281,9 @@ extension StructuredViewDisplayable {
 }
 
 
-// MARK: - StructuredCellMovable
+// MARK: - StructurableMovable
 
-public protocol StructuredCellMovable {
+public protocol StructurableMovable {
     
     typealias CanMove = () -> Bool
     
@@ -295,9 +295,9 @@ public protocol StructuredCellMovable {
     
 }
 
-// MARK: - StructuredCellFocusable
+// MARK: - StructurableFocusable
 
-public protocol StructuredCellFocusable {
+public protocol StructurableFocusable {
     
     typealias CanFocus = () -> Bool
     
@@ -305,10 +305,10 @@ public protocol StructuredCellFocusable {
     
 }
 
-// MARK: - StructuredCellSpringLoadable
+// MARK: - StructurableSpringLoadable
 
 @available(iOS 11.0, *)
-public protocol StructuredCellSpringLoadable {
+public protocol StructurableSpringLoadable {
     
     typealias DidBeginMultipleSelection = (UISpringLoadedInteractionContext) -> Bool
     
@@ -316,18 +316,18 @@ public protocol StructuredCellSpringLoadable {
     
 }
 
-// MARK: - StructuredCellIndentable
+// MARK: - StructurableIndentable
 
-public protocol StructuredCellIndentable {
+public protocol StructurableIndentable {
     
     var indentationLevel: Int { get }
     
 }
 
-// MARK: - StructuredCellMultipleSelectable
+// MARK: - StructurableMultipleSelectable
 
 @available(iOS 13.0, *)
-public protocol StructuredCellMultipleSelectable {
+public protocol StructurableMultipleSelectable {
     
     typealias DidBeginMultipleSelection = () -> Void
     
@@ -337,10 +337,10 @@ public protocol StructuredCellMultipleSelectable {
     
 }
 
-// MARK: - StructuredCellContextualMenuConfigurable
+// MARK: - StructurableContextualMenuConfigurable
 
 @available(iOS 13.0, *)
-public protocol StructuredCellContextualMenuConfigurable {
+public protocol StructurableContextualMenuConfigurable {
     
     typealias ContextMenuConfiguration = (CGPoint) -> UIContextMenuConfiguration?
     
@@ -348,8 +348,8 @@ public protocol StructuredCellContextualMenuConfigurable {
     
 }
 
-// MARK: - StructuredCellInvalidatable
+// MARK: - StructurableInvalidatable
 
-public protocol StructuredCellInvalidatable {
+public protocol StructurableInvalidatable {
     func invalidated()
 }

@@ -1,6 +1,6 @@
 //
 //  CountryHeaderView.swift
-//  TableCollectionStructured
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 30.11.2019.
 //  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
@@ -24,7 +24,7 @@ struct CountryHeaderViewModel {
     
 }
 
-extension CountryHeaderViewModel: StructuredTableSectionHeaderFooter {
+extension CountryHeaderViewModel: StructureTableSectionHeaderFooter {
     
     static func reuseIdentifierForTableViewHeaderFooter() -> String {
         return "CountryHeaderView"
@@ -38,7 +38,7 @@ extension CountryHeaderViewModel: StructuredTableSectionHeaderFooter {
     
 }
 
-extension CountryHeaderViewModel: StructuredTableSectionHeaderFooterContentIdentifable {
+extension CountryHeaderViewModel: StructureTableSectionHeaderFooterContentIdentifable {
     
     func contentHash(into hasher: inout Hasher) {
         hasher.combine(count)
@@ -46,7 +46,7 @@ extension CountryHeaderViewModel: StructuredTableSectionHeaderFooterContentIdent
     
 }
 
-extension CountryHeaderViewModel: StructuredViewHeight {
+extension CountryHeaderViewModel: StructurableHeightable {
     
     func height(for tableView: UITableView) -> CGFloat {
         return 42

@@ -1,6 +1,6 @@
 //
-//  TableStructuredViewController.swift
-//  TableCollectionStructured
+//  TableStructureViewController.swift
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 06/10/16.
 //  Copyright © 2016 Vitaliy Kuzmenko. All rights reserved.
@@ -8,14 +8,14 @@
 
 import UIKit
 
-public enum StructuredView {
+public enum StructureView {
     case tableView(UITableView)
     case collectionView(UICollectionView)
 }
 
-final class TableStructuredController: NSObject {
+final class StructureController: NSObject {
     
-    private var structuredView: StructuredView!
+    private var StructureView: StructureView!
     
     public weak var scrollViewDelegate: UIScrollViewDelegate?
     
@@ -29,13 +29,13 @@ final class TableStructuredController: NSObject {
     
     // MARK: - Structure
     
-    public var structure: [StructuredSection] = []
+    public var structure: [StructureSection] = []
     
-    private var previousStructure: [StructuredSectionOld] = [] {
+    private var previousStructure: [StructureOldSection] = [] {
         didSet {
             structure.forEach { section in
                 section.rows.forEach { object in
-                    if let invalidatableCell = object as? StructuredCellInvalidatable {
+                    if let invalidatableCell = object as? StructurableInvalidatable {
                         invalidatableCell.invalidated()
                     }
                 }
@@ -43,9 +43,9 @@ final class TableStructuredController: NSObject {
         }
     }
     
-    public func indexPath(for object: StructuredCellIdentifable) -> IndexPath? {
-        let objectIdentifyHasher = object.identifyHasher(for: structuredView)
-        return structure.indexPath(of: objectIdentifyHasher, structuredView: structuredView)?.indexPath
+    public func indexPath(for object: StructurableIdentifable) -> IndexPath? {
+        let objectIdentifyHasher = object.identifyHasher(for: StructureView)
+        return structure.indexPath(of: objectIdentifyHasher, StructureView: StructureView)?.indexPath
     }
         
     public func cellModel(at indexPath: IndexPath) -> Any? {
@@ -60,25 +60,25 @@ final class TableStructuredController: NSObject {
     
     // MARK: - Registration
     
-    public func register(_ tableView: UITableView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = [], tableViewDelegate: UITableViewDelegate? = nil, tableViewDataSourcePrefetching: UITableViewDataSourcePrefetching? = nil) {
+    public func register(_ tableView: UITableView, cellModelTypes: [Structurable.Type] = [], headerFooterModelTypes: [StructureSectionHeaderFooter.Type] = [], tableViewDelegate: UITableViewDelegate? = nil, tableViewDataSourcePrefetching: UITableViewDataSourcePrefetching? = nil) {
         
-        if self.structuredView != nil {
-            fatalError("TableStructuredController: Registration may be once")
+        if self.StructureView != nil {
+            fatalError("StructureController: Registration may be once")
         }
         
-        self.structuredView = .tableView(tableView)
+        self.StructureView = .tableView(tableView)
         
         tableView.dataSource = self
         tableView.delegate = self
         
         cellModelTypes.forEach { type in
-            let identifier = type.reuseIdentifier(for: structuredView)
+            let identifier = type.reuseIdentifier(for: StructureView)
             let nib = UINib(nibName: identifier, bundle: nil)
             tableView.register(nib, forCellReuseIdentifier: identifier)
         }
         
         headerFooterModelTypes.forEach { type in
-            let identifier = type.reuseIdentifier(for: structuredView)
+            let identifier = type.reuseIdentifier(for: StructureView)
             let nib = UINib(nibName: identifier, bundle: nil)
             tableView.register(nib, forHeaderFooterViewReuseIdentifier: identifier)
         }
@@ -86,11 +86,11 @@ final class TableStructuredController: NSObject {
     
     // MARK: - Sctructure Updating
     
-    public func set(structure newStructure: [StructuredSection], animation: TableAnimationRule = .fade) {
-        guard let structuredView = structuredView else { fatalError("StructuredView is not configured") }
-        previousStructure = structure.old(for: structuredView)
+    public func set(structure newStructure: [StructureSection], animation: TableAnimationRule = .fade) {
+        guard let StructureView = StructureView else { fatalError("StructureView is not configured") }
+        previousStructure = structure.old(for: StructureView)
         structure = newStructure
-        switch structuredView {
+        switch StructureView {
         case .tableView(let tableView):
             guard !previousStructure.isEmpty else {
                 return tableView.reloadData()
@@ -100,10 +100,10 @@ final class TableStructuredController: NSObject {
                 tableView.reloadData()
             default:
                 do {
-                    let diff = try StructuredDifference(from: previousStructure, to: structure, structuredView: .tableView(tableView))
+                    let diff = try StructureDiffer(from: previousStructure, to: structure, StructureView: .tableView(tableView))
                     performTableViewReload(tableView, diff: diff, with: animation)
                 } catch let error {
-                    NSLog("TableStructuredController: Can not reload animated. %@", error.localizedDescription)
+                    NSLog("StructureController: Can not reload animated. %@", error.localizedDescription)
                     tableView.reloadData()
                 }
             }

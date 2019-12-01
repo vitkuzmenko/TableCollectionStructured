@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  TableCollectionStructured
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 27.11.2019.
 //  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
     
-    var tableController = TableStructuredController()
+    var tableController = StructureController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,8 +30,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func makeStructure() {
-        let structure = CitiesDataSource().countries().map { country -> StructuredSection in
-            var section = StructuredSection(
+        let structure = CitiesDataSource().countries().map { country -> StructureSection in
+            var section = StructureSection(
                 identifier: country.title,
                 rows: country.cities.map({ CityTableViewCellModel(city: $0) })
             )

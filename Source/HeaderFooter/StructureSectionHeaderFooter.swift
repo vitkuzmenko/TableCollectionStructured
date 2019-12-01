@@ -1,6 +1,6 @@
 //
-//  StructuredSectionHeaderFooter.swift
-//  TableCollectionStructured
+//  StructureSectionHeaderFooter.swift
+//  StructureKit
 //
 //  Created by Vitaliy Kuzmenko on 30.11.2019.
 //  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
@@ -8,19 +8,19 @@
 
 import UIKit
 
-// MARK: - StructuredSectionHeaderFooter
+// MARK: - StructureSectionHeaderFooter
 
-public protocol StructuredSectionHeaderFooter {
+public protocol StructureSectionHeaderFooter {
     
-    static func reuseIdentifier(for parentView: StructuredView) -> String
+    static func reuseIdentifier(for parentView: StructureView) -> String
     
     func configureAny(view: UIView, isUpdating: Bool)
     
 }
 
-// MARK: - StructuredTableSectionHeaderFooter
+// MARK: - StructureTableSectionHeaderFooter
 
-public protocol StructuredTableSectionHeaderFooter: StructuredSectionHeaderFooter {
+public protocol StructureTableSectionHeaderFooter: StructureSectionHeaderFooter {
     
     associatedtype TableViewHeaderFooterType: UITableViewHeaderFooterView
     
@@ -30,9 +30,9 @@ public protocol StructuredTableSectionHeaderFooter: StructuredSectionHeaderFoote
     
 }
 
-public extension StructuredTableSectionHeaderFooter {
+public extension StructureTableSectionHeaderFooter {
     
-    static func reuseIdentifier(for parentView: StructuredView) -> String {
+    static func reuseIdentifier(for parentView: StructureView) -> String {
         switch parentView {
         case .tableView:
             return reuseIdentifierForTableViewHeaderFooter()
@@ -45,21 +45,21 @@ public extension StructuredTableSectionHeaderFooter {
         if let view = view as? TableViewHeaderFooterType {
             configure(tableViewHeaderFooterView: view, isUpdating: isUpdating)
         } else {
-            assertionFailure("StructuredTableViewCell: cell should be subclass of UITableViewCell")
+            assertionFailure("StructurableForTableView: cell should be subclass of UITableViewCell")
         }
     }
     
 }
 
-// MARK: - StructuredTableSectionHeaderFooterContentIdentifable
+// MARK: - StructureTableSectionHeaderFooterContentIdentifable
 
-public protocol StructuredTableSectionHeaderFooterContentIdentifable {
+public protocol StructureTableSectionHeaderFooterContentIdentifable {
     
     func contentHash(into hasher: inout Hasher)
     
 }
 
-extension StructuredTableSectionHeaderFooterContentIdentifable {
+extension StructureTableSectionHeaderFooterContentIdentifable {
     
     internal func contentHasher() -> Hasher {
         var hasher = Hasher()
