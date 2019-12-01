@@ -77,11 +77,7 @@ extension TableStructuredController {
         tableView.endUpdates()
         
     }
-    
-    fileprivate var tableViewDelegate: UITableViewDelegate? {
-        return structuredViewDelegate as? UITableViewDelegate
-    }
-        
+            
 }
 
 extension TableStructuredController: UITableViewDataSource {
@@ -157,6 +153,22 @@ extension TableStructuredController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         if let object = self.cellModel(at: sourceIndexPath) as? StructuredCellMovable {
             object.didMove?(sourceIndexPath, destinationIndexPath)
+        }
+    }
+    
+}
+
+extension TableStructuredController: UITableViewDataSourcePrefetching {
+        
+    public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        if tableViewDataSourcePrefetching?.responds(to: #selector(tableView(_:prefetchRowsAt:))) == true {
+            tableViewDataSourcePrefetching?.tableView(tableView, prefetchRowsAt: indexPaths)
+        }
+    }
+    
+    public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        if tableViewDataSourcePrefetching?.responds(to: #selector(tableView(_:cancelPrefetchingForRowsAt:))) == true {
+            tableViewDataSourcePrefetching?.tableView?(tableView, cancelPrefetchingForRowsAt: indexPaths)
         }
     }
     

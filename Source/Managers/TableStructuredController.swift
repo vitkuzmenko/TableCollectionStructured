@@ -13,15 +13,23 @@ public enum StructuredView {
     case collectionView(UICollectionView)
 }
 
-open class TableStructuredController: NSObject {
+final class TableStructuredController: NSObject {
     
     private var structuredView: StructuredView!
     
-    public weak var structuredViewDelegate: AnyObject?
-    
     public weak var scrollViewDelegate: UIScrollViewDelegate?
     
-    open var structure: [StructuredSection] = []
+    // MARK: - TableViewParameters
+    
+    internal weak var tableViewDelegate: UITableViewDelegate?
+    
+    internal weak var tableViewDataSourcePrefetching: UITableViewDataSourcePrefetching?
+        
+    // MARK: - CollectionView
+    
+    // MARK: - Structure
+    
+    public var structure: [StructuredSection] = []
     
     private var previousStructure: [StructuredSectionOld] = [] {
         didSet {
@@ -35,12 +43,12 @@ open class TableStructuredController: NSObject {
         }
     }
     
-    open func indexPath(for object: StructuredCellIdentifable) -> IndexPath? {
+    public func indexPath(for object: StructuredCellIdentifable) -> IndexPath? {
         let objectIdentifyHasher = object.identifyHasher(for: structuredView)
         return structure.indexPath(of: objectIdentifyHasher, structuredView: structuredView)?.indexPath
     }
         
-    open func cellModel(at indexPath: IndexPath) -> Any? {
+    public func cellModel(at indexPath: IndexPath) -> Any? {
         if structure.count - 1 >= indexPath.section {
             let section = structure[indexPath.section]
             if section.rows.count - 1 >= indexPath.row {
@@ -52,20 +60,13 @@ open class TableStructuredController: NSObject {
     
     // MARK: - Registration
     
-    open func register(_ strcturedView: StructuredView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = []) {
+    public func register(_ tableView: UITableView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = [], tableViewDelegate: UITableViewDelegate? = nil, tableViewDataSourcePrefetching: UITableViewDataSourcePrefetching? = nil) {
+        
         if self.structuredView != nil {
             fatalError("TableStructuredController: Registration may be once")
         }
-        self.structuredView = strcturedView
-        switch strcturedView {
-        case .tableView(let tableView):
-            register(tableView, cellModelTypes: cellModelTypes, headerFooterModelTypes: headerFooterModelTypes)
-        case .collectionView(let collectionView):
-            break
-        }
-    }
-    
-    private func register(_ tableView: UITableView, cellModelTypes: [StructuredCell.Type] = [], headerFooterModelTypes: [StructuredSectionHeaderFooter.Type] = []) {
+        
+        self.structuredView = .tableView(tableView)
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -85,7 +86,7 @@ open class TableStructuredController: NSObject {
     
     // MARK: - Sctructure Updating
     
-    open func set(structure newStructure: [StructuredSection], animation: TableAnimationRule = .fade) {
+    public func set(structure newStructure: [StructuredSection], animation: TableAnimationRule = .fade) {
         guard let structuredView = structuredView else { fatalError("StructuredView is not configured") }
         previousStructure = structure.old(for: structuredView)
         structure = newStructure
