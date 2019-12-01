@@ -12,7 +12,9 @@ class ViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
     
-    var tableController = StructureController()
+    let tableController = StructureController()
+    
+    let collectionController = StructureController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
