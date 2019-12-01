@@ -2,8 +2,8 @@
 //  StructureDiffer.swift
 //  StructureKit
 //
-//  Created by Vitaliy Kuzmenko on 01/11/2017.
-//  Copyright © 2017 Vitaliy Kuzmenko. All rights reserved.
+//  Created by Vitaliy Kuzmenko on 01/11/2019.
+//  Copyright © 2019 Vitaliy Kuzmenko. All rights reserved.
 //
 
 import Foundation
