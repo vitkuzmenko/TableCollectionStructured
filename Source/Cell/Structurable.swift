@@ -12,6 +12,8 @@ import UIKit
 
 public protocol Structurable {
     
+    static var cellAnyType: UIView.Type { get }
+    
     static func reuseIdentifier(for parentView: StructureView) -> String
     
     func configureAny(cell: UIView)
@@ -32,6 +34,10 @@ public protocol StructurableForTableView: Structurable {
 
 public extension StructurableForTableView {
     
+    static var cellAnyType: UIView.Type {
+        return TableViewCellType.self
+    }
+    
     static func reuseIdentifier(for parentView: StructureView) -> String {
         switch parentView {
         case .tableView:
@@ -47,6 +53,10 @@ public extension StructurableForTableView {
         } else {
             assertionFailure("StructurableForTableView: cell should be subclass of UITableViewCell")
         }
+    }
+    
+    static func reuseIdentifierForTableView() -> String {
+        return String(describing: cellAnyType)
     }
     
 }
@@ -65,6 +75,10 @@ public protocol StructurableForCollectionView: Structurable {
 
 public extension StructurableForCollectionView {
     
+    static var cellAnyType: UIView.Type {
+        return CollectionViewCellType.self
+    }
+    
     func reuseIdentifier(for parentView: StructureView) -> String {
         switch parentView {
         case .collectionView:
@@ -80,6 +94,10 @@ public extension StructurableForCollectionView {
         } else {
             assertionFailure("StructurableForTableView: cell should be subclass of UICollectionViewCell")
         }
+    }
+    
+    static func reuseIdentifierForCollectionView() -> String {
+        return String(describing: cellAnyType)
     }
     
 }

@@ -12,6 +12,8 @@ import UIKit
 
 public protocol StructureSectionHeaderFooter {
     
+    static var cellAnyType: UIView.Type { get }
+    
     static func reuseIdentifier(for parentView: StructureView) -> String
     
     func configureAny(view: UIView, isUpdating: Bool)
@@ -32,6 +34,10 @@ public protocol StructureTableSectionHeaderFooter: StructureSectionHeaderFooter 
 
 public extension StructureTableSectionHeaderFooter {
     
+    static var cellAnyType: UIView.Type {
+        return TableViewHeaderFooterType.self
+    }
+    
     static func reuseIdentifier(for parentView: StructureView) -> String {
         switch parentView {
         case .tableView:
@@ -47,6 +53,10 @@ public extension StructureTableSectionHeaderFooter {
         } else {
             assertionFailure("StructurableForTableView: cell should be subclass of UITableViewCell")
         }
+    }
+    
+    static func reuseIdentifierForTableViewHeaderFooter() -> String {
+        return String(describing: cellAnyType)
     }
     
 }

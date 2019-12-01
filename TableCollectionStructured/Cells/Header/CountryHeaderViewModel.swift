@@ -26,10 +26,6 @@ struct CountryHeaderViewModel {
 
 extension CountryHeaderViewModel: StructureTableSectionHeaderFooter {
     
-    static func reuseIdentifierForTableViewHeaderFooter() -> String {
-        return "CountryHeaderView"
-    }
-    
     func configure(tableViewHeaderFooterView view: CountryHeaderView, isUpdating: Bool) {
         view.imageView.image = image
         view.titleLabel.text = title

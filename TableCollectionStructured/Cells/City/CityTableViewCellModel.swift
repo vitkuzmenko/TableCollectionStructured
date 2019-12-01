@@ -23,10 +23,6 @@ struct CityTableViewCellModel {
 
 extension CityTableViewCellModel: StructurableForTableView {
     
-    static func reuseIdentifierForTableView() -> String {
-        return "CityTableViewCell"
-    }
-    
     func configure(tableViewCell cell: CityTableViewCell) {
         cell.textLabel?.text = title
         cell.detailTextLabel?.text = population
