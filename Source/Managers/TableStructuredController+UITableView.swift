@@ -567,38 +567,38 @@ extension TableStructuredController: UITableViewDelegate {
     
     @available(iOS 13.0, *)
     public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        if let object = self.cellModel(at: indexPath) as? StructuredCellContextualMenuConfigurable {
+        if tableViewDelegate?.responds(to: #selector(tableView(_:contextMenuConfigurationForRowAt:point:))) == true {
+            return tableViewDelegate?.tableView?(tableView, contextMenuConfigurationForRowAt: indexPath, point: point)
+        } else if let object = self.cellModel(at: indexPath) as? StructuredCellContextualMenuConfigurable {
             return object.contextMenuConfiguration?(point)
+        } else {
+            return nil
         }
-        return nil
     }
     
-//    @available(iOS 13.0, *)
-//    public func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-//
-//    }
+    @available(iOS 13.0, *)
+    public func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        if tableViewDelegate?.responds(to: #selector(tableView(_:previewForHighlightingContextMenuWithConfiguration:))) == true {
+            return tableViewDelegate?.tableView?(tableView, previewForHighlightingContextMenuWithConfiguration: configuration)
+        } else {
+            return nil
+        }
+    }
 
-//    @available(iOS 13.0, *)
-//    public func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-//
-//    }
+    @available(iOS 13.0, *)
+    public func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        if tableViewDelegate?.responds(to: #selector(tableView(_:previewForDismissingContextMenuWithConfiguration:))) == true {
+            return tableViewDelegate?.tableView?(tableView, previewForDismissingContextMenuWithConfiguration: configuration)
+        } else {
+            return nil
+        }
+    }
 
-//    @available(iOS 13.0, *)
-//    public func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
-//
-//    }
-    
+    @available(iOS 13.0, *)
+    public func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+        if tableViewDelegate?.responds(to: #selector(tableView(_:willPerformPreviewActionForMenuWith:animator:))) == true {
+            tableViewDelegate?.tableView?(tableView, willPerformPreviewActionForMenuWith: configuration, animator: animator)
+        }
+    }
 
-    
-    
-    
-    // MARK: - Section Footer
-    
-    
-
-    
-    
-    
-
-    
 }
